@@ -21,10 +21,12 @@ docs/PRODUCT_SPEC.md · docs/DESIGN.md · docs/THEME_SYSTEM.md · docs/CONTENT_G
 ## Codex 执行任务的固定流程
 
 1. 读 CLAUDE.md → AGENTS.md → 任务书（docs/agent_tasks/NN-*.md）→ 任务书列出的设计文档
-2. 仅在“允许修改范围”内改动；发现需越界时停止并在报告中说明
-3. 实施 + 补测试；禁止占位 Emoji 冒充插画；禁止硬编码样式值
-4. 每次交付前必须执行并通过：`flutter analyze`（零错误）、`dart format .`、`flutter test`
-5. 更新 docs/AGENT_HANDOFF.md（完成项/未完成项/风险/测试结果）
+2. **开工前确认当前工作目录为项目根目录**（`D:\AI\EnglishGo`），尤其是同一会话中曾操作过其他子目录时；所有文件写入路径必须是相对项目根的路径（如 `lib/...`、`test/...`），禁止出现 `tool/xxx/lib/...` 这类误落地
+3. 仅在"允许修改范围"内改动；发现需越界时停止并在报告中说明
+4. 实施 + 补测试；禁止占位 Emoji 冒充插画；禁止硬编码样式值；测试断言必须验证真实行为，禁止 `expect(x, isNotNull)`/`expect(true, isTrue)` 这类空断言充数
+5. 每次交付前必须执行并通过：`flutter analyze`（零错误）、`dart format .`、`flutter test`；**若沙箱环境无法运行这些命令，必须在交付说明中明确声明"未自行验证"，不得推断或声称已通过**
+6. 完成后自查 `git status` / `find lib test -newer <上次提交>`，确认文件落点与改动范围符合任务书
+7. 更新 docs/AGENT_HANDOFF.md（完成项/未完成项/风险/测试结果）
 
 ## 通用工程规则
 

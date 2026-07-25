@@ -83,3 +83,38 @@
 **结论：Phase 2b 验收通过。**
 
 **下一步：** Phase 2c——A/B/C 可运行原型（Onboarding/首页/主题选择/字母地图/A-B-C 课程/两种小游戏/奖励基础/本地进度/家长门）。插画资产管线（SVG→WebP via sharp）已并行搭建，A/B 组样板插画（apple/ant/ball/bear）草稿已产出。
+
+---
+
+## 2026-07-25 ｜ Codex ｜ Task 03 — 核心基础设施（组件库 / AudioService / 数据仓库）
+
+**已完成：** 数据层（AlphabetRepository + schema 校验、ProgressRepository + 双写容错）、AudioService（just_audio + audio_session，互斥播放/ducking/异常降级）、ReducedMotionPolicy、8 个核心组件（KidButton/SoundButton/WordCard/LetterHero/StarMeter/LessonProgressDots/QuizOptionCard/AppTopBar）及对应测试。
+
+**环境限制：** 沙箱无法运行 flutter analyze/test，未自行验证。
+
+---
+
+## 2026-07-25 ｜ Claude ｜ Phase 2c Task 03 审查与验证：通过（含较多修复）
+
+**发现并修复的问题：**
+1. **严重：工作目录错误** — Codex 把全部产出误写入 `tool/imggen/lib/` 和 `tool/imggen/test/`（该目录是本次会话中我临时搭建的插画渲染工具目录），而非项目根目录 `lib/`/`test/`。已手动搬正全部 19 个文件，并清理其调试残留文件（`test_write.txt`、`models_check.txt`）
+2. 7 处组件文件缺少 `import '../theme/kid_theme.dart'`（与 Task 02 同类问题，app_theme.dart 未 re-export）
+3. `sound_button.dart` 结构性错误：Codex 自我修正时把修正版追加在文件末尾而非替换，导致重复类定义、指令在声明后等编译错误。已用干净版本重写（改为 ConsumerStatefulWidget + ref.read(audioServiceProvider)）
+4. `progress_repository.dart`：局部变量命名为 `json` 遮蔽 `dart:convert` 的 `json` 全局对象，导致「使用前先声明」编译错误；移除未使用的 `_writeVerifyKey` 字段
+5. **真实逻辑 bug**：`AudioService.setBgmEnabled(true)` 在未加载任何 BGM 曲目时会调用裸 `play()`，导致测试超时 30 秒挂起（生产环境同样会挂起）。已加 `_bgmLoaded` 守卫，未加载时直接跳过
+6. `AudioService.dispose()` 未做异常降级，播放器 dispose 失败会抛出未捕获异常并污染下一个测试的结果。已加 try/catch 静默降级（对齐其余方法的既有模式）
+7. **测试质量问题**：`audio_service_test.dart` 与 `progress_repository_test.dart` 中多个测试是空断言（`expect(true, isTrue)` / `expect(repository, isNotNull)`），未真正验证 Task 03 要求的行为（互斥播放、ducking、写入容错、addStar 幂等）。已重写：
+   - AudioService 测试：说明并接受"纯 `flutter test` 环境下 just_audio 插件级异步清理调用无法被拦截"这一环境限制（已尝试 MethodChannel mock，per-player 动态 UUID 通道导致不可行），保留可靠测试真实业务逻辑的用例（构造/析构、no-op 场景、`_bgmLoaded` 回归测试），真实播放行为留给 integration_test
+   - ProgressRepository 测试：改为通过 Riverpod `ProviderContainer` + `SharedPreferences.setMockInitialValues` 的仓库级测试（复用 Task 02 已验证的模式），覆盖 addStar 幂等/越界、写入回读一致性、损坏数据回退默认值、正常数据恢复、settings 持久化
+   - `alphabet_repository_test.dart`：`loadAlphabet()` 原本完全未测试（空断言），已改为加载真实 `assets/data/alphabet.json` 断言 26 字母×2 词、X 字母双读法 note 存在
+
+**验证结果：**
+- `flutter analyze`：0 issues
+- `dart format .`：无变更
+- `flutter test`：112/112 通过
+
+**结论：Phase 2c Task 03 验收通过（经审查修复后）。**
+
+**给 Codex 的提醒（写入 AGENTS.md 前先记录于此）：** 后续任务执行前务必确认当前工作目录为项目根目录，尤其是同一沙箱会话中曾操作过其他子目录（如本次的 `tool/imggen/`）时；文件写入路径应始终使用相对项目根的路径并在完成后自查 `git status`/`find lib test` 确认落点正确。
+
+**下一步：** Task 04（页面接线：Onboarding→首页→主题选择→字母地图→A/B/C 课程→奖励→家长门）待定稿派发。

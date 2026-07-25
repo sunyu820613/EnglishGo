@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <defs>
+    <radialGradient id="bgGlow" cx="45%" cy="42%" r="62%">
+      <stop offset="0%" stop-color="#DCEAF0"/>
+      <stop offset="100%" stop-color="#F8F1E6"/>
+    </radialGradient>
+    <linearGradient id="bodyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#6FC1D8"/>
+      <stop offset="100%" stop-color="#4B9FB8"/>
+    </linearGradient>
+    <radialGradient id="wheel" cx="35%" cy="30%" r="75%">
+      <stop offset="0%" stop-color="#5A5049"/>
+      <stop offset="100%" stop-color="#332A24"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1024" height="1024" fill="url(#bgGlow)"/>
+  <circle cx="240" cy="200" r="10" fill="#EAD9BE"/>
+  <circle cx="820" cy="260" r="7" fill="#EAD9BE"/>
+  <circle cx="180" cy="760" r="8" fill="#EAD9BE"/>
+  <circle cx="850" cy="740" r="11" fill="#EAD9BE"/>
+
+  <ellipse cx="512" cy="820" rx="320" ry="40" fill="#C9DDE4" opacity="0.6"/>
+
+  <!-- road line -->
+  <rect x="120" y="796" width="784" height="8" rx="4" fill="#D9C4A4" opacity="0.5"/>
+
+  <!-- car body lower -->
+  <path d="M160 700 C 160 620, 220 600, 300 600 L 360 520 C 380 494, 420 480, 460 480
+           L 596 480 C 636 480, 676 494, 696 520 L 748 600 C 812 604, 864 630, 864 700
+           C 864 736, 836 760, 800 760 L 224 760 C 188 760, 160 736, 160 700 Z"
+        fill="url(#bodyGrad)" stroke="#2E4E58" stroke-width="14" stroke-linejoin="round"/>
+
+  <!-- cabin window -->
+  <path d="M400 588 L 440 520 C 452 502, 470 492, 492 492 L 566 492 C 588 492, 606 502, 618 520 L 654 588 Z"
+        fill="#EAF6F8" stroke="#2E4E58" stroke-width="10" stroke-linejoin="round"/>
+  <path d="M512 492 L 512 588" stroke="#2E4E58" stroke-width="8"/>
+
+  <!-- body highlight -->
+  <path d="M200 660 C 260 630, 340 620, 420 620 L 604 620 C 684 620, 760 630, 820 660"
+        fill="none" stroke="#8FD6E8" stroke-width="14" stroke-linecap="round" opacity="0.6"/>
+
+  <!-- door line -->
+  <path d="M512 620 L 512 758" stroke="#2E4E58" stroke-width="8" opacity="0.5"/>
+  <circle cx="560" cy="690" r="8" fill="#2E4E58" opacity="0.5"/>
+  <circle cx="464" cy="690" r="8" fill="#2E4E58" opacity="0.5"/>
+
+  <!-- headlight + taillight -->
+  <circle cx="820" cy="672" r="26" fill="#FCE9A8" stroke="#2E4E58" stroke-width="8"/>
+  <circle cx="204" cy="672" r="24" fill="#F0876E" stroke="#2E4E58" stroke-width="8"/>
+
+  <!-- bumper -->
+  <rect x="176" y="722" width="672" height="24" rx="12" fill="#3E6E7A"/>
+
+  <!-- wheels -->
+  <circle cx="336" cy="784" r="78" fill="url(#wheel)" stroke="#1F1A16" stroke-width="12"/>
+  <circle cx="336" cy="784" r="30" fill="#8A8078"/>
+  <circle cx="688" cy="784" r="78" fill="url(#wheel)" stroke="#1F1A16" stroke-width="12"/>
+  <circle cx="688" cy="784" r="30" fill="#8A8078"/>
+
+  <!-- friendly face on grille -->
+  <circle cx="792" cy="700" r="6" fill="#2E4E58"/>
+  <path d="M776 716 C 786 724, 800 724, 810 716" fill="none" stroke="#2E4E58" stroke-width="6" stroke-linecap="round"/>
+</svg>
