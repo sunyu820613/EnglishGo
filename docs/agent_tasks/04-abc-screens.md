@@ -1,9 +1,75 @@
 # Task 04 — A/B/C 可运行原型页面接线
 
-状态：草稿（等待 Task 03 基础设施验收后定稿派发，勿提前执行）
+状态：已定稿，可执行
 
 ## 背景
-Task 03 完成后将提供：AlphabetRepository、ProgressRepository、AudioService、ReducedMotionPolicy、核心组件库（KidButton/SoundButton/WordCard/LetterHero/StarMeter/LessonProgressDots/QuizOptionCard/AppTopBar）。本任务在此之上接出可运行的页面流程，覆盖 A/B/C 三个字母的完整课程体验。
+Task 03 已完成并通过 Claude 审查（flutter analyze 0 issues，flutter test 112/112 通过），提供：AlphabetRepository（`lib/data/alphabet/`）、ProgressRepository + progressProvider（`lib/data/progress/`）、AudioService + audioServiceProvider（`lib/core/audio/`）、ReducedMotionPolicy（`lib/core/accessibility/`）、核心组件库 KidButton/SoundButton/WordCard/LetterHero/StarMeter/LessonProgressDots/QuizOptionCard/AppTopBar（`lib/core/widgets/`）。六主题 ThemeExtension 见 `lib/core/theme/`（Task 02，含 themeControllerProvider/currentThemeProvider）。本任务在此之上接出可运行的页面流程，覆盖 A/B/C 三个字母的完整课程体验。
+
+**重要提醒（Task 03 复盘教训）：**
+- 开工前用 `pwd`/`cd` 确认当前工作目录是项目根目录 `D:\AI\EnglishGo`，所有文件路径以此为准，禁止写入 `tool/` 等无关目录
+- 复用现有组件前先 `grep`/`Read` 确认其真实构造参数（如 `KidButton`、`StarMeter` 的具体字段名），不要凭猜测调用
+- 新建文件如需引用 `KidThemeExtension`，记得 `import 'package:english_go/core/theme/kid_theme.dart';`（`app_theme.dart` 不会自动导出它）
+- 测试断言必须验证真实行为，禁止 `expect(x, isNotNull)` 之类空断言
+- 完成后自查 `git status` 确认改动文件都在允许范围内
+
+## 已有 API 参考（勿凭猜测调用，字段名以此为准）
+
+```dart
+// lib/core/widgets/kid_button.dart
+KidButton({onPressed, semanticsLabel, variant = KidVariant.primary, size = KidSize.kid, child, icon, enabled = true})
+// child 与 icon 至少提供一个
+
+// lib/core/widgets/star_meter.dart
+StarMeter({filled = 0, total = 3, size = TouchSize.kid})
+
+// lib/core/widgets/word_card.dart
+WordCard({required imagePath, required word, required audioPath, required semanticsLabel})
+// 点击即通过 audioServiceProvider 播放，内部已处理
+
+// lib/core/widgets/letter_hero.dart
+LetterHero({required letter, color})
+
+// lib/core/widgets/quiz_option_card.dart
+QuizOptionCard({required child, required semanticsLabel, state = QuizOptionState.idle, onTap})
+// QuizOptionState { idle, success, hint }
+
+// lib/core/widgets/sound_button.dart
+SoundButton({required audioPath, required semanticsLabel, size = KidSize.kid, onPlayingChanged})
+
+// lib/core/widgets/lesson_progress_dots.dart
+LessonProgressDots({required totalSteps, required currentStep, dotSize = 12})
+
+// lib/core/widgets/app_top_bar.dart
+AppTopBar({onBack, actions, backSemanticsLabel = 'Back'})
+
+// lib/data/alphabet/alphabet_repository.dart
+const AlphabetRepository().loadAlphabet() -> Future<List<LetterEntry>>  // throws AlphabetDataException
+// LetterEntry: letter, letterAudio, phonicsAudio, phonicsIpa, phonicsNote(String?), words: List<WordEntry>
+// WordEntry: id, text, audio, image, phrase
+
+// lib/data/progress/progress_repository.dart
+progressProvider // NotifierProvider<ProgressRepository, ProgressData>
+ProgressRepository: loadProgress(), addStar(letter, starIndex 0-2), markWordHeard(letter, wordId),
+  markQuizDone(letter), markMatchDone(letter), markTraceDone(letter),
+  incrementListenRepeats(letter), incrementQuizRetries(letter),
+  setBgmOn(bool), setReducedMotion(bool), setAccent(String)
+// ProgressData: schemaVersion, themeId, letters: Map<String,LetterProgress>, stickers: List<String>, settings: SettingsData
+// LetterProgress: stars, wordsHeard, quizDone, matchDone, traceDone, listenRepeats, quizRetries, hasStar(int)
+
+// lib/core/audio/audio_service.dart
+audioServiceProvider // Provider<AudioService>
+AudioService: playVoice(assetPath), playSfx(assetPath), stopVoice(), stopAll(),
+  setBgm(String? assetPath), setBgmEnabled(bool)
+
+// lib/core/theme/theme_controller.dart (Task 02)
+themeControllerProvider // NotifierProvider<ThemeController, String>, .notifier.setTheme(id)/.loadTheme()
+currentThemeProvider // Provider<KidThemeExtension>
+allThemes // Map<String, KidThemeExtension>，六 id：starlight/dino/robot/moonGarden/balletCastle/dessert
+
+// lib/core/theme/kid_theme.dart — import 'package:english_go/core/theme/kid_theme.dart' 才能用 KidThemeExtension
+```
+
+音频资源路径规则（assets/data/alphabet.json 内已是相对路径如 `audio/words/apple.m4a`）：实际 asset 键名前缀为 `assets/`，即 `assets/audio/words/apple.m4a`；组装时注意拼接。插画路径 `images/words/apple.webp` 目前**尚未产出实体文件**（仅 manifest 中登记路径占位，A/B/C 样板草稿在 `tool/imggen/preview/*.png`，非正式资产），`WordCard.imagePath` 找不到文件属预期，`Image.asset` 需配合 `errorBuilder` 占位（WordCard 已内置）。
 
 ## 目标（按 USER_FLOW.md 路由表）
 1. `lib/app/router.dart`：go_router 配置，路由表见 USER_FLOW.md §1
