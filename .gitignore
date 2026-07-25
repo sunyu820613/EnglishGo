@@ -43,3 +43,11 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Node (image/tool pipelines)
+node_modules/
+npm-debug.log*
+
+# Local scratch previews (not project assets)
+tool/imggen/preview_*.png
+tool/imggen/preview_*.webp
