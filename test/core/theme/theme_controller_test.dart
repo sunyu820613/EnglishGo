@@ -1,5 +1,3 @@
-import 'package:english_go/core/theme/app_theme.dart';
-import 'package:english_go/core/theme/kid_theme.dart';
 import 'package:english_go/core/theme/theme_controller.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';

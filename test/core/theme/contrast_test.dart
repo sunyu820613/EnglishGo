@@ -1,6 +1,5 @@
 import 'package:english_go/core/theme/app_theme.dart';
 import 'package:english_go/core/theme/contrast_utils.dart';
-import 'package:english_go/core/theme/kid_theme.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

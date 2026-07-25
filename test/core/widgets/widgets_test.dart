@@ -1,5 +1,4 @@
 import 'package:english_go/core/theme/app_theme.dart';
-import 'package:english_go/core/theme/kid_theme.dart';
 import 'package:english_go/core/widgets/app_top_bar.dart';
 import 'package:english_go/core/widgets/kid_button.dart';
 import 'package:english_go/core/widgets/lesson_progress_dots.dart';

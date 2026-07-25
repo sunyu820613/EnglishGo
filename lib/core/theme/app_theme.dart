@@ -9,6 +9,8 @@ import 'themes/robot_theme.dart';
 import 'themes/starlight_theme.dart';
 import 'tokens.dart';
 
+export 'kid_theme.dart';
+
 /// All six theme extensions keyed by their string identifier.
 const Map<String, KidThemeExtension> allThemes = <String, KidThemeExtension>{
   'starlight': starlightTheme,

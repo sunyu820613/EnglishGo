@@ -4,7 +4,6 @@ import 'dart:developer' as developer;
 import 'package:flutter/services.dart';
 
 import 'app_theme.dart';
-import 'kid_theme.dart';
 
 /// Validate that all theme asset paths exist in the bundled AssetManifest.
 /// In debug mode missing assets are logged as warnings.

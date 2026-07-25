@@ -2,7 +2,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app_theme.dart';
-import 'kid_theme.dart';
+
+export 'app_theme.dart';
+export 'kid_theme.dart';
 
 /// Persistent theme selection via shared_preferences.
 /// Key: `settings.themeId`, default: `starlight`.

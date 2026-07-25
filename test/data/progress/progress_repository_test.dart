@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:english_go/data/progress/models.dart';
 import 'package:english_go/data/progress/progress_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';

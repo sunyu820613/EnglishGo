@@ -5,6 +5,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'models.dart';
 
+export 'models.dart';
+
 /// Manages learning progress persistence with double-write fault tolerance.
 ///
 /// ## Double-write protocol (Task 01 R1):
