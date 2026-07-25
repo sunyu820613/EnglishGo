@@ -5,6 +5,7 @@ import 'package:english_go/core/widgets/lesson_progress_dots.dart';
 import 'package:english_go/core/widgets/letter_hero.dart';
 import 'package:english_go/core/widgets/quiz_option_card.dart';
 import 'package:english_go/core/widgets/star_meter.dart';
+import 'package:english_go/core/widgets/word_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -260,6 +261,40 @@ void main() {
       );
       expect(find.text('Apple'), findsOneWidget);
     });
+
+    testWidgets(
+      'reducedMotion skips the shake/bounce timers (no pending timer at teardown)',
+      (tester) async {
+        // Start idle, then transition to hint -- this is what triggers the
+        // shake loop. If reducedMotion did not gate it, the 80ms x 3
+        // Future.delayed chain would still be pending when the test ends,
+        // and flutter_test fails on leaked timers.
+        await tester.pumpWidget(
+          wrapWithTheme(
+            const QuizOptionCard(
+              semanticsLabel: 'Option',
+              reducedMotion: true,
+              child: Text('Apple'),
+            ),
+            'starlight',
+          ),
+        );
+        await tester.pumpWidget(
+          wrapWithTheme(
+            const QuizOptionCard(
+              semanticsLabel: 'Option',
+              state: QuizOptionState.hint,
+              reducedMotion: true,
+              child: Text('Apple'),
+            ),
+            'starlight',
+          ),
+        );
+        await tester.pump();
+        // No further pump/settle -- if a timer were still scheduled,
+        // the test framework would flag it at teardown.
+      },
+    );
   });
 
   // ---------------------------------------------------------------------------
@@ -313,5 +348,55 @@ void main() {
         handle.dispose();
       }
     });
+  });
+
+  // ---------------------------------------------------------------------------
+  // WordCard tests
+  // ---------------------------------------------------------------------------
+  group('WordCard', () {
+    testWidgets(
+      'builds and shows the fallback icon when the asset is missing',
+      (tester) async {
+        await tester.pumpWidget(
+          wrapWithTheme(
+            const WordCard(
+              imagePath: 'assets/images/words/does_not_exist.webp',
+              word: 'Apple',
+              audioPath: 'assets/audio/words/apple.m4a',
+              semanticsLabel: 'Word Apple',
+            ),
+            'starlight',
+          ),
+        );
+        await tester.pump();
+        expect(find.text('Apple'), findsOneWidget);
+        expect(find.byIcon(Icons.image), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'tap does not leave a pending bounce timer when reducedMotion applies',
+      (tester) async {
+        await tester.pumpWidget(
+          MediaQuery(
+            data: const MediaQueryData(disableAnimations: true),
+            child: wrapWithTheme(
+              const WordCard(
+                imagePath: 'assets/images/words/does_not_exist.webp',
+                word: 'Apple',
+                audioPath: 'assets/audio/words/apple.m4a',
+                semanticsLabel: 'Word Apple',
+              ),
+              'starlight',
+            ),
+          ),
+        );
+        await tester.pump();
+        await tester.tap(find.byType(WordCard));
+        await tester.pump();
+        // No further pump/settle -- a leaked Future.delayed bounce timer
+        // would fail the test at teardown if reducedMotion were not honored.
+      },
+    );
   });
 }

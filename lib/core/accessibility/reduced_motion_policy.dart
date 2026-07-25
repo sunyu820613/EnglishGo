@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../data/progress/progress_repository.dart';
+
 /// Determines whether reduced motion should be applied.
 ///
 /// Reads from both:
@@ -56,4 +58,17 @@ mixin ReducedMotionMixin<T extends StatefulWidget> on State<T> {
   bool isReducedMotion(BuildContext context) {
     return MediaQuery.disableAnimationsOf(context);
   }
+}
+
+/// Combines the system accessibility setting with the user's in-app
+/// preference (`ProgressData.settings.reducedMotion`, set from the parent
+/// area). Widgets that run custom animations (shake loops, bounce timers,
+/// idle loops) must check this and skip/shorten their motion accordingly --
+/// Flutter's implicit-animation curves do not automatically respect
+/// `MediaQuery.disableAnimations` for anything driven by raw `Future.delayed`
+/// or `AnimationController` loops.
+bool isReducedMotion(WidgetRef ref, BuildContext context) {
+  final bool systemReduced = MediaQuery.disableAnimationsOf(context);
+  final bool userReduced = ref.read(progressProvider).settings.reducedMotion;
+  return systemReduced || userReduced;
 }

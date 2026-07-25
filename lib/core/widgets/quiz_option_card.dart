@@ -18,12 +18,17 @@ class QuizOptionCard extends StatefulWidget {
     required this.semanticsLabel,
     this.state = QuizOptionState.idle,
     this.onTap,
+    this.reducedMotion = false,
   });
 
   final Widget child;
   final String semanticsLabel;
   final QuizOptionState state;
   final VoidCallback? onTap;
+
+  /// When true, skips the bounce/shake motion and applies the end state
+  /// instantly. See docs/ACCESSIBILITY.md.
+  final bool reducedMotion;
 
   @override
   State<QuizOptionCard> createState() => _QuizOptionCardState();
@@ -47,6 +52,8 @@ class _QuizOptionCardState extends State<QuizOptionCard>
   }
 
   void _playSuccessAnimation() {
+    if (widget.reducedMotion)
+      return; // End state is already reflected by border color.
     setState(() => _scale = 1.08);
     unawaited(
       Future<void>.delayed(Motion.micro, () {
@@ -56,6 +63,8 @@ class _QuizOptionCardState extends State<QuizOptionCard>
   }
 
   void _playHintAnimation() {
+    if (widget.reducedMotion)
+      return; // No shake; the hint state itself is enough signal.
     // Shake: 6 degrees x 2
     const double shakeAngle = 6.0;
     unawaited(
