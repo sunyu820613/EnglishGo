@@ -25,6 +25,17 @@
 9. 200% textScale 下课程页/家长区无溢出
 10. `disableAnimations` 下无循环动画 ticker 存活
 
+## 2b. Task 01 审查补充用例（Codex 意见，Claude 采纳）
+
+11. 进度写入容错：模拟写入中断/异常 → 进度不损坏，回退最后有效快照（双写模式）
+12. 对比度参数化测试：6 主题 × 14 色角色全部断言（WCAG 相对亮度公式），CI 阻断
+13. 音频异常恢复：资源缺失/损坏 → AudioService 静默降级不崩溃
+14. 离线验证：Integration Test 断言课程全流程零网络请求
+15. 家长门防绕过：返回键/快速连点/重启后冷却仍生效（冷却时间戳持久化）
+16. `validateThemeAssets()`：六主题引用的资产文件全部存在
+17. 全局错误兜底：`ErrorWidget.builder` 已覆盖为儿童友好画面（角色 + "Let's try again"），`PlatformDispatcher.onError` 不崩溃
+18. Schema 迁移工厂：v1 progress JSON 由工厂生成，未来版本兼容读取
+
 ## 3. CI（GitHub Actions，Phase 2 起）
 
 `flutter analyze --fatal-infos` → `dart format --set-exit-if-changed` → `flutter test`（含 golden 比对）→（Phase 5 加 integration on emulator + build apk 体积报告）

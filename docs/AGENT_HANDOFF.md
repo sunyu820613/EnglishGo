@@ -4,6 +4,23 @@
 
 ---
 
+## 2026-07-25 ｜ Claude ｜ Phase 1b 审查综合 + Phase 2a 完成
+
+**Codex Task 01 审查结论综合（docs/agent_reports/01-tech-review-report.md）：**
+- 采纳：just_audio+audio_session、进度双写容错、ParentGate 冷却持久化、ErrorWidget 全局兜底、每主题独立文件、validateThemeAssets()、lerp() 插值、84 色对参数化对比度测试、初期不上 codegen、测试缺口并入 TEST_PLAN §2b
+- 修正：Codex 所报版本号过时，以 pub 解析为准（riverpod 3.3.2 / go_router 17.3.0 / just_audio 0.10.6）
+- 否决 flutter_tts：占位音频改为 Windows SAPI 构建期离线生成 wav 入 assets（placeholder 标记），运行时统一走 just_audio
+
+**Phase 2a 完成：**
+- flutter create（english_go，Android+iOS）+ 分层目录 + 严格 analysis_options
+- 依赖入库并登记 docs/DEPENDENCY_AUDIT.md
+- assets/data/alphabet.json（26×2 全量内容，含 X/I/U/O 发音特例）
+- 三字体（Baloo 2 / Nunito / Andika，OFL）入 assets/fonts
+
+**下一步：** Task 02（主题系统）已派发 Codex。
+
+---
+
 ## 2026-07-25 ｜ Claude ｜ Phase 0–1a 完成
 
 **已完成：**

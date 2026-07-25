@@ -1,0 +1,297 @@
+{
+  "schemaVersion": 1,
+  "letters": [
+    {
+      "letter": "A",
+      "letterAudio": "audio/letters/a_name.m4a",
+      "phonicsAudio": "audio/letters/a_phonics.m4a",
+      "phonicsIpa": "æ",
+      "phonicsNote": null,
+      "words": [
+        { "id": "apple", "text": "Apple", "audio": "audio/words/apple.m4a", "image": "images/words/apple.webp", "phrase": "audio/phrases/a_is_for_apple.m4a" },
+        { "id": "ant", "text": "Ant", "audio": "audio/words/ant.m4a", "image": "images/words/ant.webp", "phrase": "audio/phrases/a_is_for_ant.m4a" }
+      ]
+    },
+    {
+      "letter": "B",
+      "letterAudio": "audio/letters/b_name.m4a",
+      "phonicsAudio": "audio/letters/b_phonics.m4a",
+      "phonicsIpa": "b",
+      "phonicsNote": null,
+      "words": [
+        { "id": "ball", "text": "Ball", "audio": "audio/words/ball.m4a", "image": "images/words/ball.webp", "phrase": "audio/phrases/b_is_for_ball.m4a" },
+        { "id": "bear", "text": "Bear", "audio": "audio/words/bear.m4a", "image": "images/words/bear.webp", "phrase": "audio/phrases/b_is_for_bear.m4a" }
+      ]
+    },
+    {
+      "letter": "C",
+      "letterAudio": "audio/letters/c_name.m4a",
+      "phonicsAudio": "audio/letters/c_phonics.m4a",
+      "phonicsIpa": "k",
+      "phonicsNote": null,
+      "words": [
+        { "id": "cat", "text": "Cat", "audio": "audio/words/cat.m4a", "image": "images/words/cat.webp", "phrase": "audio/phrases/c_is_for_cat.m4a" },
+        { "id": "car", "text": "Car", "audio": "audio/words/car.m4a", "image": "images/words/car.webp", "phrase": "audio/phrases/c_is_for_car.m4a" }
+      ]
+    },
+    {
+      "letter": "D",
+      "letterAudio": "audio/letters/d_name.m4a",
+      "phonicsAudio": "audio/letters/d_phonics.m4a",
+      "phonicsIpa": "d",
+      "phonicsNote": null,
+      "words": [
+        { "id": "dog", "text": "Dog", "audio": "audio/words/dog.m4a", "image": "images/words/dog.webp", "phrase": "audio/phrases/d_is_for_dog.m4a" },
+        { "id": "duck", "text": "Duck", "audio": "audio/words/duck.m4a", "image": "images/words/duck.webp", "phrase": "audio/phrases/d_is_for_duck.m4a" }
+      ]
+    },
+    {
+      "letter": "E",
+      "letterAudio": "audio/letters/e_name.m4a",
+      "phonicsAudio": "audio/letters/e_phonics.m4a",
+      "phonicsIpa": "ɛ",
+      "phonicsNote": null,
+      "words": [
+        { "id": "egg", "text": "Egg", "audio": "audio/words/egg.m4a", "image": "images/words/egg.webp", "phrase": "audio/phrases/e_is_for_egg.m4a" },
+        { "id": "elephant", "text": "Elephant", "audio": "audio/words/elephant.m4a", "image": "images/words/elephant.webp", "phrase": "audio/phrases/e_is_for_elephant.m4a" }
+      ]
+    },
+    {
+      "letter": "F",
+      "letterAudio": "audio/letters/f_name.m4a",
+      "phonicsAudio": "audio/letters/f_phonics.m4a",
+      "phonicsIpa": "f",
+      "phonicsNote": null,
+      "words": [
+        { "id": "fish", "text": "Fish", "audio": "audio/words/fish.m4a", "image": "images/words/fish.webp", "phrase": "audio/phrases/f_is_for_fish.m4a" },
+        { "id": "frog", "text": "Frog", "audio": "audio/words/frog.m4a", "image": "images/words/frog.webp", "phrase": "audio/phrases/f_is_for_frog.m4a" }
+      ]
+    },
+    {
+      "letter": "G",
+      "letterAudio": "audio/letters/g_name.m4a",
+      "phonicsAudio": "audio/letters/g_phonics.m4a",
+      "phonicsIpa": "g",
+      "phonicsNote": null,
+      "words": [
+        { "id": "goat", "text": "Goat", "audio": "audio/words/goat.m4a", "image": "images/words/goat.webp", "phrase": "audio/phrases/g_is_for_goat.m4a" },
+        { "id": "grapes", "text": "Grapes", "audio": "audio/words/grapes.m4a", "image": "images/words/grapes.webp", "phrase": "audio/phrases/g_is_for_grapes.m4a" }
+      ]
+    },
+    {
+      "letter": "H",
+      "letterAudio": "audio/letters/h_name.m4a",
+      "phonicsAudio": "audio/letters/h_phonics.m4a",
+      "phonicsIpa": "h",
+      "phonicsNote": null,
+      "words": [
+        { "id": "hat", "text": "Hat", "audio": "audio/words/hat.m4a", "image": "images/words/hat.webp", "phrase": "audio/phrases/h_is_for_hat.m4a" },
+        { "id": "horse", "text": "Horse", "audio": "audio/words/horse.m4a", "image": "images/words/horse.webp", "phrase": "audio/phrases/h_is_for_horse.m4a" }
+      ]
+    },
+    {
+      "letter": "I",
+      "letterAudio": "audio/letters/i_name.m4a",
+      "phonicsAudio": "audio/letters/i_phonics.m4a",
+      "phonicsIpa": "ɪ",
+      "phonicsNote": "long_i_note",
+      "words": [
+        { "id": "ice_cream", "text": "Ice cream", "audio": "audio/words/ice_cream.m4a", "image": "images/words/ice_cream.webp", "phrase": "audio/phrases/i_is_for_ice_cream.m4a" },
+        { "id": "iguana", "text": "Iguana", "audio": "audio/words/iguana.m4a", "image": "images/words/iguana.webp", "phrase": "audio/phrases/i_is_for_iguana.m4a" }
+      ]
+    },
+    {
+      "letter": "J",
+      "letterAudio": "audio/letters/j_name.m4a",
+      "phonicsAudio": "audio/letters/j_phonics.m4a",
+      "phonicsIpa": "dʒ",
+      "phonicsNote": null,
+      "words": [
+        { "id": "juice", "text": "Juice", "audio": "audio/words/juice.m4a", "image": "images/words/juice.webp", "phrase": "audio/phrases/j_is_for_juice.m4a" },
+        { "id": "jellyfish", "text": "Jellyfish", "audio": "audio/words/jellyfish.m4a", "image": "images/words/jellyfish.webp", "phrase": "audio/phrases/j_is_for_jellyfish.m4a" }
+      ]
+    },
+    {
+      "letter": "K",
+      "letterAudio": "audio/letters/k_name.m4a",
+      "phonicsAudio": "audio/letters/k_phonics.m4a",
+      "phonicsIpa": "k",
+      "phonicsNote": null,
+      "words": [
+        { "id": "kite", "text": "Kite", "audio": "audio/words/kite.m4a", "image": "images/words/kite.webp", "phrase": "audio/phrases/k_is_for_kite.m4a" },
+        { "id": "koala", "text": "Koala", "audio": "audio/words/koala.m4a", "image": "images/words/koala.webp", "phrase": "audio/phrases/k_is_for_koala.m4a" }
+      ]
+    },
+    {
+      "letter": "L",
+      "letterAudio": "audio/letters/l_name.m4a",
+      "phonicsAudio": "audio/letters/l_phonics.m4a",
+      "phonicsIpa": "l",
+      "phonicsNote": null,
+      "words": [
+        { "id": "lion", "text": "Lion", "audio": "audio/words/lion.m4a", "image": "images/words/lion.webp", "phrase": "audio/phrases/l_is_for_lion.m4a" },
+        { "id": "leaf", "text": "Leaf", "audio": "audio/words/leaf.m4a", "image": "images/words/leaf.webp", "phrase": "audio/phrases/l_is_for_leaf.m4a" }
+      ]
+    },
+    {
+      "letter": "M",
+      "letterAudio": "audio/letters/m_name.m4a",
+      "phonicsAudio": "audio/letters/m_phonics.m4a",
+      "phonicsIpa": "m",
+      "phonicsNote": null,
+      "words": [
+        { "id": "moon", "text": "Moon", "audio": "audio/words/moon.m4a", "image": "images/words/moon.webp", "phrase": "audio/phrases/m_is_for_moon.m4a" },
+        { "id": "monkey", "text": "Monkey", "audio": "audio/words/monkey.m4a", "image": "images/words/monkey.webp", "phrase": "audio/phrases/m_is_for_monkey.m4a" }
+      ]
+    },
+    {
+      "letter": "N",
+      "letterAudio": "audio/letters/n_name.m4a",
+      "phonicsAudio": "audio/letters/n_phonics.m4a",
+      "phonicsIpa": "n",
+      "phonicsNote": null,
+      "words": [
+        { "id": "nest", "text": "Nest", "audio": "audio/words/nest.m4a", "image": "images/words/nest.webp", "phrase": "audio/phrases/n_is_for_nest.m4a" },
+        { "id": "nose", "text": "Nose", "audio": "audio/words/nose.m4a", "image": "images/words/nose.webp", "phrase": "audio/phrases/n_is_for_nose.m4a" }
+      ]
+    },
+    {
+      "letter": "O",
+      "letterAudio": "audio/letters/o_name.m4a",
+      "phonicsAudio": "audio/letters/o_phonics.m4a",
+      "phonicsIpa": "ɑ",
+      "phonicsNote": "o_variants_note",
+      "words": [
+        { "id": "orange", "text": "Orange", "audio": "audio/words/orange.m4a", "image": "images/words/orange.webp", "phrase": "audio/phrases/o_is_for_orange.m4a" },
+        { "id": "owl", "text": "Owl", "audio": "audio/words/owl.m4a", "image": "images/words/owl.webp", "phrase": "audio/phrases/o_is_for_owl.m4a" }
+      ]
+    },
+    {
+      "letter": "P",
+      "letterAudio": "audio/letters/p_name.m4a",
+      "phonicsAudio": "audio/letters/p_phonics.m4a",
+      "phonicsIpa": "p",
+      "phonicsNote": null,
+      "words": [
+        { "id": "panda", "text": "Panda", "audio": "audio/words/panda.m4a", "image": "images/words/panda.webp", "phrase": "audio/phrases/p_is_for_panda.m4a" },
+        { "id": "pig", "text": "Pig", "audio": "audio/words/pig.m4a", "image": "images/words/pig.webp", "phrase": "audio/phrases/p_is_for_pig.m4a" }
+      ]
+    },
+    {
+      "letter": "Q",
+      "letterAudio": "audio/letters/q_name.m4a",
+      "phonicsAudio": "audio/letters/q_phonics.m4a",
+      "phonicsIpa": "kw",
+      "phonicsNote": null,
+      "words": [
+        { "id": "queen", "text": "Queen", "audio": "audio/words/queen.m4a", "image": "images/words/queen.webp", "phrase": "audio/phrases/q_is_for_queen.m4a" },
+        { "id": "quail", "text": "Quail", "audio": "audio/words/quail.m4a", "image": "images/words/quail.webp", "phrase": "audio/phrases/q_is_for_quail.m4a" }
+      ]
+    },
+    {
+      "letter": "R",
+      "letterAudio": "audio/letters/r_name.m4a",
+      "phonicsAudio": "audio/letters/r_phonics.m4a",
+      "phonicsIpa": "r",
+      "phonicsNote": null,
+      "words": [
+        { "id": "rabbit", "text": "Rabbit", "audio": "audio/words/rabbit.m4a", "image": "images/words/rabbit.webp", "phrase": "audio/phrases/r_is_for_rabbit.m4a" },
+        { "id": "robot", "text": "Robot", "audio": "audio/words/robot.m4a", "image": "images/words/robot.webp", "phrase": "audio/phrases/r_is_for_robot.m4a" }
+      ]
+    },
+    {
+      "letter": "S",
+      "letterAudio": "audio/letters/s_name.m4a",
+      "phonicsAudio": "audio/letters/s_phonics.m4a",
+      "phonicsIpa": "s",
+      "phonicsNote": null,
+      "words": [
+        { "id": "sun", "text": "Sun", "audio": "audio/words/sun.m4a", "image": "images/words/sun.webp", "phrase": "audio/phrases/s_is_for_sun.m4a" },
+        { "id": "star", "text": "Star", "audio": "audio/words/star.m4a", "image": "images/words/star.webp", "phrase": "audio/phrases/s_is_for_star.m4a" }
+      ]
+    },
+    {
+      "letter": "T",
+      "letterAudio": "audio/letters/t_name.m4a",
+      "phonicsAudio": "audio/letters/t_phonics.m4a",
+      "phonicsIpa": "t",
+      "phonicsNote": null,
+      "words": [
+        { "id": "tiger", "text": "Tiger", "audio": "audio/words/tiger.m4a", "image": "images/words/tiger.webp", "phrase": "audio/phrases/t_is_for_tiger.m4a" },
+        { "id": "train", "text": "Train", "audio": "audio/words/train.m4a", "image": "images/words/train.webp", "phrase": "audio/phrases/t_is_for_train.m4a" }
+      ]
+    },
+    {
+      "letter": "U",
+      "letterAudio": "audio/letters/u_name.m4a",
+      "phonicsAudio": "audio/letters/u_phonics.m4a",
+      "phonicsIpa": "ʌ",
+      "phonicsNote": "long_u_note",
+      "words": [
+        { "id": "umbrella", "text": "Umbrella", "audio": "audio/words/umbrella.m4a", "image": "images/words/umbrella.webp", "phrase": "audio/phrases/u_is_for_umbrella.m4a" },
+        { "id": "unicorn", "text": "Unicorn", "audio": "audio/words/unicorn.m4a", "image": "images/words/unicorn.webp", "phrase": "audio/phrases/u_is_for_unicorn.m4a" }
+      ]
+    },
+    {
+      "letter": "V",
+      "letterAudio": "audio/letters/v_name.m4a",
+      "phonicsAudio": "audio/letters/v_phonics.m4a",
+      "phonicsIpa": "v",
+      "phonicsNote": null,
+      "words": [
+        { "id": "van", "text": "Van", "audio": "audio/words/van.m4a", "image": "images/words/van.webp", "phrase": "audio/phrases/v_is_for_van.m4a" },
+        { "id": "violin", "text": "Violin", "audio": "audio/words/violin.m4a", "image": "images/words/violin.webp", "phrase": "audio/phrases/v_is_for_violin.m4a" }
+      ]
+    },
+    {
+      "letter": "W",
+      "letterAudio": "audio/letters/w_name.m4a",
+      "phonicsAudio": "audio/letters/w_phonics.m4a",
+      "phonicsIpa": "w",
+      "phonicsNote": null,
+      "words": [
+        { "id": "whale", "text": "Whale", "audio": "audio/words/whale.m4a", "image": "images/words/whale.webp", "phrase": "audio/phrases/w_is_for_whale.m4a" },
+        { "id": "watch", "text": "Watch", "audio": "audio/words/watch.m4a", "image": "images/words/watch.webp", "phrase": "audio/phrases/w_is_for_watch.m4a" }
+      ]
+    },
+    {
+      "letter": "X",
+      "letterAudio": "audio/letters/x_name.m4a",
+      "phonicsAudio": "audio/letters/x_phonics.m4a",
+      "phonicsIpa": "ks",
+      "phonicsNote": "x_two_sounds_note",
+      "words": [
+        { "id": "xylophone", "text": "Xylophone", "audio": "audio/words/xylophone.m4a", "image": "images/words/xylophone.webp", "phrase": "audio/phrases/x_is_for_xylophone.m4a" },
+        { "id": "x_ray", "text": "X-ray", "audio": "audio/words/x_ray.m4a", "image": "images/words/x_ray.webp", "phrase": "audio/phrases/x_is_for_x_ray.m4a" }
+      ]
+    },
+    {
+      "letter": "Y",
+      "letterAudio": "audio/letters/y_name.m4a",
+      "phonicsAudio": "audio/letters/y_phonics.m4a",
+      "phonicsIpa": "j",
+      "phonicsNote": null,
+      "words": [
+        { "id": "yak", "text": "Yak", "audio": "audio/words/yak.m4a", "image": "images/words/yak.webp", "phrase": "audio/phrases/y_is_for_yak.m4a" },
+        { "id": "yo_yo", "text": "Yo-yo", "audio": "audio/words/yo_yo.m4a", "image": "images/words/yo_yo.webp", "phrase": "audio/phrases/y_is_for_yo_yo.m4a" }
+      ]
+    },
+    {
+      "letter": "Z",
+      "letterAudio": "audio/letters/z_name.m4a",
+      "phonicsAudio": "audio/letters/z_phonics.m4a",
+      "phonicsIpa": "z",
+      "phonicsNote": null,
+      "words": [
+        { "id": "zebra", "text": "Zebra", "audio": "audio/words/zebra.m4a", "image": "images/words/zebra.webp", "phrase": "audio/phrases/z_is_for_zebra.m4a" },
+        { "id": "zoo", "text": "Zoo", "audio": "audio/words/zoo.m4a", "image": "images/words/zoo.webp", "phrase": "audio/phrases/z_is_for_zoo.m4a" }
+      ]
+    }
+  ],
+  "phonicsNotes": {
+    "x_two_sounds_note": "X can sound like /z/ at the start, like Xylophone. At the end of words it sounds like /ks/, like fox and X-ray!",
+    "long_i_note": "I says /I/, and sometimes says its name /aI/, like Ice cream!",
+    "long_u_note": "U says /uh/, and sometimes says its name /yoo/, like Unicorn!",
+    "o_variants_note": "O says /ah/. Orange and Owl start with O too - listen closely!"
+  }
+}
