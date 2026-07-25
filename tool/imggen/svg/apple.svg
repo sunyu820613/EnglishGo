@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <defs>
+    <radialGradient id="bgGlow" cx="45%" cy="42%" r="62%">
+      <stop offset="0%" stop-color="#F9E3C8"/>
+      <stop offset="100%" stop-color="#F8F1E6"/>
+    </radialGradient>
+    <radialGradient id="appleBody" cx="38%" cy="32%" r="80%">
+      <stop offset="0%" stop-color="#F2846E"/>
+      <stop offset="55%" stop-color="#E85D4A"/>
+      <stop offset="100%" stop-color="#C94436"/>
+    </radialGradient>
+    <linearGradient id="leaf" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8FBF72"/>
+      <stop offset="100%" stop-color="#5E9450"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1024" height="1024" fill="url(#bgGlow)"/>
+  <circle cx="240" cy="200" r="10" fill="#EAD9BE"/>
+  <circle cx="820" cy="260" r="7" fill="#EAD9BE"/>
+  <circle cx="180" cy="760" r="8" fill="#EAD9BE"/>
+  <circle cx="850" cy="740" r="11" fill="#EAD9BE"/>
+
+  <ellipse cx="512" cy="852" rx="270" ry="46" fill="#D9C4A4" opacity="0.55"/>
+
+  <!-- apple body: two lobes -->
+  <path d="M512 330
+           C 430 258, 268 272, 232 420
+           C 200 552, 262 726, 356 800
+           C 420 850, 480 838, 512 812
+           C 544 838, 604 850, 668 800
+           C 762 726, 824 552, 792 420
+           C 756 272, 594 258, 512 330 Z"
+        fill="url(#appleBody)" stroke="#4A3A30" stroke-width="12" stroke-linejoin="round"/>
+
+  <!-- dimple top -->
+  <path d="M472 322 C 490 344, 534 344, 552 322" fill="none" stroke="#4A3A30" stroke-width="12" stroke-linecap="round"/>
+
+  <!-- stem -->
+  <path d="M512 318 C 508 268, 520 232, 552 204" fill="none" stroke="#8A5A3B" stroke-width="30" stroke-linecap="round"/>
+  <path d="M512 318 C 508 268, 520 232, 552 204" fill="none" stroke="#4A3A30" stroke-width="42" stroke-linecap="round" opacity="0"/>
+
+  <!-- leaf -->
+  <path d="M560 214
+           C 600 140, 706 128, 758 170
+           C 736 250, 640 286, 566 244
+           C 560 234, 558 224, 560 214 Z"
+        fill="url(#leaf)" stroke="#4A3A30" stroke-width="12" stroke-linejoin="round"/>
+  <path d="M582 226 C 640 204, 688 192, 730 180" fill="none" stroke="#3F6B38" stroke-width="8" stroke-linecap="round" opacity="0.7"/>
+
+  <!-- soft highlight -->
+  <ellipse cx="380" cy="440" rx="86" ry="120" fill="#FFFFFF" opacity="0.35" transform="rotate(-18 380 440)"/>
+  <circle cx="352" cy="600" r="26" fill="#FFFFFF" opacity="0.2"/>
+
+  <!-- bottom shade -->
+  <path d="M330 760 C 420 826, 604 826, 694 760 C 620 812, 404 812, 330 760 Z" fill="#A33628" opacity="0.35"/>
+
+  <!-- cheek blush spots for warmth -->
+  <ellipse cx="642" cy="560" rx="40" ry="26" fill="#F9A98F" opacity="0.5"/>
+</svg>

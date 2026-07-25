@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <defs>
+    <radialGradient id="bgGlow" cx="45%" cy="42%" r="62%">
+      <stop offset="0%" stop-color="#E3EDE7"/>
+      <stop offset="100%" stop-color="#F8F1E6"/>
+    </radialGradient>
+    <radialGradient id="ballShade" cx="38%" cy="32%" r="85%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0"/>
+      <stop offset="75%" stop-color="#3A2E28" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#3A2E28" stop-opacity="0.28"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1024" height="1024" fill="url(#bgGlow)"/>
+  <circle cx="240" cy="200" r="10" fill="#EAD9BE"/>
+  <circle cx="820" cy="260" r="7" fill="#EAD9BE"/>
+  <circle cx="180" cy="760" r="8" fill="#EAD9BE"/>
+  <circle cx="850" cy="740" r="11" fill="#EAD9BE"/>
+
+  <ellipse cx="512" cy="880" rx="270" ry="44" fill="#D9C4A4" opacity="0.55"/>
+
+  <g stroke="#4A3A30" stroke-width="12">
+    <circle cx="512" cy="540" r="330" fill="#FDFAF2"/>
+    <!-- beach ball panels: seams from top pole (512,214) to bottom pole (512,866) -->
+    <path d="M512 210 C 340 340, 340 740, 512 870 C 300 800, 220 420, 512 210 Z" fill="#E8836F"/>
+    <path d="M512 210 C 684 340, 684 740, 512 870 C 724 800, 804 420, 512 210 Z" fill="#5BA8A0"/>
+    <path d="M512 210 C 420 300, 380 420, 380 540 C 380 660, 420 780, 512 870 C 560 760, 580 660, 580 540 C 580 420, 560 320, 512 210 Z" fill="#F6C05C" stroke-width="0"/>
+    <path d="M512 210 C 420 300, 380 420, 380 540 C 380 660, 420 780, 512 870" fill="none" stroke-linecap="round"/>
+    <path d="M512 210 C 560 320, 580 420, 580 540 C 580 660, 560 760, 512 870" fill="none" stroke-linecap="round"/>
+    <circle cx="512" cy="540" r="330" fill="url(#ballShade)"/>
+  </g>
+
+  <!-- top cap -->
+  <ellipse cx="512" cy="222" rx="56" ry="26" fill="#FDFAF2" stroke="#4A3A30" stroke-width="10"/>
+
+  <!-- highlight -->
+  <ellipse cx="380" cy="380" rx="90" ry="130" fill="#FFFFFF" opacity="0.4" transform="rotate(-24 380 380)"/>
+  <circle cx="350" cy="540" r="26" fill="#FFFFFF" opacity="0.25"/>
+</svg>

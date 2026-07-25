@@ -34,7 +34,7 @@
 - `theme`: 六主题 id 或 null（全主题通用，如单词插画）
 - `placeholder`: 开发期占位资源必须为 true，**质量门槛要求正式版全部为 false**
 - `humanReviewed`: 人工检查（拼写/结构错误/水印/适龄）通过后置 true
-- `sha256`/`bytes`: 由脚本 `tool/gen_manifest.dart` 自动生成，防篡改与漂移
+- `sha256`/`bytes`: 由脚本 `tool/gen_manifest.ps1` 自动生成（保留已有条目的 humanReviewed/license 字段），防篡改与漂移
 
 ## 2. 资源规模预算
 
