@@ -24,35 +24,40 @@ class RewardsPage extends ConsumerWidget {
     return Scaffold(
       backgroundColor: theme.background,
       body: SafeArea(
-        child: Column(
-          children: <Widget>[
-            AppTopBar(onBack: () => context.pop()),
-            Padding(
-              padding: const EdgeInsets.all(Space.md),
-              child: Text(
-                'My Collection',
-                style: TextStyle(
-                  fontFamily: FontFamily.display,
-                  fontSize: TypeScale.display,
-                  color: theme.text,
+        // A scrollable column (rather than Expanded sections) so the page
+        // degrades gracefully instead of overflowing at large system text
+        // scale (ACCESSIBILITY.md requires no overflow at 200%).
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              AppTopBar(onBack: () => context.pop()),
+              Padding(
+                padding: const EdgeInsets.all(Space.md),
+                child: Text(
+                  'My Collection',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontFamily: FontFamily.display,
+                    fontSize: TypeScale.display,
+                    color: theme.text,
+                  ),
                 ),
               ),
-            ),
-            Icon(Icons.star, color: theme.accent, size: 40),
-            const SizedBox(height: Space.sm),
-            Text(
-              '$totalStars stars collected',
-              style: TextStyle(
-                fontFamily: FontFamily.body,
-                fontSize: TypeScale.body,
-                color: theme.textSoft,
+              Icon(Icons.star, color: theme.accent, size: 40),
+              const SizedBox(height: Space.sm),
+              Text(
+                '$totalStars stars collected',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: FontFamily.body,
+                  fontSize: TypeScale.body,
+                  color: theme.textSoft,
+                ),
               ),
-            ),
-            const SizedBox(height: Space.lg),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Space.md),
-              child: Align(
-                alignment: Alignment.centerLeft,
+              const SizedBox(height: Space.lg),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: Space.md),
                 child: Text(
                   'Stickers (${progress.stickers.length})',
                   style: TextStyle(
@@ -62,51 +67,56 @@ class RewardsPage extends ConsumerWidget {
                   ),
                 ),
               ),
-            ),
-            const SizedBox(height: Space.sm),
-            Expanded(
-              child: progress.stickers.isEmpty
-                  ? Center(
-                      child: Text(
-                        'Complete lessons to earn stickers!',
-                        style: TextStyle(
-                          fontFamily: FontFamily.body,
-                          fontSize: TypeScale.body,
-                          color: theme.textSoft,
+              const SizedBox(height: Space.sm),
+              if (progress.stickers.isEmpty)
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: Space.md,
+                    vertical: Space.xl,
+                  ),
+                  child: Text(
+                    'Complete lessons to earn stickers!',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontFamily: FontFamily.body,
+                      fontSize: TypeScale.body,
+                      color: theme.textSoft,
+                    ),
+                  ),
+                )
+              else
+                GridView.builder(
+                  padding: const EdgeInsets.all(Space.md),
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 4,
+                    mainAxisSpacing: Space.sm,
+                    crossAxisSpacing: Space.sm,
+                  ),
+                  itemCount: progress.stickers.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: theme.surface,
+                        borderRadius: BorderRadius.circular(KidRadius.md),
+                        border: Border.all(
+                          color: theme.outline,
+                          width: IconStroke.width,
                         ),
                       ),
-                    )
-                  : GridView.builder(
-                      padding: const EdgeInsets.all(Space.md),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 4,
-                            mainAxisSpacing: Space.sm,
-                            crossAxisSpacing: Space.sm,
-                          ),
-                      itemCount: progress.stickers.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return DecoratedBox(
-                          decoration: BoxDecoration(
-                            color: theme.surface,
-                            borderRadius: BorderRadius.circular(KidRadius.md),
-                            border: Border.all(
-                              color: theme.outline,
-                              width: IconStroke.width,
-                            ),
-                          ),
-                          child: Center(
-                            child: Icon(
-                              Icons.auto_awesome,
-                              color: theme.accent,
-                              size: 32,
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-            ),
-          ],
+                      child: Center(
+                        child: Icon(
+                          Icons.auto_awesome,
+                          color: theme.accent,
+                          size: 32,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+            ],
+          ),
         ),
       ),
     );
