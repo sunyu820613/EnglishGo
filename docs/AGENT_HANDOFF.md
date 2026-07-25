@@ -4,6 +4,24 @@
 
 ---
 
+## 2026-07-25 ｜ Claude ｜ 首次真机（Web）视觉验证，发现并修复 2 个 P0 级 bug
+
+为让用户看到实际运行效果，添加 web 平台支持（`flutter create . --platforms web`）并跑 `flutter build web` 静态托管验证。过程中发现两个自动化测试未覆盖到的严重 bug：
+
+1. **AssetManifest.json 404（阻塞首帧渲染）**：`validate_theme_assets.dart` 手写请求 `AssetManifest.json`，但当前 Flutter SDK（3.41.3）已将该文件替换为二进制格式 `AssetManifest.bin`（web 端为 `AssetManifest.bin.json`），旧文件名请求必然 404。改用官方 `AssetManifest.loadFromAssetBundle(bundle)` API。同步重写 `validate_theme_assets_test.dart` 的测试桩（用 `StandardMessageCodec` 编码构造假的二进制 manifest，而非旧的纯 JSON字符串）
+2. **Onboarding 死循环（阻塞所有新用户）**：`router.dart` 的重定向逻辑用"是否有学习进度"（`progress.letters.isNotEmpty`）判断是否放行非 onboarding 路由；但新用户要获得学习进度必须先到 home→map→lesson，而这条路本身就被同一条重定向规则拦截——新用户永远无法离开 onboarding 页。根因是 Task 04 用了错误的代理信号判断"是否完成引导"。修复：给 `SettingsData` 新增独立的 `onboardingComplete` 字段，`ProgressRepository.completeOnboarding()` 幂等设置，`OnboardingPage._selectTheme` 调用它，路由重定向改为检查该字段。补充回归测试 `test/app/router_test.dart` 验证首次启动重定向到 onboarding、完成后可到 home。
+3. 顺带发现并修复 `OnboardingPage` 在较矮视口下的真实布局溢出（54px），用 `LayoutBuilder + SingleChildScrollView + ConstrainedBox(minHeight)` 修复，与此前 lesson 页 WordCard 溢出的修法一致。
+
+**这两个 bug 均未被此前的 `flutter test` 套件捕获**——纯 widget test 通常独立渲染单个页面，不会触发真实的路由重定向死循环，也不会请求真实的 web 资源清单。这提示后续需要在 TEST_PLAN 中补充"通过真实 GoRouter 走完整导航链路"和"web 构建产物验证"这两类回归测试。
+
+**验证结果：**
+- `flutter analyze`：0 issues；`dart format .`：无变更；`flutter test`：118/118 通过（新增 test/app/router_test.dart）
+- Web 构建产物人工走查：Onboarding → Home → Map（A/B/C 可点，D–Z 灰化）→ Lesson(A) 首步 → Rewards → Parent Gate → Themes，全部正常渲染，六主题色彩符合 THEME_SYSTEM.md 定义
+
+**结论：Phase 2c 最终验收通过，可以进入 Phase 3。**
+
+---
+
 ## 2026-07-25 ｜ Claude ｜ Phase 1b 审查综合 + Phase 2a 完成
 
 **Codex Task 01 审查结论综合（docs/agent_reports/01-tech-review-report.md）：**

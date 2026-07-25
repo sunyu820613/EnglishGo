@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "englishgo-web",
+      "runtimeExecutable": "flutter",
+      "runtimeArgs": ["run", "-d", "chrome", "--web-port", "43765"],
+      "port": 43765
+    },
+    {
+      "name": "englishgo-static",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["tool/imggen/static_server.js"],
+      "port": 43766
+    }
+  ]
+}

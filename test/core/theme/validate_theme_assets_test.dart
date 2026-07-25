@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:english_go/core/theme/validate_theme_assets.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -5,10 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   group('validateThemeAssets', () {
     test('returns all asset paths when none are in manifest', () async {
-      // A test AssetBundle that returns an empty manifest.
-      final TestAssetBundle bundle = TestAssetBundle(<String, String>{
-        'AssetManifest.json': '{}',
-      });
+      final TestAssetBundle bundle = TestAssetBundle(<String, Object?>{});
       final List<String> missing = await validateThemeAssets(bundle);
       // All 6 themes x 9 asset fields = 54 paths should be missing.
       expect(missing.length, 54);
@@ -71,70 +70,40 @@ void main() {
         'assets/themes/dessert/sfx/',
         'assets/themes/dessert/bgm.m4a',
       ];
-      final Map<String, dynamic> manifest = <String, dynamic>{
-        for (final String p in allPaths) p: <dynamic>[],
+      final Map<String, Object?> manifest = <String, Object?>{
+        for (final String p in allPaths)
+          p: <Map<Object?, Object?>>[
+            <Object?, Object?>{'asset': p},
+          ],
       };
-      final TestAssetBundle bundle = TestAssetBundle(<String, String>{
-        'AssetManifest.json': _mapToJson(manifest),
-      });
+      final TestAssetBundle bundle = TestAssetBundle(manifest);
       final List<String> missing = await validateThemeAssets(bundle);
       expect(missing, isEmpty);
     });
   });
 }
 
-/// Minimal test stub that returns pre-loaded strings as asset data.
+/// Minimal test stub that serves a fake `AssetManifest.bin`, matching the
+/// binary format the real `AssetManifest.loadFromAssetBundle` API expects
+/// (Flutter no longer ships the legacy `AssetManifest.json`).
 class TestAssetBundle extends AssetBundle {
-  TestAssetBundle(this._data);
+  TestAssetBundle(Map<String, Object?> manifest)
+    : _manifestBytes = const StandardMessageCodec().encodeMessage(manifest)!;
 
-  final Map<String, String> _data;
+  final ByteData _manifestBytes;
 
   @override
   Future<ByteData> load(String key) async {
-    throw UnimplementedError('Not needed for this test');
+    if (key == 'AssetManifest.bin') return _manifestBytes;
+    throw UnimplementedError('Not needed for this test: $key');
   }
 
   @override
-  Future<String> loadString(String key, {bool cache = true}) async {
-    if (_data.containsKey(key)) return _data[key]!;
-    return super.loadString(key, cache: cache);
-  }
-
-  @override
-  Future<T> loadStructuredData<T>(
+  Future<T> loadStructuredBinaryData<T>(
     String key,
-    Future<T> Function(String value) parser,
+    FutureOr<T> Function(ByteData data) parser,
   ) async {
-    final String data = await loadString(key);
+    final ByteData data = await load(key);
     return parser(data);
   }
-}
-
-String _mapToJson(Map<String, dynamic> map) {
-  final StringBuffer buf = StringBuffer();
-  buf.write('{');
-  bool first = true;
-  for (final MapEntry<String, dynamic> entry in map.entries) {
-    if (!first) buf.write(',');
-    first = false;
-    buf.write('"${entry.key}":${_valueToJson(entry.value)}');
-  }
-  buf.write('}');
-  return buf.toString();
-}
-
-String _valueToJson(dynamic value) {
-  if (value is List) {
-    final StringBuffer buf = StringBuffer();
-    buf.write('[');
-    for (int i = 0; i < value.length; i++) {
-      if (i > 0) buf.write(',');
-      buf.write(_valueToJson(value[i]));
-    }
-    buf.write(']');
-    return buf.toString();
-  }
-  if (value is String) return '"${value.replaceAll('"', '\\"')}"';
-  if (value is num || value is bool) return value.toString();
-  return 'null';
 }

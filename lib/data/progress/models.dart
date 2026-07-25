@@ -76,6 +76,7 @@ class SettingsData {
     this.bgmOn = true,
     this.reducedMotion = false,
     this.accent = 'en-US',
+    this.onboardingComplete = false,
   });
 
   factory SettingsData.fromJson(Map<String, dynamic> json) {
@@ -83,18 +84,26 @@ class SettingsData {
       bgmOn: json['bgmOn'] as bool? ?? true,
       reducedMotion: json['reducedMotion'] as bool? ?? false,
       accent: json['accent'] as String? ?? 'en-US',
+      onboardingComplete: json['onboardingComplete'] as bool? ?? false,
     );
   }
 
   final bool bgmOn;
   final bool reducedMotion;
   final String accent;
+  final bool onboardingComplete;
 
-  SettingsData copyWith({bool? bgmOn, bool? reducedMotion, String? accent}) {
+  SettingsData copyWith({
+    bool? bgmOn,
+    bool? reducedMotion,
+    String? accent,
+    bool? onboardingComplete,
+  }) {
     return SettingsData(
       bgmOn: bgmOn ?? this.bgmOn,
       reducedMotion: reducedMotion ?? this.reducedMotion,
       accent: accent ?? this.accent,
+      onboardingComplete: onboardingComplete ?? this.onboardingComplete,
     );
   }
 
@@ -102,6 +111,7 @@ class SettingsData {
     'bgmOn': bgmOn,
     'reducedMotion': reducedMotion,
     'accent': accent,
+    'onboardingComplete': onboardingComplete,
   };
 }
 

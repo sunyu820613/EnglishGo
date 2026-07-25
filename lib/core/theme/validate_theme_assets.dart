@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:developer' as developer;
 
 import 'package:flutter/services.dart';
@@ -10,11 +9,10 @@ import 'app_theme.dart';
 /// In release mode the function is silent.
 /// Returns the list of missing asset paths for test assertions.
 Future<List<String>> validateThemeAssets(AssetBundle bundle) async {
-  final String manifestJson = await bundle.loadString('AssetManifest.json');
-  final Map<String, dynamic> manifest = Map<String, dynamic>.from(
-    json.decode(manifestJson) as Map<String, dynamic>,
+  final AssetManifest manifest = await AssetManifest.loadFromAssetBundle(
+    bundle,
   );
-  final Set<String> available = manifest.keys.toSet();
+  final Set<String> available = manifest.listAssets().toSet();
 
   final List<String> missing = <String>[];
   for (final KidThemeExtension theme in allThemes.values) {

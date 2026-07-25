@@ -26,9 +26,7 @@ GoRouter buildRouter(WidgetRef ref) {
       if (uri == '/onboarding' || uri == '/parent-gate') return null;
 
       final ProgressData progress = ref.read(progressProvider);
-      final bool hasProgress =
-          progress.letters.isNotEmpty || progress.stickers.isNotEmpty;
-      if (!hasProgress && !uri.startsWith('/onboarding')) {
+      if (!progress.settings.onboardingComplete) {
         return '/onboarding';
       }
       return null;

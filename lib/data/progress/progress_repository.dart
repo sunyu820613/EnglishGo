@@ -188,6 +188,19 @@ class ProgressRepository extends Notifier<ProgressData> {
     state = state.copyWith(settings: state.settings.copyWith(accent: value));
     await _persist();
   }
+
+  /// Mark onboarding as complete. Idempotent.
+  ///
+  /// Router redirect logic gates all non-onboarding routes on this flag
+  /// (see lib/app/router.dart), so it must be set independently of lesson
+  /// progress -- otherwise a first-time user could never leave onboarding.
+  Future<void> completeOnboarding() async {
+    if (state.settings.onboardingComplete) return;
+    state = state.copyWith(
+      settings: state.settings.copyWith(onboardingComplete: true),
+    );
+    await _persist();
+  }
 }
 
 /// Exception thrown when progress write verification fails.

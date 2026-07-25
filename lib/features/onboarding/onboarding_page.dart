@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/theme/theme_controller.dart';
 import '../../core/theme/tokens.dart';
+import '../../data/progress/progress_repository.dart';
 
 /// Onboarding page: theme selection (2 steps max, zero text dependency).
 ///
@@ -20,6 +21,7 @@ class OnboardingPage extends ConsumerStatefulWidget {
 class _OnboardingPageState extends ConsumerState<OnboardingPage> {
   Future<void> _selectTheme(String themeId) async {
     await ref.read(themeControllerProvider.notifier).setTheme(themeId);
+    await ref.read(progressProvider.notifier).completeOnboarding();
     if (mounted) context.go('/home');
   }
 
@@ -32,70 +34,83 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(Space.lg),
-          child: Column(
-            children: <Widget>[
-              const Spacer(flex: 2),
-              // Mascot welcome area (placeholder)
-              Semantics(
-                label: 'Welcome mascot',
-                child: Container(
-                  width: TouchSize.primary * 2,
-                  height: TouchSize.primary * 2,
-                  decoration: BoxDecoration(
-                    color: theme.surfaceAlt,
-                    borderRadius: BorderRadius.circular(KidRadius.full),
-                  ),
-                  child: Icon(
-                    Icons.face_rounded,
-                    size: TouchSize.primary,
-                    color: theme.primary,
-                  ),
+          child: LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+              return SingleChildScrollView(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                  child: IntrinsicHeight(child: _buildContent(theme)),
                 ),
-              ),
-              const SizedBox(height: Space.lg),
-              Text(
-                'Hi! Let\'s learn ABC!',
-                style: TextStyle(
-                  fontFamily: FontFamily.display,
-                  fontSize: TypeScale.display,
-                  color: theme.text,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const Spacer(),
-              // Theme selection
-              SizedBox(
-                height: TouchSize.primary * 2.5,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: allThemes.length,
-                  separatorBuilder: (_, _) => const SizedBox(width: Space.sm),
-                  itemBuilder: (BuildContext context, int index) {
-                    final String id = allThemes.keys.elementAt(index);
-                    final KidThemeExtension cardTheme = allThemes[id]!;
-                    return _ThemeCard(
-                      themeId: id,
-                      themeData: cardTheme,
-                      isSelected: false,
-                      onTap: () => _selectTheme(id),
-                    );
-                  },
-                ),
-              ),
-              const SizedBox(height: Space.xl),
-              Text(
-                'Choose your world!',
-                style: TextStyle(
-                  fontFamily: FontFamily.display,
-                  fontSize: TypeScale.title,
-                  color: theme.textSoft,
-                ),
-              ),
-              const Spacer(),
-            ],
+              );
+            },
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildContent(KidThemeExtension theme) {
+    return Column(
+      children: <Widget>[
+        const Spacer(flex: 2),
+        // Mascot welcome area (placeholder)
+        Semantics(
+          label: 'Welcome mascot',
+          child: Container(
+            width: TouchSize.primary * 2,
+            height: TouchSize.primary * 2,
+            decoration: BoxDecoration(
+              color: theme.surfaceAlt,
+              borderRadius: BorderRadius.circular(KidRadius.full),
+            ),
+            child: Icon(
+              Icons.face_rounded,
+              size: TouchSize.primary,
+              color: theme.primary,
+            ),
+          ),
+        ),
+        const SizedBox(height: Space.lg),
+        Text(
+          'Hi! Let\'s learn ABC!',
+          style: TextStyle(
+            fontFamily: FontFamily.display,
+            fontSize: TypeScale.display,
+            color: theme.text,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        const Spacer(),
+        // Theme selection
+        SizedBox(
+          height: TouchSize.primary * 2.5,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemCount: allThemes.length,
+            separatorBuilder: (_, _) => const SizedBox(width: Space.sm),
+            itemBuilder: (BuildContext context, int index) {
+              final String id = allThemes.keys.elementAt(index);
+              final KidThemeExtension cardTheme = allThemes[id]!;
+              return _ThemeCard(
+                themeId: id,
+                themeData: cardTheme,
+                isSelected: false,
+                onTap: () => _selectTheme(id),
+              );
+            },
+          ),
+        ),
+        const SizedBox(height: Space.xl),
+        Text(
+          'Choose your world!',
+          style: TextStyle(
+            fontFamily: FontFamily.display,
+            fontSize: TypeScale.title,
+            color: theme.textSoft,
+          ),
+        ),
+        const Spacer(),
+      ],
     );
   }
 }
