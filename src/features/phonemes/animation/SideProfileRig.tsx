@@ -145,6 +145,28 @@ export function SideProfileRig({
           className={[styles.glottis, pose.voicing ? styles.glottisActive : ''].filter(Boolean).join(' ')}
         />
 
+        {/* Labels — the traced anatomy reads as an unlabeled blob to anyone
+            who hasn't seen a sagittal-section diagram before, so name the
+            structures directly on the drawing instead of relying on shape
+            alone. Positions are fixed approximations (the tongue moves per
+            pose; the label sits near where it usually is, not glued to it). */}
+        <g className={styles.labels} aria-hidden="true">
+          <line x1="60" y1="176" x2="122" y2="176" className={styles.labelLeader} />
+          <text x="56" y="179" textAnchor="end" className={styles.label}>
+            Tongue
+          </text>
+
+          <line x1="70" y1="108" x2="140" y2="113" className={styles.labelLeader} />
+          <text x="66" y="111" textAnchor="end" className={styles.label}>
+            Palate
+          </text>
+
+          <line x1="55" y1="196" x2="100" y2="204" className={styles.labelLeader} />
+          <text x="51" y="199" textAnchor="end" className={styles.label}>
+            Vocal cords
+          </text>
+        </g>
+
         {/* Mouth-outlet airflow lines (all phonemes except /ŋ/-style nasal ones). */}
         <g
           className={styles.airflowMouth}

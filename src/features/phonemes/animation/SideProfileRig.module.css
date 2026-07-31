@@ -67,6 +67,19 @@
   }
 }
 
+.labelLeader {
+  stroke: var(--color-text-soft);
+  stroke-width: 0.6px;
+  stroke-dasharray: 2 1.5;
+  opacity: 0.6;
+}
+
+.label {
+  fill: var(--color-text-soft);
+  font-family: var(--font-body);
+  font-size: 8px;
+}
+
 .airflowMouth,
 .airflowNose {
   transition: opacity var(--duration-standard) var(--ease-standard);
