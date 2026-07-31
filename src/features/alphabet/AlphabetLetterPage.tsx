@@ -40,21 +40,27 @@ export function AlphabetLetterPage() {
       <div className={page.container}>
         <nav className={styles.letterNav}>
           {prev ? (
-            <Link to={`/alphabet/${prev.letter}`} className={styles.navLink}>
+            <Link
+              to={`/alphabet/${prev.letter}`}
+              className={`${styles.navLink} ${styles.navSlotStart}`}
+            >
               &larr; {prev.letter}
             </Link>
           ) : (
-            <span />
+            <span className={styles.navSlotStart} />
           )}
           <Link to="/alphabet" className={styles.navLink}>
             All letters
           </Link>
           {next ? (
-            <Link to={`/alphabet/${next.letter}`} className={styles.navLink}>
+            <Link
+              to={`/alphabet/${next.letter}`}
+              className={`${styles.navLink} ${styles.navSlotEnd}`}
+            >
               {next.letter} &rarr;
             </Link>
           ) : (
-            <span />
+            <span className={styles.navSlotEnd} />
           )}
         </nav>
 
