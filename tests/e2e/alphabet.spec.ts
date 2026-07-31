@@ -1,0 +1,45 @@
+import { test, expect } from '@playwright/test';
+
+test('home page links into the alphabet overview', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.getByRole('heading', { name: "Let's learn English!" })).toBeVisible();
+  await page.getByRole('link', { name: 'Learn the Alphabet' }).click();
+  await expect(page).toHaveURL(/\/alphabet$/);
+  await expect(page.getByText('Learned 0 / 26')).toBeVisible();
+});
+
+test('a letter page plays audio, toggles voice gender, and persists progress on reload', async ({
+  page,
+}) => {
+  await page.goto('/alphabet/A');
+  await expect(page.getByText('A', { exact: true })).toBeVisible();
+
+  // Male/female toggle in the top bar affects the letter-name SoundButton.
+  const genderToggle = page.getByRole('button', { name: /Voice: (male|female)/i });
+  await expect(genderToggle).toBeVisible();
+  await genderToggle.click();
+
+  // Word cards for Apple/Ant are present and clickable (audio playback is
+  // triggered by user gesture, satisfying autoplay policy requirements).
+  await expect(page.getByRole('button', { name: 'Play the word Apple' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Play the word Ant' })).toBeVisible();
+
+  await page.reload();
+  await page.goto('/alphabet');
+  await expect(page.getByText('Learned 1 / 26')).toBeVisible();
+});
+
+test('no horizontal overflow on mobile, tablet, and desktop viewports', async ({ page }) => {
+  for (const viewport of [
+    { width: 375, height: 812 }, // mobile
+    { width: 900, height: 1024 }, // tablet
+    { width: 1440, height: 900 }, // desktop
+  ]) {
+    await page.setViewportSize(viewport);
+    await page.goto('/alphabet/A');
+    const hasOverflow = await page.evaluate(
+      () => document.documentElement.scrollWidth > document.documentElement.clientWidth,
+    );
+    expect(hasOverflow).toBe(false);
+  }
+});

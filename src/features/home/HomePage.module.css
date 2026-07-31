@@ -1,0 +1,93 @@
+.hero {
+  text-align: center;
+  padding: var(--space-xl) 0;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: var(--text-display);
+  color: var(--color-text);
+  margin: 0 0 var(--space-sm);
+}
+
+.subtitle {
+  font-family: var(--font-body);
+  color: var(--color-text-soft);
+  margin: 0;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-lg);
+}
+
+@media (min-width: 768px) {
+  .cards {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.card {
+  display: block;
+  min-height: var(--touch-primary);
+  padding: var(--space-lg);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-rest);
+  color: var(--color-text);
+  text-decoration: none;
+  transition: transform var(--duration-micro) var(--ease-micro),
+    box-shadow var(--duration-micro) var(--ease-micro);
+}
+
+.card h2 {
+  font-family: var(--font-display);
+  font-size: var(--text-title);
+  margin: 0 0 var(--space-xs);
+  color: var(--color-primary);
+}
+
+.card p {
+  font-family: var(--font-body);
+  color: var(--color-text-soft);
+  margin: 0;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .card:hover {
+    box-shadow: var(--shadow-raised);
+    transform: translateY(-2px);
+  }
+}
+
+.card:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-focus);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.progress {
+  margin-top: var(--space-xxl);
+  text-align: center;
+}
+
+.progressTrack {
+  height: var(--space-md);
+  border-radius: var(--radius-full);
+  background: var(--color-surface-alt);
+  overflow: hidden;
+  margin-top: var(--space-xs);
+}
+
+.progressFill {
+  height: 100%;
+  background: var(--color-success);
+  transition: width var(--duration-standard) var(--ease-standard);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .progressFill {
+    transition: none;
+  }
+}

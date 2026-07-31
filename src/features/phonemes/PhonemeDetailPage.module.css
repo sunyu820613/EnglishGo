@@ -1,0 +1,134 @@
+.back {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch-min);
+  padding: 0 var(--space-md);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-alt);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  text-decoration: none;
+  margin-bottom: var(--space-lg);
+}
+
+.banner {
+  padding: var(--space-md);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-alt);
+  color: var(--color-text-soft);
+  font-family: var(--font-body);
+  font-size: var(--text-caption);
+  margin-bottom: var(--space-xl);
+}
+
+.layout {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+@media (min-width: 1200px) {
+  .layout {
+    flex-direction: row;
+  }
+  .left,
+  .right {
+    flex: 1;
+  }
+}
+
+.left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-lg);
+  text-align: center;
+}
+
+.ipa {
+  font-family: var(--font-teaching);
+  font-size: var(--text-letter-hero);
+  color: var(--color-primary);
+}
+
+.audioControls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.variantRow {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.variantChip {
+  min-height: var(--touch-min);
+  padding: 0 var(--space-md);
+  border-radius: var(--radius-full);
+  border: none;
+  background: var(--color-surface-alt);
+  color: var(--color-text-soft);
+  font-family: var(--font-body);
+  font-size: var(--text-caption);
+}
+
+.variantChip:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.variantHint {
+  font-family: var(--font-body);
+  font-size: var(--text-caption);
+  color: var(--color-text-soft);
+  max-width: 320px;
+}
+
+.words {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  width: 100%;
+  max-width: 320px;
+}
+
+.wordRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.word {
+  font-family: var(--font-teaching);
+  font-size: var(--text-body);
+  color: var(--color-text);
+}
+
+.right {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+@media (min-width: 768px) and (max-width: 1199px) {
+  .right {
+    flex-direction: row;
+  }
+}
+
+.animationPlaceholder {
+  flex: 1;
+  min-height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--space-md);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-alt);
+  color: var(--color-text-soft);
+  font-family: var(--font-body);
+  font-size: var(--text-caption);
+}

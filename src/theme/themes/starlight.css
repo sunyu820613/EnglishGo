@@ -1,0 +1,20 @@
+/* Starlight — dark theme. docs/design-system-react-rewrite.md §1.10 */
+:root[data-theme='starlight'],
+[data-theme='starlight'] {
+  --color-background: #1c2a4a;
+  --color-surface: #28395e;
+  --color-surface-alt: #22314f;
+  --color-primary: #53c7de;
+  --color-on-primary: #0e2038;
+  --color-secondary: #3d5480;
+  --color-on-secondary: #eaf3fb;
+  --color-accent: #f6c05c;
+  --color-text: #f2f6fc;
+  --color-text-soft: #afc0dc;
+  --color-outline: #122038;
+  --color-shadow: #0b1830;
+  --color-success: #7fd8a4;
+  --color-focus: #f6c05c;
+  --is-light: 0;
+  --shadow-rest-highlight: none;
+}

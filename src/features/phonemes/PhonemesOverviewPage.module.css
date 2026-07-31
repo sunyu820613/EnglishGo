@@ -1,0 +1,59 @@
+.title {
+  font-family: var(--font-display);
+  font-size: var(--text-display);
+  color: var(--color-text);
+  margin: 0 0 var(--space-xs);
+}
+
+.subtitle {
+  font-family: var(--font-body);
+  color: var(--color-text-soft);
+  margin: 0 0 var(--space-xl);
+}
+
+.section {
+  margin-bottom: var(--space-xxl);
+}
+
+.categoryTitle {
+  font-family: var(--font-display);
+  font-size: var(--text-title);
+  color: var(--color-text);
+  margin: 0 0 var(--space-md);
+}
+
+.chipGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-sm);
+}
+
+@media (min-width: 768px) {
+  .chipGrid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+@media (min-width: 1200px) {
+  .chipGrid {
+    grid-template-columns: repeat(10, 1fr);
+  }
+}
+
+.chip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--touch-min);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-alt);
+  color: var(--color-text);
+  font-family: var(--font-teaching);
+  text-decoration: none;
+  box-shadow: var(--shadow-rest);
+}
+
+.chip:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-focus);
+  outline-offset: var(--focus-ring-offset);
+}

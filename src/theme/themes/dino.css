@@ -1,0 +1,19 @@
+/* Dino — light theme. docs/design-system-react-rewrite.md §1.10 */
+:root[data-theme='dino'],
+[data-theme='dino'] {
+  --color-background: #f5efde;
+  --color-surface: #fdfaf0;
+  --color-surface-alt: #ede4cc;
+  --color-primary: #4a7c59;
+  --color-on-primary: #f7fbf2;
+  --color-secondary: #c9a87c;
+  --color-on-secondary: #33291a;
+  --color-accent: #e8a33d;
+  --color-text: #332e24;
+  --color-text-soft: #6e6551;
+  --color-outline: #4a4234;
+  --color-shadow: #8a7a57;
+  --color-success: #5fa671;
+  --color-focus: #e8a33d;
+  --is-light: 1;
+}

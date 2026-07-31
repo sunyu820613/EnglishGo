@@ -1,0 +1,19 @@
+/* Ballet Castle — light theme. docs/design-system-react-rewrite.md §1.10 */
+:root[data-theme='ballet-castle'],
+[data-theme='ballet-castle'] {
+  --color-background: #faf6f2;
+  --color-surface: #fffdfb;
+  --color-surface-alt: #f3eae3;
+  --color-primary: #e793a9;
+  --color-on-primary: #47202b;
+  --color-secondary: #d9c3a5;
+  --color-on-secondary: #3d3221;
+  --color-accent: #c9a227;
+  --color-text: #4a3d42;
+  --color-text-soft: #8a7880;
+  --color-outline: #5c4a50;
+  --color-shadow: #c9a9a0;
+  --color-success: #7cbc93;
+  --color-focus: #c9a227;
+  --is-light: 1;
+}

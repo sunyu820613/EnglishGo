@@ -1,0 +1,20 @@
+/* Moon Garden — dark theme. docs/design-system-react-rewrite.md §1.10 */
+:root[data-theme='moon-garden'],
+[data-theme='moon-garden'] {
+  --color-background: #2b2144;
+  --color-surface: #3a2e58;
+  --color-surface-alt: #332950;
+  --color-primary: #a8c4a2;
+  --color-on-primary: #1f2b1e;
+  --color-secondary: #584a7e;
+  --color-on-secondary: #f0eaf8;
+  --color-accent: #e8a98f;
+  --color-text: #f4effa;
+  --color-text-soft: #bdb0d6;
+  --color-outline: #1d1733;
+  --color-shadow: #170f2e;
+  --color-success: #9ad6a8;
+  --color-focus: #e8a98f;
+  --is-light: 0;
+  --shadow-rest-highlight: none;
+}

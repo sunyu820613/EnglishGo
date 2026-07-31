@@ -1,0 +1,28 @@
+/*
+ * Self-hosted fonts only — no external CDN links (kids privacy policy).
+ * Source .ttf files: assets/fonts/*, converted to .woff2.
+ */
+@font-face {
+  font-family: 'Baloo 2';
+  src: url('/fonts/baloo2/Baloo2-VariableFont_wght.woff2') format('woff2-variations');
+  font-weight: 500 800;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Nunito';
+  src: url('/fonts/nunito/Nunito-VariableFont_wght.woff2') format('woff2-variations');
+  font-weight: 400 800;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Andika';
+  src: url('/fonts/andika/Andika-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Andika';
+  src: url('/fonts/andika/Andika-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-display: swap;
+}

@@ -1,0 +1,19 @@
+/* Robot — light theme. docs/design-system-react-rewrite.md §1.10 */
+:root[data-theme='robot'],
+[data-theme='robot'] {
+  --color-background: #edf0f5;
+  --color-surface: #fbfcfe;
+  --color-surface-alt: #e1e6ee;
+  --color-primary: #2f5dd0;
+  --color-on-primary: #f4f8ff;
+  --color-secondary: #8e99ab;
+  --color-on-secondary: #1d232e;
+  --color-accent: #f2762e;
+  --color-text: #272d38;
+  --color-text-soft: #5c6675;
+  --color-outline: #39404d;
+  --color-shadow: #7c8aa4;
+  --color-success: #3fa96e;
+  --color-focus: #f2762e;
+  --is-light: 1;
+}

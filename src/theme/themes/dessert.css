@@ -1,0 +1,19 @@
+/* Dessert — light theme. docs/design-system-react-rewrite.md §1.10 */
+:root[data-theme='dessert'],
+[data-theme='dessert'] {
+  --color-background: #fbf4ea;
+  --color-surface: #fffcf6;
+  --color-surface-alt: #f3e7d7;
+  --color-primary: #e8836f;
+  --color-on-primary: #4b1f16;
+  --color-secondary: #8fc9b5;
+  --color-on-secondary: #1f3a30;
+  --color-accent: #b5714f;
+  --color-text: #3e3129;
+  --color-text-soft: #77655a;
+  --color-outline: #4a3a30;
+  --color-shadow: #c29b7b;
+  --color-success: #6fbf8e;
+  --color-focus: #b5714f;
+  --is-light: 1;
+}

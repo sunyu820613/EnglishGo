@@ -48,6 +48,16 @@ app.*.map.json
 node_modules/
 npm-debug.log*
 
+# Vite / React app
+dist/
+dist-ssr/
+*.local
+.env
+.env.*.local
+node_modules/.tmp/
+playwright-report/
+test-results/
+
 # Local scratch previews (not project assets)
 tool/imggen/preview_*.png
 tool/imggen/preview_*.webp

@@ -1,0 +1,24 @@
+/* Shared page container rules for the three responsive breakpoints
+ * (docs/design-system-react-rewrite.md §5): <768 / 768-1199 / >=1200. */
+.page {
+  padding: var(--space-page-mobile);
+  min-height: 100vh;
+}
+
+@media (min-width: 768px) {
+  .page {
+    padding: var(--space-page-tablet);
+  }
+}
+
+@media (min-width: 1200px) {
+  .page {
+    padding: var(--space-page-desktop);
+  }
+}
+
+.container {
+  width: 100%;
+  max-width: 1040px;
+  margin: 0 auto;
+}
