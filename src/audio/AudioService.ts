@@ -86,6 +86,17 @@ export class AudioService {
     return this.playingVoiceSrc;
   }
 
+  /**
+   * The underlying voice `<audio>` element, exposed read-only so callers
+   * like usePhonemeAnimationSync can poll `currentTime`/`duration` to drive
+   * animation timing. Playback must still only ever be started/stopped via
+   * this service's methods, never by calling .play()/.pause() on the
+   * returned element directly.
+   */
+  getVoiceElement(): HTMLAudioElement {
+    return this.voiceEl;
+  }
+
   private setPlayingVoiceSrc(src: string | null): void {
     this.playingVoiceSrc = src;
     for (const listener of this.voiceListeners) listener(src);

@@ -1,0 +1,67 @@
+.svg {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 5 / 4;
+  display: block;
+}
+
+.faceBg {
+  fill: var(--color-surface-alt);
+  stroke: var(--color-outline);
+  stroke-width: var(--stroke-width);
+}
+
+.mouthGroup {
+  transform-origin: 100px 80px;
+}
+
+.upperLip,
+.lowerLip {
+  fill: var(--color-accent);
+  transform-box: fill-box;
+  transform-origin: center;
+  transition-property: transform;
+  transition-timing-function: var(--ease-standard);
+}
+
+.upperLip {
+  transform: translateY(calc(var(--jaw-offset, 0px) * -0.35)) scaleX(var(--lip-width-scale, 1));
+}
+
+.lowerLip {
+  transform: translateY(var(--jaw-offset, 0px)) scaleX(var(--lip-width-scale, 1));
+}
+
+.teethUpper,
+.teethLower {
+  fill: var(--color-surface);
+  stroke: var(--color-outline);
+  stroke-width: var(--stroke-width);
+  transition-property: opacity;
+  transition-timing-function: var(--ease-standard);
+}
+
+.tonguePeek {
+  fill: var(--color-primary);
+  transform-box: fill-box;
+  transform-origin: center;
+  transition-property: transform, opacity;
+  transition-timing-function: var(--ease-standard);
+}
+
+.cornerAccent {
+  fill: var(--color-accent);
+  transition-property: opacity;
+  transition-timing-function: var(--ease-standard);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .upperLip,
+  .lowerLip,
+  .teethUpper,
+  .teethLower,
+  .tonguePeek,
+  .cornerAccent {
+    transition-duration: 0ms !important;
+  }
+}

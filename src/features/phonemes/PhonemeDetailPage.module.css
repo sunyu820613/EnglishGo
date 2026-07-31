@@ -79,6 +79,54 @@
   cursor: not-allowed;
 }
 
+.variantGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-sm);
+  width: 100%;
+  max-width: 320px;
+}
+
+.variantButton {
+  min-height: var(--touch-min);
+  padding: 0 var(--space-sm);
+  border: none;
+  border-radius: var(--radius-md);
+  background: var(--color-surface-alt);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: var(--text-caption);
+  cursor: pointer;
+  box-shadow: var(--shadow-rest);
+  transition: transform var(--duration-press) var(--ease-press),
+    box-shadow var(--duration-press) var(--ease-press);
+}
+
+.variantButton:active:not(:disabled) {
+  transform: scale(0.96);
+  box-shadow: var(--shadow-pressed);
+}
+
+.variantButton:disabled {
+  opacity: 0.45;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.variantButton:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-focus);
+  outline-offset: var(--focus-ring-offset);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .variantButton {
+    transition: none;
+  }
+  .variantButton:active:not(:disabled) {
+    transform: none;
+  }
+}
+
 .variantHint {
   font-family: var(--font-body);
   font-size: var(--text-caption);
@@ -131,4 +179,24 @@
   color: var(--color-text-soft);
   font-family: var(--font-body);
   font-size: var(--text-caption);
+}
+
+.rigCanvas {
+  flex: 1;
+  min-height: 220px;
+  padding: var(--space-md);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-alt);
+}
+
+.minimalPairSection {
+  margin-top: var(--space-xxl);
+}
+
+.sectionTitle {
+  font-family: var(--font-display);
+  font-size: var(--text-title);
+  color: var(--color-text);
+  margin-bottom: var(--space-lg);
+  text-align: center;
 }

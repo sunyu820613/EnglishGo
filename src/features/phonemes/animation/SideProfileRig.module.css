@@ -1,0 +1,146 @@
+.svg {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 11 / 9;
+  display: block;
+  overflow: visible;
+}
+
+.headOutline {
+  fill: var(--color-surface-alt);
+  stroke: var(--color-outline);
+  stroke-width: var(--stroke-width);
+}
+
+.jawLine {
+  fill: none;
+  stroke: var(--color-outline);
+  stroke-width: var(--stroke-width);
+  stroke-linecap: round;
+  transition-property: transform;
+  transition-timing-function: var(--ease-standard);
+}
+
+.lipsGroup {
+  transition-property: transform;
+  transition-timing-function: var(--ease-standard);
+}
+
+.lipUpper,
+.lipLower {
+  fill: none;
+  stroke: var(--color-accent);
+  stroke-width: calc(var(--stroke-width) * 1.6);
+  stroke-linecap: round;
+  transition-property: transform;
+  transition-timing-function: var(--ease-standard);
+}
+
+.velum {
+  transition-property: transform;
+  transition-timing-function: var(--ease-standard);
+}
+
+.velumShape {
+  fill: none;
+  stroke: var(--color-secondary);
+  stroke-width: calc(var(--stroke-width) * 1.4);
+  stroke-linecap: round;
+}
+
+.tongueRoot,
+.tongueBody,
+.tongueTip {
+  fill: var(--color-primary);
+  transition-property: transform;
+  transition-timing-function: var(--ease-standard);
+}
+
+.glottis line {
+  stroke: var(--color-text-soft);
+  stroke-width: calc(var(--stroke-width) * 1.2);
+  stroke-linecap: round;
+  transition: stroke var(--duration-standard) var(--ease-standard);
+}
+
+.glottisActive line {
+  stroke: var(--color-focus);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .glottisActive {
+    animation: glottisPulse var(--duration-idle) var(--ease-idle) infinite;
+  }
+}
+
+@keyframes glottisPulse {
+  0%,
+  100% {
+    transform: scaleY(1);
+  }
+  50% {
+    transform: scaleY(1.4);
+  }
+}
+
+.airflowMouth,
+.airflowNose {
+  transition: opacity var(--duration-standard) var(--ease-standard);
+}
+
+.airflowMouth path,
+.airflowNose path {
+  fill: none;
+  stroke: color-mix(in srgb, var(--color-accent) 40%, transparent);
+  stroke-width: var(--stroke-width);
+  stroke-linecap: round;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .airflowMouth path,
+  .airflowNose path {
+    animation: airflowDrift var(--duration-idle) var(--ease-idle) infinite;
+  }
+  .airflowMouth path:nth-child(2),
+  .airflowNose path:nth-child(2) {
+    animation-delay: calc(var(--duration-idle) / 3);
+  }
+  .airflowMouth path:nth-child(3),
+  .airflowNose path:nth-child(3) {
+    animation-delay: calc(var(--duration-idle) / 3 * 2);
+  }
+}
+
+@keyframes airflowDrift {
+  0% {
+    opacity: 0;
+    transform: translateX(0);
+  }
+  40% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(10px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .jawLine,
+  .lipsGroup,
+  .lipUpper,
+  .lipLower,
+  .velum,
+  .tongueRoot,
+  .tongueBody,
+  .tongueTip {
+    transition-duration: 0ms !important;
+  }
+  .glottisActive {
+    transform: none;
+  }
+  .airflowMouth path,
+  .airflowNose path {
+    animation: none;
+  }
+}
