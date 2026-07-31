@@ -5,11 +5,7 @@ interface PhonicsCompareProps {
   letter: AlphabetLetter;
 }
 
-/**
- * Shows the letter-name IPA next to the phonics-sound IPA. Letter-name IPA
- * is not in the source data yet (docs/phonetics-react-rewrite-scope.md §4
- * item 4) — the row degrades gracefully instead of guessing at the value.
- */
+/** Shows the letter-name IPA next to the phonics-sound IPA. */
 export function PhonicsCompare({ letter }: PhonicsCompareProps) {
   return (
     <div className={styles.compare}>

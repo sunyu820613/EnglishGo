@@ -13,7 +13,7 @@ export const alphabet: AlphabetLetter[] = [
     letterAudioFemale: 'female/letter_a_female.m4a',
     phonicsAudio: 'a_phonics.m4a',
     phonicsIpa: 'æ',
-    letterNameIpa: undefined,
+    letterNameIpa: 'eɪ',
     phonicsNote: null,
     words: [
       { id: 'apple', text: 'Apple', audio: 'apple.m4a', image: 'apple.webp', phrase: 'a_is_for_apple.m4a' },
@@ -27,7 +27,7 @@ export const alphabet: AlphabetLetter[] = [
     letterAudioFemale: 'female/letter_b_female.m4a',
     phonicsAudio: 'b_phonics.m4a',
     phonicsIpa: 'b',
-    letterNameIpa: undefined,
+    letterNameIpa: 'biː',
     phonicsNote: null,
     words: [
       { id: 'ball', text: 'Ball', audio: 'ball.m4a', image: 'ball.webp', phrase: 'b_is_for_ball.m4a' },
@@ -41,7 +41,7 @@ export const alphabet: AlphabetLetter[] = [
     letterAudioFemale: 'female/letter_c_female.m4a',
     phonicsAudio: 'c_phonics.m4a',
     phonicsIpa: 'k',
-    letterNameIpa: undefined,
+    letterNameIpa: 'siː',
     phonicsNote: null,
     words: [
       { id: 'cat', text: 'Cat', audio: 'cat.m4a', image: 'cat.webp', phrase: 'c_is_for_cat.m4a' },
@@ -55,7 +55,7 @@ export const alphabet: AlphabetLetter[] = [
     letterAudioFemale: 'female/letter_d_female.m4a',
     phonicsAudio: 'd_phonics.m4a',
     phonicsIpa: 'd',
-    letterNameIpa: undefined,
+    letterNameIpa: 'diː',
     phonicsNote: null,
     words: [
       { id: 'dog', text: 'Dog', audio: 'dog.m4a', image: 'dog.webp', phrase: 'd_is_for_dog.m4a' },
@@ -69,7 +69,7 @@ export const alphabet: AlphabetLetter[] = [
     letterAudioFemale: 'female/letter_e_female.m4a',
     phonicsAudio: 'e_phonics.m4a',
     phonicsIpa: 'ɛ',
-    letterNameIpa: undefined,
+    letterNameIpa: 'iː',
     phonicsNote: null,
     words: [
       { id: 'egg', text: 'Egg', audio: 'egg.m4a', image: 'egg.webp', phrase: 'e_is_for_egg.m4a' },
@@ -83,7 +83,7 @@ export const alphabet: AlphabetLetter[] = [
     letterAudioFemale: 'female/letter_f_female.m4a',
     phonicsAudio: 'f_phonics.m4a',
     phonicsIpa: 'f',
-    letterNameIpa: undefined,
+    letterNameIpa: 'ɛf',
     phonicsNote: null,
     words: [
       { id: 'fish', text: 'Fish', audio: 'fish.m4a', image: 'fish.webp', phrase: 'f_is_for_fish.m4a' },
@@ -97,7 +97,7 @@ export const alphabet: AlphabetLetter[] = [
     letterAudioFemale: 'female/letter_g_female.m4a',
     phonicsAudio: 'g_phonics.m4a',
     phonicsIpa: 'g',
-    letterNameIpa: undefined,
+    letterNameIpa: 'dʒiː',
     phonicsNote: null,
     words: [
       { id: 'goat', text: 'Goat', audio: 'goat.m4a', image: 'goat.webp', phrase: 'g_is_for_goat.m4a' },
@@ -111,7 +111,7 @@ export const alphabet: AlphabetLetter[] = [
     letterAudioFemale: 'female/letter_h_female.m4a',
     phonicsAudio: 'h_phonics.m4a',
     phonicsIpa: 'h',
-    letterNameIpa: undefined,
+    letterNameIpa: 'eɪtʃ',
     phonicsNote: null,
     words: [
       { id: 'hat', text: 'Hat', audio: 'hat.m4a', image: 'hat.webp', phrase: 'h_is_for_hat.m4a' },
@@ -125,7 +125,7 @@ export const alphabet: AlphabetLetter[] = [
     letterAudioFemale: 'female/letter_i_female.m4a',
     phonicsAudio: 'i_phonics.m4a',
     phonicsIpa: 'ɪ',
-    letterNameIpa: undefined,
+    letterNameIpa: 'aɪ',
     phonicsNote: "I says /I/, and sometimes says its name /aI/, like Ice cream!",
     words: [
       { id: 'ice_cream', text: 'Ice cream', audio: 'ice_cream.m4a', image: 'ice_cream.webp', phrase: 'i_is_for_ice_cream.m4a' },
@@ -139,7 +139,7 @@ export const alphabet: AlphabetLetter[] = [
     letterAudioFemale: 'female/letter_j_female.m4a',
     phonicsAudio: 'j_phonics.m4a',
     phonicsIpa: 'dʒ',
-    letterNameIpa: undefined,
+    letterNameIpa: 'dʒeɪ',
     phonicsNote: null,
     words: [
       { id: 'juice', text: 'Juice', audio: 'juice.m4a', image: 'juice.webp', phrase: 'j_is_for_juice.m4a' },
@@ -153,7 +153,7 @@ export const alphabet: AlphabetLetter[] = [
     letterAudioFemale: 'female/letter_k_female.m4a',
     phonicsAudio: 'k_phonics.m4a',
     phonicsIpa: 'k',
-    letterNameIpa: undefined,
+    letterNameIpa: 'keɪ',
     phonicsNote: null,
     words: [
       { id: 'kite', text: 'Kite', audio: 'kite.m4a', image: 'kite.webp', phrase: 'k_is_for_kite.m4a' },
@@ -167,7 +167,7 @@ export const alphabet: AlphabetLetter[] = [
     letterAudioFemale: 'female/letter_l_female.m4a',
     phonicsAudio: 'l_phonics.m4a',
     phonicsIpa: 'l',
-    letterNameIpa: undefined,
+    letterNameIpa: 'ɛl',
     phonicsNote: null,
     words: [
       { id: 'lion', text: 'Lion', audio: 'lion.m4a', image: 'lion.webp', phrase: 'l_is_for_lion.m4a' },
@@ -181,7 +181,7 @@ export const alphabet: AlphabetLetter[] = [
     letterAudioFemale: 'female/letter_m_female.m4a',
     phonicsAudio: 'm_phonics.m4a',
     phonicsIpa: 'm',
-    letterNameIpa: undefined,
+    letterNameIpa: 'ɛm',
     phonicsNote: null,
     words: [
       { id: 'moon', text: 'Moon', audio: 'moon.m4a', image: 'moon.webp', phrase: 'm_is_for_moon.m4a' },
@@ -195,7 +195,7 @@ export const alphabet: AlphabetLetter[] = [
     letterAudioFemale: 'female/letter_n_female.m4a',
     phonicsAudio: 'n_phonics.m4a',
     phonicsIpa: 'n',
-    letterNameIpa: undefined,
+    letterNameIpa: 'ɛn',
     phonicsNote: null,
     words: [
       { id: 'nest', text: 'Nest', audio: 'nest.m4a', image: 'nest.webp', phrase: 'n_is_for_nest.m4a' },
@@ -209,7 +209,7 @@ export const alphabet: AlphabetLetter[] = [
     letterAudioFemale: 'female/letter_o_female.m4a',
     phonicsAudio: 'o_phonics.m4a',
     phonicsIpa: 'ɑ',
-    letterNameIpa: undefined,
+    letterNameIpa: 'oʊ',
     phonicsNote: "O says /ah/. Orange and Owl start with O too - listen closely!",
     words: [
       { id: 'orange', text: 'Orange', audio: 'orange.m4a', image: 'orange.webp', phrase: 'o_is_for_orange.m4a' },
@@ -223,7 +223,7 @@ export const alphabet: AlphabetLetter[] = [
     letterAudioFemale: 'female/letter_p_female.m4a',
     phonicsAudio: 'p_phonics.m4a',
     phonicsIpa: 'p',
-    letterNameIpa: undefined,
+    letterNameIpa: 'piː',
     phonicsNote: null,
     words: [
       { id: 'panda', text: 'Panda', audio: 'panda.m4a', image: 'panda.webp', phrase: 'p_is_for_panda.m4a' },
@@ -237,7 +237,7 @@ export const alphabet: AlphabetLetter[] = [
     letterAudioFemale: 'female/letter_q_female.m4a',
     phonicsAudio: 'q_phonics.m4a',
     phonicsIpa: 'kw',
-    letterNameIpa: undefined,
+    letterNameIpa: 'kjuː',
     phonicsNote: null,
     words: [
       { id: 'queen', text: 'Queen', audio: 'queen.m4a', image: 'queen.webp', phrase: 'q_is_for_queen.m4a' },
@@ -251,7 +251,7 @@ export const alphabet: AlphabetLetter[] = [
     letterAudioFemale: 'female/letter_r_female.m4a',
     phonicsAudio: 'r_phonics.m4a',
     phonicsIpa: 'r',
-    letterNameIpa: undefined,
+    letterNameIpa: 'ɑr',
     phonicsNote: null,
     words: [
       { id: 'rabbit', text: 'Rabbit', audio: 'rabbit.m4a', image: 'rabbit.webp', phrase: 'r_is_for_rabbit.m4a' },
@@ -265,7 +265,7 @@ export const alphabet: AlphabetLetter[] = [
     letterAudioFemale: 'female/letter_s_female.m4a',
     phonicsAudio: 's_phonics.m4a',
     phonicsIpa: 's',
-    letterNameIpa: undefined,
+    letterNameIpa: 'ɛs',
     phonicsNote: null,
     words: [
       { id: 'sun', text: 'Sun', audio: 'sun.m4a', image: 'sun.webp', phrase: 's_is_for_sun.m4a' },
@@ -279,7 +279,7 @@ export const alphabet: AlphabetLetter[] = [
     letterAudioFemale: 'female/letter_t_female.m4a',
     phonicsAudio: 't_phonics.m4a',
     phonicsIpa: 't',
-    letterNameIpa: undefined,
+    letterNameIpa: 'tiː',
     phonicsNote: null,
     words: [
       { id: 'tiger', text: 'Tiger', audio: 'tiger.m4a', image: 'tiger.webp', phrase: 't_is_for_tiger.m4a' },
@@ -293,7 +293,7 @@ export const alphabet: AlphabetLetter[] = [
     letterAudioFemale: 'female/letter_u_female.m4a',
     phonicsAudio: 'u_phonics.m4a',
     phonicsIpa: 'ʌ',
-    letterNameIpa: undefined,
+    letterNameIpa: 'juː',
     phonicsNote: "U says /uh/, and sometimes says its name /yoo/, like Unicorn!",
     words: [
       { id: 'umbrella', text: 'Umbrella', audio: 'umbrella.m4a', image: 'umbrella.webp', phrase: 'u_is_for_umbrella.m4a' },
@@ -307,7 +307,7 @@ export const alphabet: AlphabetLetter[] = [
     letterAudioFemale: 'female/letter_v_female.m4a',
     phonicsAudio: 'v_phonics.m4a',
     phonicsIpa: 'v',
-    letterNameIpa: undefined,
+    letterNameIpa: 'viː',
     phonicsNote: null,
     words: [
       { id: 'van', text: 'Van', audio: 'van.m4a', image: 'van.webp', phrase: 'v_is_for_van.m4a' },
@@ -321,7 +321,7 @@ export const alphabet: AlphabetLetter[] = [
     letterAudioFemale: 'female/letter_w_female.m4a',
     phonicsAudio: 'w_phonics.m4a',
     phonicsIpa: 'w',
-    letterNameIpa: undefined,
+    letterNameIpa: 'ˈdʌbəljuː',
     phonicsNote: null,
     words: [
       { id: 'whale', text: 'Whale', audio: 'whale.m4a', image: 'whale.webp', phrase: 'w_is_for_whale.m4a' },
@@ -335,7 +335,7 @@ export const alphabet: AlphabetLetter[] = [
     letterAudioFemale: 'female/letter_x_female.m4a',
     phonicsAudio: 'x_phonics.m4a',
     phonicsIpa: 'ks',
-    letterNameIpa: undefined,
+    letterNameIpa: 'ɛks',
     phonicsNote: "X can sound like /z/ at the start, like Xylophone. At the end of words it sounds like /ks/, like fox and X-ray!",
     words: [
       { id: 'xylophone', text: 'Xylophone', audio: 'xylophone.m4a', image: 'xylophone.webp', phrase: 'x_is_for_xylophone.m4a' },
@@ -349,7 +349,7 @@ export const alphabet: AlphabetLetter[] = [
     letterAudioFemale: 'female/letter_y_female.m4a',
     phonicsAudio: 'y_phonics.m4a',
     phonicsIpa: 'j',
-    letterNameIpa: undefined,
+    letterNameIpa: 'waɪ',
     phonicsNote: null,
     words: [
       { id: 'yak', text: 'Yak', audio: 'yak.m4a', image: 'yak.webp', phrase: 'y_is_for_yak.m4a' },
@@ -363,7 +363,7 @@ export const alphabet: AlphabetLetter[] = [
     letterAudioFemale: 'female/letter_z_female.m4a',
     phonicsAudio: 'z_phonics.m4a',
     phonicsIpa: 'z',
-    letterNameIpa: undefined,
+    letterNameIpa: 'ziː',
     phonicsNote: null,
     words: [
       { id: 'zebra', text: 'Zebra', audio: 'zebra.m4a', image: 'zebra.webp', phrase: 'z_is_for_zebra.m4a' },
