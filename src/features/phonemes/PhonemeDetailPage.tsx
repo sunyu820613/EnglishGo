@@ -154,6 +154,7 @@ export function PhonemeDetailPage() {
                   transitionMs={animationState.transitionMs}
                   label={`Side mouth cross-section view for the sound ${phoneme.ipa}`}
                   className={styles.rigCanvas}
+                  tonguePathSlug={rig.phonemeSlug}
                 />
               </>
             ) : (

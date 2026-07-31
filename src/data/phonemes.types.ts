@@ -39,7 +39,13 @@ export interface FrontMouthPose {
   tonguePeek: number;
 }
 
-/** Side (cross-section) mouth/throat view params. */
+/**
+ * Side (cross-section) mouth/throat view params. The `tongue*` fields drive
+ * a parametric fallback tongue shape used for phonemes that don't (yet) have
+ * a real reference-SVG outline in src/data/phonemeTonguePaths.ts (M3+); kept
+ * even though the 5 M2 sample phonemes now render their tongue via
+ * `tongueMorphT` instead (see SideProfileRig).
+ */
 export interface SideProfilePose {
   jawOpen: number;
   tongueTipHeight: number;
@@ -51,6 +57,14 @@ export interface SideProfilePose {
   lipRound: number;
   airflow: 'none' | 'continuous' | 'burst';
   voicing: boolean;
+  /**
+   * [0,1] progress from the neutral (rest) tongue outline to this phoneme's
+   * real reference-SVG tongue outline (src/data/phonemeTonguePaths.ts),
+   * interpolated point-by-point by lerpTonguePath. Optional/undefined for
+   * phonemes without a real outline yet, in which case SideProfileRig falls
+   * back to the parametric tongue* fields above.
+   */
+  tongueMorphT?: number;
 }
 
 export interface PhonemeAnimationKeyframe {

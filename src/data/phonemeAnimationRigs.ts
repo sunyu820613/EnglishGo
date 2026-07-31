@@ -88,6 +88,7 @@ function scaleSideNumeric(
     tongueRootHeight: pose.tongueRootHeight * factor,
     velumOpen: pose.velumOpen * factor,
     lipRound: pose.lipRound * factor,
+    tongueMorphT: (pose.tongueMorphT ?? 0) * factor,
   };
 }
 
@@ -136,6 +137,7 @@ const i: SustainPose = {
     tongueRootHeight: 0.3,
     velumOpen: 0,
     lipRound: 0,
+    tongueMorphT: 1,
     airflow: 'none',
     voicing: true,
   },
@@ -161,6 +163,7 @@ const ae: SustainPose = {
     tongueRootHeight: 0.2,
     velumOpen: 0,
     lipRound: 0,
+    tongueMorphT: 1,
     airflow: 'none',
     voicing: true,
   },
@@ -186,6 +189,7 @@ const th: SustainPose = {
     tongueRootHeight: 0.3,
     velumOpen: 0,
     lipRound: 0,
+    tongueMorphT: 1,
     airflow: 'continuous',
     voicing: false,
   },
@@ -211,6 +215,7 @@ const r: SustainPose = {
     tongueRootHeight: 0.35,
     velumOpen: 0,
     lipRound: 0.5,
+    tongueMorphT: 1,
     airflow: 'none',
     voicing: true,
   },
@@ -236,6 +241,7 @@ const ng: SustainPose = {
     tongueRootHeight: 0.9,
     velumOpen: 1,
     lipRound: 0,
+    tongueMorphT: 1,
     airflow: 'continuous',
     voicing: true,
   },

@@ -48,4 +48,45 @@ describe('SideProfileRig', () => {
     expect(mouthLayer).toHaveStyle({ opacity: '0' });
     expect(noseLayer).toHaveStyle({ opacity: '0' });
   });
+
+  describe('tongue shape', () => {
+    it('with no tonguePathSlug, falls back to the parametric tongue path (unchanged pre-M2-revision behavior)', () => {
+      const i = resolveFullPoseAtFrame(phonemeAnimationRigs.i, 1).side;
+      const { container } = render(<SideProfileRig pose={i} />);
+      const tongue = container.querySelector(`.${styles.tongue}`);
+      expect(tongue?.getAttribute('d')).toMatch(/^M128 164 L/);
+    });
+
+    it('with a tonguePathSlug, morphs the real reference-SVG outline instead of the parametric shape', () => {
+      const i = resolveFullPoseAtFrame(phonemeAnimationRigs.i, 1).side;
+      const { container } = render(<SideProfileRig pose={i} tonguePathSlug="i" />);
+      const tongue = container.querySelector(`.${styles.tongue}`);
+      expect(tongue?.getAttribute('d')).not.toMatch(/^M128 164 L/);
+      expect(tongue?.getAttribute('d')).toMatch(/^M-?\d/);
+    });
+
+    it('produces a different tongue outline for two phonemes with different tongueMorphT targets', () => {
+      const i = resolveFullPoseAtFrame(phonemeAnimationRigs.i, 1).side;
+      const ae = resolveFullPoseAtFrame(phonemeAnimationRigs.ae, 1).side;
+      const { container: iContainer } = render(<SideProfileRig pose={i} tonguePathSlug="i" />);
+      const { container: aeContainer } = render(<SideProfileRig pose={ae} tonguePathSlug="ae" />);
+      const iD = iContainer.querySelector(`.${styles.tongue}`)?.getAttribute('d');
+      const aeD = aeContainer.querySelector(`.${styles.tongue}`)?.getAttribute('d');
+      expect(iD).not.toEqual(aeD);
+    });
+
+    it('tongueMorphT interpolates: a mid-progress pose sits between the idle and sustain outlines', () => {
+      const onset = resolveFullPoseAtFrame(phonemeAnimationRigs.i, 0).side; // tongueMorphT ~0.7
+      const sustain = resolveFullPoseAtFrame(phonemeAnimationRigs.i, 1).side; // tongueMorphT 1
+      const idle = { ...sustain, tongueMorphT: 0 };
+      const { container: idleContainer } = render(<SideProfileRig pose={idle} tonguePathSlug="i" />);
+      const { container: onsetContainer } = render(<SideProfileRig pose={onset} tonguePathSlug="i" />);
+      const { container: sustainContainer } = render(<SideProfileRig pose={sustain} tonguePathSlug="i" />);
+      const idleD = idleContainer.querySelector(`.${styles.tongue}`)?.getAttribute('d');
+      const onsetD = onsetContainer.querySelector(`.${styles.tongue}`)?.getAttribute('d');
+      const sustainD = sustainContainer.querySelector(`.${styles.tongue}`)?.getAttribute('d');
+      expect(onsetD).not.toEqual(idleD);
+      expect(onsetD).not.toEqual(sustainD);
+    });
+  });
 });

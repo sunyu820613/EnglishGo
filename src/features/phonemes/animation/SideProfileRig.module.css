@@ -1,15 +1,9 @@
 .svg {
   width: 100%;
   height: auto;
-  aspect-ratio: 300 / 300;
+  aspect-ratio: 173.03751 / 244.73958;
   display: block;
   overflow: visible;
-}
-
-.neck {
-  fill: var(--color-surface-alt);
-  stroke: var(--color-outline);
-  stroke-width: var(--stroke-width);
 }
 
 .headOutline {
@@ -18,24 +12,7 @@
   stroke-width: var(--stroke-width);
 }
 
-.cavity {
-  fill: var(--color-surface);
-  stroke: var(--color-outline);
-  stroke-width: var(--stroke-width);
-}
-
-.teeth line {
-  stroke: var(--color-outline);
-  stroke-width: calc(var(--stroke-width) * 1.4);
-  stroke-linecap: round;
-}
-
-.velum {
-  transition-property: transform;
-  transition-timing-function: var(--ease-standard);
-}
-
-.velumShape {
+.palate {
   fill: var(--color-secondary);
   stroke: var(--color-outline);
   stroke-width: var(--stroke-width);
@@ -46,6 +23,8 @@
   stroke: var(--color-outline);
   stroke-width: var(--stroke-width);
   stroke-linejoin: round;
+  transition-property: d;
+  transition-timing-function: var(--ease-standard);
 }
 
 .lipUpper,
@@ -57,20 +36,18 @@
   transition-timing-function: var(--ease-standard);
 }
 
-.glottisBox {
-  fill: var(--color-surface);
-  stroke: var(--color-outline);
-  stroke-width: var(--stroke-width);
-}
-
-.glottis line {
+.glottis {
+  fill: none;
   stroke: var(--color-text-soft);
-  stroke-width: calc(var(--stroke-width) * 1.2);
+  stroke-width: calc(var(--stroke-width) * 1.6);
   stroke-linecap: round;
+  stroke-linejoin: round;
+  transform-box: fill-box;
+  transform-origin: center;
   transition: stroke var(--duration-standard) var(--ease-standard);
 }
 
-.glottisActive line {
+.glottisActive {
   stroke: var(--color-focus);
 }
 
@@ -133,7 +110,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .velum,
+  .tongue,
   .lipUpper,
   .lipLower {
     transition-duration: 0ms !important;
