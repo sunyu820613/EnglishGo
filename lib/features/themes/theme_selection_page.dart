@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../core/theme/theme_controller.dart';
 import '../../core/theme/tokens.dart';
@@ -22,7 +21,7 @@ class ThemeSelectionPage extends ConsumerWidget {
       body: SafeArea(
         child: Column(
           children: <Widget>[
-            AppTopBar(onBack: () => context.pop()),
+            AppTopBar(onBack: () => popOrGo(context, '/home')),
             Padding(
               padding: const EdgeInsets.all(Space.md),
               child: Text(
@@ -37,8 +36,13 @@ class ThemeSelectionPage extends ConsumerWidget {
             Expanded(
               child: GridView.builder(
                 padding: const EdgeInsets.all(Space.md),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
+                // A fixed cross-axis count stretches each card to fill
+                // half the available width; on wide viewports without an
+                // outer max-width cap that made cards balloon to hundreds
+                // of dp. Cap each card's own extent instead, so it looks
+                // right regardless of what's constraining it from outside.
+                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                  maxCrossAxisExtent: 200,
                   mainAxisSpacing: Space.md,
                   crossAxisSpacing: Space.md,
                   childAspectRatio: 1.2,
@@ -103,32 +107,42 @@ class _ThemeCard extends StatelessWidget {
               isLightTheme: themeData.isLight,
             ),
           ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Container(
-                width: 64,
-                height: 64,
-                decoration: BoxDecoration(
-                  color: themeData.primary,
-                  borderRadius: BorderRadius.circular(KidRadius.full),
-                ),
-                child: Icon(
-                  isSelected ? Icons.check : Icons.star,
-                  color: themeData.onPrimary,
-                  size: 32,
-                ),
+          // Capping the grid cell's own extent (see gridDelegate above)
+          // means this content must scale down gracefully if the cell
+          // ends up too small for it -- e.g. at 200% system text scale,
+          // where the label alone can exceed a small cell's height.
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Padding(
+              padding: const EdgeInsets.all(Space.sm),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Container(
+                    width: 64,
+                    height: 64,
+                    decoration: BoxDecoration(
+                      color: themeData.primary,
+                      borderRadius: BorderRadius.circular(KidRadius.full),
+                    ),
+                    child: Icon(
+                      isSelected ? Icons.check : Icons.star,
+                      color: themeData.onPrimary,
+                      size: 32,
+                    ),
+                  ),
+                  const SizedBox(height: Space.sm),
+                  Text(
+                    themeId,
+                    style: TextStyle(
+                      fontFamily: FontFamily.display,
+                      fontSize: TypeScale.body,
+                      color: themeData.text,
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(height: Space.sm),
-              Text(
-                themeId,
-                style: TextStyle(
-                  fontFamily: FontFamily.display,
-                  fontSize: TypeScale.body,
-                  color: themeData.text,
-                ),
-              ),
-            ],
+            ),
           ),
         ),
       ),

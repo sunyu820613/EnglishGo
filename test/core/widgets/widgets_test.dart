@@ -59,6 +59,63 @@ void main() {
       }
     });
 
+    testWidgets(
+      'centers its child vertically and horizontally when the enforced '
+      'minimum size is bigger than the content (short text on a primary '
+      'sized button)',
+      (tester) async {
+        await tester.pumpWidget(
+          wrapWithTheme(
+            KidButton(
+              onPressed: () {},
+              semanticsLabel: 'Play',
+              size: KidSize.primary,
+              child: const Text('Play'),
+            ),
+            'starlight',
+          ),
+        );
+        await tester.pump();
+
+        final Rect buttonRect = tester.getRect(find.byType(KidButton));
+        final Rect textRect = tester.getRect(find.text('Play'));
+
+        expect((textRect.center.dx - buttonRect.center.dx).abs(), lessThan(2));
+        expect((textRect.center.dy - buttonRect.center.dy).abs(), lessThan(2));
+      },
+    );
+
+    testWidgets(
+      'does not stretch to fill the ambient width when placed in a wide, '
+      'bounded-width Column (e.g. HomePage) -- only centering, not filling, '
+      'is wanted',
+      (tester) async {
+        await tester.pumpWidget(
+          wrapWithTheme(
+            SizedBox(
+              width: 400,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  KidButton(
+                    onPressed: () {},
+                    semanticsLabel: 'Play',
+                    size: KidSize.primary,
+                    child: const Text('Play'),
+                  ),
+                ],
+              ),
+            ),
+            'starlight',
+          ),
+        );
+        await tester.pump();
+
+        final double buttonWidth = tester.getSize(find.byType(KidButton)).width;
+        expect(buttonWidth, lessThan(200));
+      },
+    );
+
     testWidgets('semantics label is present', (tester) async {
       await tester.pumpWidget(
         wrapWithTheme(

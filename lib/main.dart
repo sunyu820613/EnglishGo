@@ -124,12 +124,28 @@ class _EnglishGoAppState extends ConsumerState<EnglishGoApp> {
       builder: (BuildContext context, Widget? child) {
         // Apply reduced motion if system setting is enabled
         final bool reducedMotion = MediaQuery.disableAnimationsOf(context);
-        return reducedMotion
-            ? MediaQuery(
-                data: MediaQuery.of(context).copyWith(disableAnimations: true),
-                child: child ?? const SizedBox.shrink(),
-              )
-            : child ?? const SizedBox.shrink();
+        Widget result = child ?? const SizedBox.shrink();
+        if (reducedMotion) {
+          result = MediaQuery(
+            data: MediaQuery.of(context).copyWith(disableAnimations: true),
+            child: result,
+          );
+        }
+        // DESIGN.md §4: tablet/desktop widths use a centered content
+        // column (spec says 720dp for lesson pages; applied app-wide here
+        // since every page was stretching edge-to-edge on wide viewports
+        // with no cap -- oversized grid cells, off-center layouts). The
+        // ColoredBox behind it fills the letterboxed margin with the
+        // current theme's background instead of leaving bare white/black.
+        return ColoredBox(
+          color: kidTheme.background,
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 720),
+              child: result,
+            ),
+          ),
+        );
       },
     );
   }

@@ -1,7 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../theme/kid_theme.dart';
 import '../theme/tokens.dart';
+
+/// Pops the current route, or navigates to [fallback] if there's nothing
+/// to pop -- e.g. the page was opened directly (deep link, page refresh
+/// while on it) with no navigation history, where `context.pop()` would
+/// otherwise silently do nothing and leave the back button looking dead.
+void popOrGo(BuildContext context, String fallback) {
+  if (context.canPop()) {
+    context.pop();
+  } else {
+    context.go(fallback);
+  }
+}
 
 /// Top bar for children's pages.
 ///

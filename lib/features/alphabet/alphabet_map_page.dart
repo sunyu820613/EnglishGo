@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/theme/theme_controller.dart';
 import '../../core/theme/tokens.dart';
 import '../../core/widgets/app_top_bar.dart';
+import '../../core/widgets/kid_button.dart';
 import '../../data/alphabet/alphabet_repository.dart';
 import '../../data/alphabet/models.dart';
 import '../../data/progress/progress_repository.dart';
@@ -16,8 +17,8 @@ final alphabetFutureProvider = FutureProvider<List<LetterEntry>>((Ref ref) {
 
 /// Alphabet map page with A–Z nodes.
 ///
-/// A/B/C are fully interactive; D–Z show a "Coming soon" placeholder
-/// on tap and are styled with lower opacity.
+/// All 26 letters are freely enterable in any order (LEARNING_MODEL.md §1.5:
+/// no locking; A→Z is a suggestion, not a requirement).
 class AlphabetMapPage extends ConsumerWidget {
   const AlphabetMapPage({super.key});
 
@@ -28,7 +29,6 @@ class AlphabetMapPage extends ConsumerWidget {
       alphabetFutureProvider,
     );
     final ProgressData progress = ref.watch(progressProvider);
-    final List<String> availableLetters = <String>['A', 'B', 'C'];
 
     return Scaffold(
       backgroundColor: theme.background,
@@ -36,8 +36,17 @@ class AlphabetMapPage extends ConsumerWidget {
         child: Column(
           children: <Widget>[
             AppTopBar(
-              onBack: () => context.pop(),
+              onBack: () => popOrGo(context, '/home'),
               backSemanticsLabel: 'Back to home',
+              actions: <Widget>[
+                KidButton(
+                  onPressed: () => context.push('/phonetics'),
+                  semanticsLabel: 'Phonetics chart',
+                  size: KidSize.icon,
+                  variant: KidVariant.ghost,
+                  icon: Icon(Icons.record_voice_over, color: theme.text),
+                ),
+              ],
             ),
             Padding(
               padding: const EdgeInsets.all(Space.md),
@@ -56,21 +65,8 @@ class AlphabetMapPage extends ConsumerWidget {
                   letters: letters,
                   progress: progress,
                   theme: theme,
-                  availableLetters: availableLetters,
-                  onLetterTap: (String letter) {
-                    if (availableLetters.contains(letter)) {
-                      context.push('/lesson/$letter');
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('$letter coming soon!'),
-                          duration: const Duration(seconds: 1),
-                          behavior: SnackBarBehavior.floating,
-                          backgroundColor: theme.surface,
-                        ),
-                      );
-                    }
-                  },
+                  onLetterTap: (String letter) =>
+                      context.push('/lesson/$letter'),
                 ),
                 loading: () => const Center(child: CircularProgressIndicator()),
                 error: (Object error, StackTrace? stack) => Center(
@@ -93,14 +89,12 @@ class _AlphabetGrid extends StatelessWidget {
     required this.letters,
     required this.progress,
     required this.theme,
-    required this.availableLetters,
     required this.onLetterTap,
   });
 
   final List<LetterEntry> letters;
   final ProgressData progress;
   final KidThemeExtension theme;
-  final List<String> availableLetters;
   final void Function(String letter) onLetterTap;
 
   @override
@@ -115,14 +109,12 @@ class _AlphabetGrid extends StatelessWidget {
       itemCount: letters.length,
       itemBuilder: (BuildContext context, int index) {
         final LetterEntry entry = letters[index];
-        final bool isAvailable = availableLetters.contains(entry.letter);
         final LetterProgress? lp = progress.letters[entry.letter];
         final int stars = lp?.stars ?? 0;
 
         return _MapNode(
           letter: entry.letter,
           stars: stars,
-          isAvailable: isAvailable,
           theme: theme,
           onTap: () => onLetterTap(entry.letter),
         );
@@ -135,14 +127,12 @@ class _MapNode extends StatelessWidget {
   const _MapNode({
     required this.letter,
     required this.stars,
-    required this.isAvailable,
     required this.theme,
     required this.onTap,
   });
 
   final String letter;
   final int stars;
-  final bool isAvailable;
   final KidThemeExtension theme;
   final VoidCallback onTap;
 
@@ -156,19 +146,16 @@ class _MapNode extends StatelessWidget {
         child: AnimatedContainer(
           duration: Motion.standard,
           decoration: BoxDecoration(
-            color: isAvailable
-                ? theme.surface
-                : theme.surface.withValues(alpha: 0.5),
+            color: theme.surface,
             borderRadius: BorderRadius.circular(KidRadius.lg),
             border: Border.all(
-              color: isAvailable
-                  ? theme.primary.withValues(alpha: 0.5)
-                  : theme.outline.withValues(alpha: 0.3),
+              color: theme.primary.withValues(alpha: 0.5),
               width: IconStroke.width,
             ),
-            boxShadow: isAvailable
-                ? KidShadows.rest(theme.shadowTint, isLightTheme: theme.isLight)
-                : null,
+            boxShadow: KidShadows.rest(
+              theme.shadowTint,
+              isLightTheme: theme.isLight,
+            ),
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -178,7 +165,7 @@ class _MapNode extends StatelessWidget {
                 style: TextStyle(
                   fontFamily: FontFamily.teaching,
                   fontSize: TypeScale.title,
-                  color: isAvailable ? theme.text : theme.textSoft,
+                  color: theme.text,
                   fontWeight: FontWeight.bold,
                 ),
               ),

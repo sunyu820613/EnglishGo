@@ -11,19 +11,27 @@ import 'kid_button.dart';
 ///
 /// Shows a ripple/outline animation while playing.
 /// Repeated clicks restart the voice (non-stacking via AudioService).
+///
+/// Either [audioPath] (play a single file) or [onTap] (custom playback,
+/// e.g. a repeated phoneme sequence) must be provided.
 class SoundButton extends ConsumerStatefulWidget {
   const SoundButton({
     super.key,
-    required this.audioPath,
+    this.audioPath,
     required this.semanticsLabel,
     this.size = KidSize.kid,
     this.onPlayingChanged,
-  });
+    this.onTap,
+  }) : assert(
+         audioPath != null || onTap != null,
+         'audioPath or onTap must be provided',
+       );
 
-  final String audioPath;
+  final String? audioPath;
   final String semanticsLabel;
   final KidSize size;
   final ValueChanged<bool>? onPlayingChanged;
+  final Future<void> Function(AudioService audio)? onTap;
 
   @override
   ConsumerState<SoundButton> createState() => _SoundButtonState();
@@ -38,8 +46,12 @@ class _SoundButtonState extends ConsumerState<SoundButton> {
     setState(() => _isPlaying = true);
     widget.onPlayingChanged?.call(true);
 
+    final Future<void> playback = widget.onTap != null
+        ? widget.onTap!(audio)
+        : audio.playVoice(widget.audioPath!);
+
     unawaited(
-      audio.playVoice(widget.audioPath).then((_) {
+      playback.then((_) {
         if (mounted) {
           setState(() => _isPlaying = false);
           widget.onPlayingChanged?.call(false);

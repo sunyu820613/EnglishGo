@@ -1,0 +1,57 @@
+[apple] already exists, skipping
+[ant] already exists, skipping
+[ball] already exists, skipping
+[bear] generating... OK
+[cat] generating... OK
+[car] generating... OK
+[dog] generating... OK
+[duck] generating... OK
+[egg] generating... OK
+[elephant] generating... OK
+[fish] generating... OK
+[frog] generating... OK
+[goat] generating... OK
+[grapes] generating... OK
+[hat] generating... OK
+[horse] generating... OK
+[ice_cream] generating... OK
+[iguana] generating... OK
+[juice] generating... OK
+[jellyfish] generating... OK
+[kite] generating... OK
+[koala] generating... OK
+[lion] generating... OK
+[leaf] generating... OK
+[moon] generating... OK
+[monkey] generating... OK
+[nest] generating... OK
+[nose] generating... OK
+[orange] generating... OK
+[owl] generating... OK
+[panda] generating... OK
+[pig] generating... FAILED: vipspng: libpng read error
+[queen] generating... OK
+[quail] generating... OK
+[rabbit] generating... OK
+[robot] generating... OK
+[sun] generating... OK
+[star] generating... OK
+[tiger] generating... OK
+[train] generating... OK
+[umbrella] generating... OK
+[unicorn] generating... OK
+[van] generating... OK
+[violin] generating... OK
+[whale] generating... OK
+[watch] generating... OK
+[xylophone] generating... OK
+[x_ray] generating... OK
+[yak] generating... OK
+[yo_yo] generating... OK
+[zebra] generating... OK
+[zoo] generating... OK
+
+=== Summary ===
+Succeeded: 51/52
+Failed: 1
+  - pig: vipspng: libpng read error

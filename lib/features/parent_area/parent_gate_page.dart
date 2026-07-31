@@ -107,96 +107,107 @@ class _ParentGatePageState extends State<ParentGatePage> {
     return Scaffold(
       backgroundColor: Colors.grey.shade50,
       body: SafeArea(
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(Space.xl),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Icon(
-                  Icons.lock_rounded,
-                  size: 64,
-                  color: textColor.withValues(alpha: 0.5),
-                ),
-                const SizedBox(height: Space.lg),
-                if (_coolingDown) ...[
-                  Text(
-                    'Please wait $_cooldownRemaining seconds',
-                    style: const TextStyle(
-                      fontFamily: 'Nunito',
-                      fontSize: 18,
-                      color: Colors.black54,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: Space.lg),
-                  LinearProgressIndicator(
-                    value: _cooldownRemaining / 30,
-                    backgroundColor: Colors.grey.shade200,
-                  ),
-                ] else ...[
-                  const Text(
-                    'Hold 3 seconds or solve:',
-                    style: TextStyle(
-                      fontFamily: 'Nunito',
-                      fontSize: 18,
-                      color: textColor,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: Space.md),
-                  GestureDetector(
-                    onLongPress: () {
-                      if (!_coolingDown) context.go('/parent');
-                    },
-                    child: Container(
-                      width: 200,
-                      height: 60,
-                      decoration: BoxDecoration(
-                        color: Colors.blue.shade100,
-                        borderRadius: BorderRadius.circular(KidRadius.md),
+        // Scroll instead of overflowing at large system text scale
+        // (ACCESSIBILITY.md: no overflow at 200%) -- this page was never
+        // given the scroll-safety wrapper the rest of the app uses, and
+        // was passing only by a thin margin until content grew slightly.
+        child: LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) {
+            return SingleChildScrollView(
+              padding: const EdgeInsets.all(Space.xl),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                child: Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Icon(
+                        Icons.lock_rounded,
+                        size: 64,
+                        color: textColor.withValues(alpha: 0.5),
                       ),
-                      child: const Center(
-                        child: Text(
-                          'Long press here',
+                      const SizedBox(height: Space.lg),
+                      if (_coolingDown) ...[
+                        Text(
+                          'Please wait $_cooldownRemaining seconds',
+                          style: const TextStyle(
+                            fontFamily: 'Nunito',
+                            fontSize: 18,
+                            color: Colors.black54,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: Space.lg),
+                        LinearProgressIndicator(
+                          value: _cooldownRemaining / 30,
+                          backgroundColor: Colors.grey.shade200,
+                        ),
+                      ] else ...[
+                        const Text(
+                          'Hold 3 seconds or solve:',
                           style: TextStyle(
                             fontFamily: 'Nunito',
-                            fontSize: 16,
-                            color: Colors.blue,
+                            fontSize: 18,
+                            color: textColor,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: Space.md),
+                        GestureDetector(
+                          onLongPress: () {
+                            if (!_coolingDown) context.go('/parent');
+                          },
+                          child: Container(
+                            width: 200,
+                            height: 60,
+                            decoration: BoxDecoration(
+                              color: Colors.blue.shade100,
+                              borderRadius: BorderRadius.circular(KidRadius.md),
+                            ),
+                            child: const Center(
+                              child: Text(
+                                'Long press here',
+                                style: TextStyle(
+                                  fontFamily: 'Nunito',
+                                  fontSize: 16,
+                                  color: Colors.blue,
+                                ),
+                              ),
+                            ),
                           ),
                         ),
+                      ],
+                      const SizedBox(height: Space.lg),
+                      Text(
+                        '$_num1 + $_num2 = ?',
+                        style: const TextStyle(
+                          fontFamily: 'Nunito',
+                          fontSize: 32,
+                          color: textColor,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                  ),
-                ],
-                const SizedBox(height: Space.lg),
-                Text(
-                  '$_num1 + $_num2 = ?',
-                  style: const TextStyle(
-                    fontFamily: 'Nunito',
-                    fontSize: 32,
-                    color: textColor,
-                    fontWeight: FontWeight.bold,
+                      const SizedBox(height: Space.md),
+                      Wrap(
+                        spacing: Space.md,
+                        children: _choices.map((int choice) {
+                          return KidButton(
+                            onPressed: () => _onArithmeticSelect(choice),
+                            semanticsLabel: 'Answer $choice',
+                            variant: KidVariant.secondary,
+                            child: Text(
+                              '$choice',
+                              style: const TextStyle(fontSize: 24),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(height: Space.md),
-                Wrap(
-                  spacing: Space.md,
-                  children: _choices.map((int choice) {
-                    return KidButton(
-                      onPressed: () => _onArithmeticSelect(choice),
-                      semanticsLabel: 'Answer $choice',
-                      variant: KidVariant.secondary,
-                      child: Text(
-                        '$choice',
-                        style: const TextStyle(fontSize: 24),
-                      ),
-                    );
-                  }).toList(),
-                ),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         ),
       ),
     );

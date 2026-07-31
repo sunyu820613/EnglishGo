@@ -30,7 +30,7 @@
 ```
 
 字段说明：
-- `kind`: wordImage / letterAudio / phonicsAudio / wordAudio / phraseAudio / sfx / bgm / mascot / scene / decoration / font / animation
+- `kind`: wordImage / storyImage / letterAudio / phonicsAudio / wordAudio / phraseAudio / sfx / bgm / mascot / scene / decoration / font / animation
 - `theme`: 六主题 id 或 null（全主题通用，如单词插画）
 - `placeholder`: 开发期占位资源必须为 true，**质量门槛要求正式版全部为 false**
 - `humanReviewed`: 人工检查（拼写/结构错误/水印/适龄）通过后置 true

@@ -136,6 +136,33 @@ class ParentAreaPage extends ConsumerWidget {
               ),
             ),
           ),
+          const SizedBox(height: Space.md),
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(Space.md),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  const Text(
+                    'Reference',
+                    style: TextStyle(
+                      fontFamily: 'Nunito',
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  const SizedBox(height: Space.sm),
+                  KidButton(
+                    onPressed: () => context.push('/phonetics'),
+                    semanticsLabel: 'Open phonetics chart',
+                    variant: KidVariant.secondary,
+                    child: const Text('Phonetics Chart'),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );

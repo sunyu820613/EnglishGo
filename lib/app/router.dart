@@ -9,7 +9,9 @@ import '../features/lesson/lesson_page.dart';
 import '../features/onboarding/onboarding_page.dart';
 import '../features/parent_area/parent_area_page.dart';
 import '../features/parent_area/parent_gate_page.dart';
+import '../features/phonetics/phonetics_chart_page.dart';
 import '../features/rewards/rewards_page.dart';
+import '../features/rewards/story_viewer_page.dart';
 import '../features/themes/theme_selection_page.dart';
 
 /// GoRouter configuration for EnglishGo.
@@ -71,6 +73,14 @@ GoRouter buildRouter(WidgetRef ref) {
             const RewardsPage(),
       ),
       GoRoute(
+        path: '/story/:id',
+        parentNavigatorKey: rootNavigatorKey,
+        builder: (BuildContext context, GoRouterState state) {
+          final String id = state.pathParameters['id'] ?? '';
+          return StoryViewerPage(storyId: id);
+        },
+      ),
+      GoRoute(
         path: '/parent-gate',
         parentNavigatorKey: rootNavigatorKey,
         builder: (BuildContext context, GoRouterState state) =>
@@ -81,6 +91,12 @@ GoRouter buildRouter(WidgetRef ref) {
         parentNavigatorKey: rootNavigatorKey,
         builder: (BuildContext context, GoRouterState state) =>
             const ParentAreaPage(),
+      ),
+      GoRoute(
+        path: '/phonetics',
+        parentNavigatorKey: rootNavigatorKey,
+        builder: (BuildContext context, GoRouterState state) =>
+            const PhoneticsChartPage(),
       ),
     ],
   );

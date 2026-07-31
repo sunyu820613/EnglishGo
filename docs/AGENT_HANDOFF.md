@@ -4,6 +4,33 @@
 
 ---
 
+## 2026-07-25 ｜ Claude ｜ Phase 3 收尾（200% 大字体全流程扫查）+ Phase 4（52 张正式插画入库、A–Z 全解锁）
+
+**插画资产管线（独立 subagent 后台生成，未接入主 agent 上下文）：**
+- 用 DashScope `wan2.7-image-pro`（阿里云百炼付费 API，soft-clay 儿童绘本风格 prompt 模板）生成固定 26×2=52 张单词插画，全部成功，0 失败（`tool/imggen/generation_result.json`）
+- 修复 `update_manifest.js`（原版未回填 `letter` 字段）后登记进 `assets/manifests/manifest.json`（`kind: wordImage`，`humanReviewed: false` 待人工复核语义正确性，`sourceDetail` 注明来源模型）
+- **发现并修复一处会导致插画完全不生效的遗漏**：`pubspec.yaml` 从未声明 `assets/images/words/` 目录，此前生成的所有插画实际不会被打包进 App
+- 已用 `contact_sheet.js` 生成 52 张缩略图总览图供人工审阅，用户确认可用
+- **版权条款核实**（用户明确要求核实）：阿里云"生成内容不得商用"条款仅针对控制台**免费体验服务**，与本项目使用的**付费 API** 调用无关；《阿里云百炼服务协议》§7.5/7.6 显示生成内容知识产权原则上归调用方，但平台不保证其可版权性/不侵权，风险由使用方自行承担。已将 manifest 中占位的 `license` 字段改写为准确描述此结论
+
+**Phase 3 大字体（200%）全流程溢出扫查：**
+- `_StepMascotEntrance` 之前已修复；本轮发现同样问题存在于 `LessonPage` 全部 10 个步骤 Widget（`_StepLetterName` 实测溢出 3px，其余同构未测但同样风险）。提取共享 `_ScrollSafeCenter` 组件（`LayoutBuilder + SingleChildScrollView + ConstrainedBox(minHeight) + Center`），10 个步骤统一改用，一次性根治整条课程链路的大字体溢出风险
+- 顺带发现并修复一个 `flutter_test` 框架级坑：同一测试文件内两个 `testWidgets` 都触发真实 `alphabet.json` 资源加载（`rootBundle.loadString`）时，第二次调用会永久卡死，与业务代码无关。拆分为独立测试文件规避（`lesson_page_large_text_scale_test.dart`）
+- 新增 `AlphabetMapPage` 200% 大字体回归测试（含 3 星场景，因固定宽高比 GridView 格子在此场景风险最高）——验证结果：不溢出
+
+**Phase 4：A–Z 全部解锁**
+- 核实 `docs/LEARNING_MODEL.md` §1.5 规格："字母地图全部可自由进入...不锁定"——此前 `AlphabetMapPage` 硬编码只放行 A/B/C、D–Z 点击弹 "coming soon" 违反此规格。核实音频（26×2 letter/phonics + 52 word + 52 phrase）与插画（52 张）资产均已全部就绪，移除人为限制，`_MapNode` 同步移除"半透明锁定态"视觉，全部 26 字母统一可进入课程。新增 `test/features/alphabet/alphabet_map_page_test.dart` 验证 A–Z 全部可点击导航、无 "coming soon" 残留
+
+**验证结果：**
+- `flutter analyze`：0 issues；`dart format .`：无变更
+- `flutter test`：130/130 通过
+
+**结论：Phase 3 大字体维度扫查完成；Phase 4 核心内容解锁完成（26 字母×2 单词，音频+插画+课程全流程均可用）。**
+
+**下一步：** Phase 3 剩余（quiz/matching 步骤减弱动效系统性核对、`docs/DESIGN_REVIEW.md` 产出）；Phase 4 剩余（`docs/EASTER_EGGS.md`/`docs/REWARD_SYSTEM.md` 描述的彩蛋、收藏书、字母音乐会等尚未实现的功能，`_StepTracing` 目前仍是占位页，TracingCanvas 未实现）；Phase 5（真机测试、正式配音替换 SAPI 占位音频、依赖与隐私审计、商店素材）在当前工具环境下大部分无法完成，需人工在真实设备/账号环境执行。
+
+---
+
 ## 2026-07-25 ｜ Claude ｜ 首次真机（Web）视觉验证，发现并修复 2 个 P0 级 bug
 
 为让用户看到实际运行效果，添加 web 平台支持（`flutter create . --platforms web`）并跑 `flutter build web` 静态托管验证。过程中发现两个自动化测试未覆盖到的严重 bug：

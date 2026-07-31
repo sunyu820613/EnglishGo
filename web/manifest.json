@@ -1,11 +1,11 @@
 {
-    "name": "english_go",
-    "short_name": "english_go",
+    "name": "EnglishGo",
+    "short_name": "EnglishGo",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#1C2A4A",
+    "theme_color": "#53C7DE",
+    "description": "A playful English alphabet and word learning app for young children.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

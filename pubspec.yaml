@@ -68,6 +68,16 @@ flutter:
     - assets/audio/letters/
     - assets/audio/words/
     - assets/audio/phrases/
+    - assets/audio/phonemes/
+    - assets/audio/example_words/
+    - assets/images/words/
+    - assets/images/stories/
+    - assets/themes/starlight/
+    - assets/themes/dino/
+    - assets/themes/robot/
+    - assets/themes/moon_garden/
+    - assets/themes/ballet_castle/
+    - assets/themes/dessert/
 
   fonts:
     - family: Baloo2

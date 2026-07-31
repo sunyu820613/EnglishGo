@@ -13,7 +13,7 @@ void main() {
     SharedPreferences.setMockInitialValues(<String, Object>{});
   });
 
-  Widget wrapWithRouter() {
+  Widget wrapWithRouter({double textScale = 1.0}) {
     final GoRouter router = GoRouter(
       initialLocation: '/lesson/A',
       routes: <RouteBase>[
@@ -33,6 +33,14 @@ void main() {
       child: MaterialApp.router(
         theme: buildThemeData(allThemes['starlight']!),
         routerConfig: router,
+        builder: (BuildContext context, Widget? child) {
+          return MediaQuery(
+            data: MediaQuery.of(
+              context,
+            ).copyWith(textScaler: TextScaler.linear(textScale)),
+            child: child ?? const SizedBox.shrink(),
+          );
+        },
       ),
     );
   }
@@ -66,7 +74,11 @@ void main() {
     await tapNext(); // word2 -> word2 tap
     await tapNext(); // word2 tap -> quiz
 
-    // Step 7: quiz shows three answer options.
+    // Step 7: quiz shows three answer options, all three rendering real
+    // illustrations -- the letter's own 2 words plus a real cross-letter
+    // distractor (not the old hardcoded placeholder icon / blank option).
     expect(find.byType(QuizOptionCard), findsNWidgets(3));
+    expect(find.byType(Image), findsNWidgets(3));
+    expect(tester.takeException(), isNull);
   });
 }

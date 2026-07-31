@@ -81,21 +81,48 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
           textAlign: TextAlign.center,
         ),
         const Spacer(),
-        // Theme selection
+        // Theme selection. A plain horizontal ListView always left-anchors
+        // its content, which looks broken on wide viewports (desktop/
+        // tablet landscape) where all 6 cards fit with room to spare --
+        // everything else on this screen is centered. Center the row when
+        // it fits; fall back to a left-anchored scroller when it doesn't
+        // (narrow phone widths, where scrolling is expected anyway).
         SizedBox(
           height: TouchSize.primary * 2.5,
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            itemCount: allThemes.length,
-            separatorBuilder: (_, _) => const SizedBox(width: Space.sm),
-            itemBuilder: (BuildContext context, int index) {
-              final String id = allThemes.keys.elementAt(index);
-              final KidThemeExtension cardTheme = allThemes[id]!;
-              return _ThemeCard(
-                themeId: id,
-                themeData: cardTheme,
-                isSelected: false,
-                onTap: () => _selectTheme(id),
+          child: LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+              final List<Widget> cards = <Widget>[
+                for (final String id in allThemes.keys)
+                  _ThemeCard(
+                    themeId: id,
+                    themeData: allThemes[id]!,
+                    isSelected: false,
+                    onTap: () => _selectTheme(id),
+                  ),
+              ];
+              final double contentWidth =
+                  cards.length * (TouchSize.primary * 2) +
+                  (cards.length - 1) * Space.sm;
+
+              if (contentWidth <= constraints.maxWidth) {
+                return Center(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      for (int i = 0; i < cards.length; i++) ...<Widget>[
+                        if (i > 0) const SizedBox(width: Space.sm),
+                        cards[i],
+                      ],
+                    ],
+                  ),
+                );
+              }
+
+              return ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: cards.length,
+                separatorBuilder: (_, _) => const SizedBox(width: Space.sm),
+                itemBuilder: (BuildContext context, int index) => cards[index],
               );
             },
           ),

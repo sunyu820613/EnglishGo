@@ -90,40 +90,69 @@ class _KidButtonState extends State<KidButton>
           scale: _scale,
           duration: Motion.press,
           curve: Motion.pressCurve,
-          child: AnimatedContainer(
-            duration: Motion.press,
-            decoration: BoxDecoration(
-              color: bgColor.withValues(alpha: widget.enabled ? 1.0 : 0.4),
-              borderRadius: BorderRadius.circular(KidRadius.md),
-              border: borderColor != null
-                  ? Border.all(color: borderColor, width: 2)
-                  : null,
-              boxShadow: KidShadows.rest(
-                theme?.shadowTint ?? Colors.black,
-                isLightTheme: theme?.isLight ?? true,
-              ),
-            ),
-            padding: EdgeInsets.symmetric(
-              horizontal: widget.size == KidSize.icon ? Space.sm : Space.md,
-              vertical: Space.sm,
-            ),
-            constraints: BoxConstraints(
-              minWidth: sizeValue,
-              minHeight: sizeValue,
-            ),
-            child:
-                widget.child ??
-                DefaultTextStyle.merge(
-                  style: TextStyle(
-                    color: fgColor.withValues(
-                      alpha: widget.enabled ? 1.0 : 0.4,
-                    ),
-                    fontFamily: FontFamily.display,
-                    fontSize: TypeScale.body,
-                    fontWeight: FontWeight.w700,
-                  ),
-                  child: widget.icon ?? const SizedBox.shrink(),
+          // UnconstrainedBox frees this subtree's width from the ambient
+          // constraint -- without it, Container's `alignment` below asks
+          // "is my incoming constraint bounded?" to decide whether to
+          // shrink-wrap or fill, and in a bounded-width ambient context
+          // (e.g. inside a Column) it would fill all the way to that
+          // unrelated ambient width instead of just the button's own
+          // content/min size (reproduced as the Play button stretching
+          // edge-to-edge on HomePage). `constrainedAxis: Axis.vertical`
+          // frees only the width; height was already unbounded in every
+          // real usage (Column gives non-expanded children loose height),
+          // so it's left alone.
+          //
+          // Deliberately NOT IntrinsicWidth/IntrinsicHeight: that family
+          // does a dry "measure, then relayout" pass that has repeatedly
+          // conflicted with AnimatedSwitcher elsewhere in the app
+          // (mis-hit-tests the outgoing vs incoming child during a step
+          // transition -- reproduced as "Next needs two taps").
+          // UnconstrainedBox achieves the same result with a plain
+          // single-pass RenderObject that carries none of that risk.
+          child: UnconstrainedBox(
+            constrainedAxis: Axis.vertical,
+            child: AnimatedContainer(
+              duration: Motion.press,
+              // Without an explicit alignment, Container skips wrapping
+              // its child in Align -- when the enforced minWidth/
+              // minHeight below is bigger than the content's natural
+              // size (e.g. short button text), the child ends up
+              // anchored top-left inside the padding box instead of
+              // centered, leaving dead space at the bottom/right.
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: bgColor.withValues(alpha: widget.enabled ? 1.0 : 0.4),
+                borderRadius: BorderRadius.circular(KidRadius.md),
+                border: borderColor != null
+                    ? Border.all(color: borderColor, width: 2)
+                    : null,
+                boxShadow: KidShadows.rest(
+                  theme?.shadowTint ?? Colors.black,
+                  isLightTheme: theme?.isLight ?? true,
                 ),
+              ),
+              padding: EdgeInsets.symmetric(
+                horizontal: widget.size == KidSize.icon ? Space.sm : Space.md,
+                vertical: Space.sm,
+              ),
+              constraints: BoxConstraints(
+                minWidth: sizeValue,
+                minHeight: sizeValue,
+              ),
+              child:
+                  widget.child ??
+                  DefaultTextStyle.merge(
+                    style: TextStyle(
+                      color: fgColor.withValues(
+                        alpha: widget.enabled ? 1.0 : 0.4,
+                      ),
+                      fontFamily: FontFamily.display,
+                      fontSize: TypeScale.body,
+                      fontWeight: FontWeight.w700,
+                    ),
+                    child: widget.icon ?? const SizedBox.shrink(),
+                  ),
+            ),
           ),
         ),
       ),

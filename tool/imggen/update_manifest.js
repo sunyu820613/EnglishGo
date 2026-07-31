@@ -11,10 +11,19 @@ const ROOT = path.join(__dirname, '..', '..');
 const WORDS_DIR = path.join(ROOT, 'assets', 'images', 'words');
 const MANIFEST_PATH = path.join(ROOT, 'assets', 'manifests', 'manifest.json');
 const PROMPTS_PATH = path.join(__dirname, 'word_prompts.json');
+const ALPHABET_PATH = path.join(ROOT, 'assets', 'data', 'alphabet.json');
 
 async function main() {
   const wordIds = Object.keys(JSON.parse(fs.readFileSync(PROMPTS_PATH, 'utf8')));
   const manifest = JSON.parse(fs.readFileSync(MANIFEST_PATH, 'utf8'));
+  const alphabet = JSON.parse(fs.readFileSync(ALPHABET_PATH, 'utf8'));
+
+  const letterByWordId = new Map();
+  for (const entry of alphabet.letters) {
+    for (const word of entry.words) {
+      letterByWordId.set(word.id, entry.letter);
+    }
+  }
 
   const byFile = new Map(manifest.assets.map((e) => [e.file, e]));
 
@@ -32,12 +41,20 @@ async function main() {
     const entry = {
       file: rel,
       kind: 'wordImage',
-      letter: prev ? prev.letter ?? null : null,
+      letter: letterByWordId.get(wordId) ?? null,
       word: wordId,
       theme: prev ? prev.theme ?? null : null,
       source: 'generated',
       sourceDetail: 'Alibaba Cloud wan2.7-image-pro via DashScope API',
-      license: 'proprietary-generated（需人工复核授权条款）',
+      // Confirmed against 阿里云百炼服务协议 (paid API, not the free
+      // "体验服务" trial which bars commercial use) §7.5/7.6: generated
+      // content's IP is conditionally the caller's, but Alibaba Cloud
+      // disclaims guaranteeing copyrightability or freedom from
+      // third-party IP disputes -- caller bears that risk.
+      license:
+        'ai-generated-commercial-use-permitted-no-ip-guarantee' +
+        '（阿里云百炼付费 API 生成，非免费体验服务；商用不受限，' +
+        '但平台不保证生成内容的可版权性/不侵权，需自行承担风险）',
       width: meta.width,
       height: meta.height,
       bytes: buf.length,

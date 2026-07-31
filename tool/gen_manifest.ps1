@@ -8,7 +8,10 @@ $manifestPath = Join-Path $assets 'manifests/manifest.json'
 
 $existing = @{}
 if (Test-Path $manifestPath) {
-    $old = Get-Content $manifestPath -Raw | ConvertFrom-Json
+    # Get-Content -Raw mis-decodes UTF8 (no BOM) on this system, mangling
+    # non-ASCII text (e.g. the Chinese license notes) -- read raw bytes
+    # with an explicit UTF8 decoder instead.
+    $old = [System.IO.File]::ReadAllText($manifestPath, [System.Text.Encoding]::UTF8) | ConvertFrom-Json
     foreach ($e in $old.assets) { $existing[$e.file] = $e }
 }
 
@@ -61,6 +64,6 @@ foreach ($p in $patterns) {
 }
 
 New-Item -ItemType Directory -Force (Split-Path -Parent $manifestPath) | Out-Null
-$doc = [ordered]@{ schemaVersion = 1; generatedAt = (Get-Date -AsUTC -Format 'yyyy-MM-ddTHH:mm:ssZ'); assets = $entries }
+$doc = [ordered]@{ schemaVersion = 1; generatedAt = (Get-Date).ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ssZ'); assets = $entries }
 $doc | ConvertTo-Json -Depth 5 | Set-Content $manifestPath -Encoding utf8
 Write-Host "Manifest written: $($entries.Count) assets"

@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:english_go/features/alphabet/alphabet_map_page.dart';
 import 'package:english_go/features/home/home_page.dart';
 import 'package:english_go/features/onboarding/onboarding_page.dart';
 import 'package:english_go/features/parent_area/parent_area_page.dart';
@@ -73,4 +76,31 @@ void main() {
     await tester.pump();
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets(
+    'AlphabetMapPage has no overflow at 200% text scale, incl. a starred '
+    'letter (grid cells are fixed-aspect, so a 3-star row is the risky '
+    'case)',
+    (tester) async {
+      SharedPreferences.setMockInitialValues(<String, Object>{
+        'progress.data': jsonEncode(<String, Object>{
+          'schemaVersion': 1,
+          'themeId': 'starlight',
+          'letters': <String, Object>{
+            'A': <String, Object>{'stars': 3},
+          },
+          'stickers': <String>[],
+          'settings': <String, Object>{},
+        }),
+      });
+      await tester.pumpWidget(wrapAt200(const AlphabetMapPage()));
+      // Wait for alphabet.json + progress to load without pumpAndSettle
+      // (a known flutter_test hazard with scrollables -- see
+      // lesson_page_large_text_scale_test.dart).
+      for (int i = 0; i < 6; i++) {
+        await tester.pump(const Duration(milliseconds: 200));
+      }
+      expect(tester.takeException(), isNull);
+    },
+  );
 }
