@@ -1,6 +1,10 @@
 .stage {
   width: 100%;
-  height: min(70vh, 640px);
+  /* Sized to comfortably fit under the header/title/subtitle within a
+     typical first screen, not just relative to raw viewport height —
+     70vh was taller than the space actually left after that header
+     content, pushing the bottom of the globe below the fold. */
+  height: min(52vh, 520px);
   border-radius: var(--radius-lg);
   overflow: hidden;
   background: var(--color-background);

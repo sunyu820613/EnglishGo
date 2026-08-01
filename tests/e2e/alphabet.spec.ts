@@ -1,10 +1,8 @@
 import { test, expect } from '@playwright/test';
 
-test('home page links into the alphabet overview', async ({ page }) => {
+test('home page is the alphabet overview', async ({ page }) => {
   await page.goto('/');
-  await expect(page.getByRole('heading', { name: "Let's learn English!" })).toBeVisible();
-  await page.getByRole('link', { name: 'Learn the Alphabet' }).click();
-  await expect(page).toHaveURL(/\/alphabet$/);
+  await expect(page.getByRole('heading', { name: 'Learn the Alphabet' })).toBeVisible();
   await expect(page.getByText('Learned 0 / 26')).toBeVisible();
 });
 

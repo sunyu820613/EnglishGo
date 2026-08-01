@@ -1,6 +1,5 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { AppShell } from '../components/AppShell';
-import { HomePage } from '../features/home/HomePage';
 import { AlphabetOverviewPage } from '../features/alphabet/AlphabetOverviewPage';
 import { AlphabetLetterPage } from '../features/alphabet/AlphabetLetterPage';
 import { ThemesPage } from '../features/themes/ThemesPage';
@@ -12,7 +11,7 @@ export const router = createBrowserRouter([
     path: '/',
     element: <AppShell />,
     children: [
-      { index: true, element: <HomePage /> },
+      { index: true, element: <AlphabetOverviewPage /> },
       { path: 'alphabet', element: <AlphabetOverviewPage /> },
       { path: 'alphabet/:letter', element: <AlphabetLetterPage /> },
       { path: 'themes', element: <ThemesPage /> },
