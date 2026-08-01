@@ -42,24 +42,24 @@ function useTokenColors() {
   }, []);
 }
 
-/** Flat 5-point star outline, sized to peek out from behind the letter
- * glyph as a halo/backdrop rather than sit beside it as a separate badge —
- * built once and reused for every star mesh. */
+/** Hollow 5-point star (outline only), sized to peek out from behind the
+ * letter glyph as a halo/backdrop rather than sit beside it as a separate
+ * badge — built once and reused for every star mesh. The hollow center is a
+ * same-shaped hole scaled down, giving a constant-width border. */
 function useStarGeometry() {
   return useMemo(() => {
-    const shape = new THREE.Shape();
     const spikes = 5;
     const outerR = 0.42;
     const innerR = 0.17;
-    for (let i = 0; i < spikes * 2; i++) {
-      const r = i % 2 === 0 ? outerR : innerR;
-      const angle = (i / (spikes * 2)) * Math.PI * 2 - Math.PI / 2;
-      const x = Math.cos(angle) * r;
-      const y = Math.sin(angle) * r;
-      if (i === 0) shape.moveTo(x, y);
-      else shape.lineTo(x, y);
-    }
-    shape.closePath();
+    const borderScale = 0.7;
+    const starPoints = (scale: number) =>
+      Array.from({ length: spikes * 2 }, (_, i) => {
+        const r = (i % 2 === 0 ? outerR : innerR) * scale;
+        const angle = (i / (spikes * 2)) * Math.PI * 2 - Math.PI / 2;
+        return new THREE.Vector2(Math.cos(angle) * r, Math.sin(angle) * r);
+      });
+    const shape = new THREE.Shape(starPoints(1));
+    shape.holes.push(new THREE.Path(starPoints(borderScale)));
     return new THREE.ShapeGeometry(shape);
   }, []);
 }
