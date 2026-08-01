@@ -11,21 +11,3 @@
   margin: 0 0 var(--space-lg);
 }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: var(--space-md);
-}
-
-@media (min-width: 768px) {
-  .grid {
-    grid-template-columns: repeat(6, 1fr);
-  }
-}
-
-@media (min-width: 1200px) {
-  .grid {
-    grid-template-columns: repeat(8, 1fr);
-  }
-}
-

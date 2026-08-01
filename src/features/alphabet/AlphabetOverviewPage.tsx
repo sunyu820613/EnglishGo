@@ -1,11 +1,15 @@
+import { useMemo } from 'react';
 import { alphabet } from '../../data/alphabet';
 import { useProgressStore } from '../../store/progressStore';
 import page from '../../styles/page.module.css';
-import { LetterCard } from './LetterCard';
+import { AccessibilityFallback } from './AccessibilityFallback';
+import { AlphabetGlobe } from './AlphabetGlobe';
+import { isWebGLAvailable } from './isWebGLAvailable';
 import styles from './AlphabetOverviewPage.module.css';
 
 export function AlphabetOverviewPage() {
   const learnedLetters = useProgressStore((s) => s.learnedLetters);
+  const webglAvailable = useMemo(() => isWebGLAvailable(), []);
 
   return (
     <div className={page.page}>
@@ -13,17 +17,13 @@ export function AlphabetOverviewPage() {
         <h1 className={styles.title}>Learn the Alphabet</h1>
         <p className={styles.subtitle}>
           Learned {learnedLetters.length} / {alphabet.length}
+          {webglAvailable ? ' — drag to look around, tap a letter to start' : ''}
         </p>
-        <div className={styles.grid}>
-          {alphabet.map((entry, i) => (
-            <LetterCard
-              key={entry.letter}
-              entry={entry}
-              learned={learnedLetters.includes(entry.letter)}
-              entranceDelay={(i % 8) * 0.03}
-            />
-          ))}
-        </div>
+        {webglAvailable ? (
+          <AlphabetGlobe learnedLetters={learnedLetters} />
+        ) : (
+          <AccessibilityFallback learnedLetters={learnedLetters} />
+        )}
       </div>
     </div>
   );
