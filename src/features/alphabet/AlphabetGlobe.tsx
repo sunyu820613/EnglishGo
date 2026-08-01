@@ -42,14 +42,15 @@ function useTokenColors() {
   }, []);
 }
 
-/** Flat 5-point star outline, small enough to sit as a badge next to a
- * learned letter — built once and reused for every star mesh. */
+/** Flat 5-point star outline, sized to peek out from behind the letter
+ * glyph as a halo/backdrop rather than sit beside it as a separate badge —
+ * built once and reused for every star mesh. */
 function useStarGeometry() {
   return useMemo(() => {
     const shape = new THREE.Shape();
     const spikes = 5;
-    const outerR = 0.16;
-    const innerR = 0.065;
+    const outerR = 0.42;
+    const innerR = 0.17;
     for (let i = 0; i < spikes * 2; i++) {
       const r = i % 2 === 0 ? outerR : innerR;
       const angle = (i / (spikes * 2)) * Math.PI * 2 - Math.PI / 2;
@@ -63,19 +64,11 @@ function useStarGeometry() {
   }, []);
 }
 
-/** A small offset, tangent to the sphere at this point, so the star sits
- * beside the letter rather than on top of it — degenerates harmlessly near
- * the poles (A/Z), where the exact badge direction matters least. */
+/** Same direction as the letter, just pulled slightly toward the sphere's
+ * center — so the star sits directly *behind* the glyph (peeking out
+ * around its edges as a halo) instead of beside it. */
 function starOffset(normal: [number, number, number]): THREE.Vector3 {
-  const n = new THREE.Vector3(...normal);
-  const worldUp = new THREE.Vector3(0, 1, 0);
-  const tangent = new THREE.Vector3().crossVectors(n, worldUp);
-  if (tangent.lengthSq() < 1e-6) tangent.set(1, 0, 0);
-  tangent.normalize();
-  return n
-    .clone()
-    .multiplyScalar(GLOBE_RADIUS + 0.15)
-    .addScaledVector(tangent, 0.4);
+  return new THREE.Vector3(...normal).multiplyScalar(GLOBE_RADIUS - 0.12);
 }
 
 function AlphabetGlobeGroup({
@@ -311,6 +304,7 @@ function AlphabetGlobeGroup({
               color={tokenColors.letter}
               anchorX="center"
               anchorY="middle"
+              renderOrder={1}
               onPointerDown={(e) => {
                 e.stopPropagation();
                 (e.target as Element).setPointerCapture?.(e.pointerId);
@@ -326,8 +320,10 @@ function AlphabetGlobeGroup({
             >
               {point.letter}
             </Text>
-            {/* Learned badge — a small gold star beside the letter, not a
-                replacement for it, so the letter stays identifiable. */}
+            {/* Learned badge — a gold star halo directly behind the letter
+                (renderOrder keeps the letter drawn on top, since two
+                transparent objects at nearly the same depth don't
+                reliably self-sort by z alone). */}
             {learned ? (
               <mesh
                 ref={(obj) => {
@@ -336,6 +332,7 @@ function AlphabetGlobeGroup({
                 }}
                 position={starOffset(point.normal)}
                 geometry={starGeometry}
+                renderOrder={0}
               >
                 <meshBasicMaterial color={tokenColors.star} transparent />
               </mesh>
@@ -376,7 +373,7 @@ export function AlphabetGlobe({ learnedLetters }: AlphabetGlobeProps) {
 
   return (
     <div className={styles.stage}>
-      <Canvas camera={{ position: [0, 0, 9], fov: 45 }}>
+      <Canvas camera={{ position: [0, 0, 12], fov: 45 }}>
         <ambientLight intensity={1.3} />
         <AlphabetGlobeGroup learnedLetters={learnedLetters} onSelect={setSelected} />
       </Canvas>
