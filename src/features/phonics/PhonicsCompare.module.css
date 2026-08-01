@@ -10,8 +10,14 @@
 .row {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
   gap: var(--space-md);
+}
+
+.value {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
 }
 
 .label {

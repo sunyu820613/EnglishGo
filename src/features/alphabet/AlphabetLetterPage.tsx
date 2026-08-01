@@ -1,7 +1,6 @@
 import { useEffect, useLayoutEffect, useRef } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import gsap from 'gsap';
-import { SoundButton } from '../../components/SoundButton';
 import { WordCard } from '../../components/WordCard';
 import { alphabet } from '../../data/alphabet';
 import { letterAudioPath, wordAudioPath, wordImagePath } from '../../data/paths';
@@ -55,7 +54,7 @@ export function AlphabetLetterPage() {
   const next = index < alphabet.length - 1 ? alphabet[index + 1] : undefined;
 
   return (
-    <div className={page.page}>
+    <div className={`${page.page} ${styles.page}`}>
       <div className={page.container}>
         <nav className={styles.letterNav}>
           {prev ? (
@@ -85,24 +84,18 @@ export function AlphabetLetterPage() {
 
         <div className={styles.layout} ref={layoutRef}>
           <section className={styles.heroSection}>
-            <span className={styles.hero}>{entry.letter}</span>
-            <SoundButton
-              src={letterAudioPath(genderedName)}
-              label={`Play the letter ${entry.letter}`}
-              caption="Letter name"
-              size="primary"
-            />
+            <span className={styles.hero}>
+              {entry.letter}
+              <span className={styles.heroLower}>{entry.letter.toLowerCase()}</span>
+            </span>
           </section>
 
           <section className={styles.content}>
-            <div className={styles.phonicsRow}>
-              <SoundButton
-                src={letterAudioPath(entry.phonicsAudio)}
-                label={`Play the ${entry.letter} sound`}
-                caption="Letter sound"
-              />
-              <PhonicsCompare letter={entry} />
-            </div>
+            <PhonicsCompare
+              letter={entry}
+              nameAudioSrc={letterAudioPath(genderedName)}
+              soundAudioSrc={letterAudioPath(entry.phonicsAudio)}
+            />
 
             <div className={styles.words}>
               {entry.words.map((word) => (

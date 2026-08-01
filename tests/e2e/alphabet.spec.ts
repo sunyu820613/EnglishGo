@@ -10,7 +10,7 @@ test('a letter page plays audio, toggles voice gender, and persists progress on 
   page,
 }) => {
   await page.goto('/alphabet/A');
-  await expect(page.getByText('A', { exact: true })).toBeVisible();
+  await expect(page.getByText('Aa', { exact: true })).toBeVisible();
 
   // Male/female toggle in the top bar affects the letter-name SoundButton.
   const genderToggle = page.getByRole('button', { name: /Voice: (male|female)/i });
