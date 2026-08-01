@@ -1,7 +1,7 @@
-import { Link } from 'react-router-dom';
 import { alphabet } from '../../data/alphabet';
 import { useProgressStore } from '../../store/progressStore';
 import page from '../../styles/page.module.css';
+import { LetterCard } from './LetterCard';
 import styles from './AlphabetOverviewPage.module.css';
 
 export function AlphabetOverviewPage() {
@@ -15,18 +15,14 @@ export function AlphabetOverviewPage() {
           Learned {learnedLetters.length} / {alphabet.length}
         </p>
         <div className={styles.grid}>
-          {alphabet.map(({ letter }) => {
-            const learned = learnedLetters.includes(letter);
-            return (
-              <Link
-                key={letter}
-                to={`/alphabet/${letter}`}
-                className={[styles.tile, learned ? styles.learned : ''].join(' ')}
-              >
-                {letter}
-              </Link>
-            );
-          })}
+          {alphabet.map((entry, i) => (
+            <LetterCard
+              key={entry.letter}
+              entry={entry}
+              learned={learnedLetters.includes(entry.letter)}
+              entranceDelay={(i % 8) * 0.03}
+            />
+          ))}
         </div>
       </div>
     </div>

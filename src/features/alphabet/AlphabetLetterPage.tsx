@@ -1,5 +1,6 @@
-import { useEffect } from 'react';
+import { useEffect, useLayoutEffect, useRef } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
+import gsap from 'gsap';
 import { SoundButton } from '../../components/SoundButton';
 import { WordCard } from '../../components/WordCard';
 import { alphabet } from '../../data/alphabet';
@@ -18,10 +19,28 @@ export function AlphabetLetterPage() {
 
   const markLetterLearned = useProgressStore((s) => s.markLetterLearned);
   const voiceGender = useSettingsStore((s) => s.voiceGender);
+  const layoutRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (letter) markLetterLearned(letter);
   }, [letter, markLetterLearned]);
+
+  // Short layered entrance each time the letter changes — never blocks
+  // interaction, and skips entirely under prefers-reduced-motion.
+  useLayoutEffect(() => {
+    const el = layoutRef.current;
+    if (!el || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const ctx = gsap.context(() => {
+      gsap.from([el.querySelector(`.${styles.heroSection}`), ...el.querySelectorAll(`.${styles.content} > *`)], {
+        opacity: 0,
+        y: 14,
+        duration: 0.28,
+        stagger: 0.06,
+        ease: 'power1.out',
+      });
+    }, el);
+    return () => ctx.revert();
+  }, [letter]);
 
   if (!entry) {
     return <Navigate to="/alphabet" replace />;
@@ -64,7 +83,7 @@ export function AlphabetLetterPage() {
           )}
         </nav>
 
-        <div className={styles.layout}>
+        <div className={styles.layout} ref={layoutRef}>
           <section className={styles.heroSection}>
             <span className={styles.hero}>{entry.letter}</span>
             <SoundButton
