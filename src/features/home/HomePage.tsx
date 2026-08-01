@@ -20,10 +20,7 @@ export function HomePage() {
             <h2>Learn the Alphabet</h2>
             <p>26 letters, names, sounds, and words.</p>
           </Link>
-          <Link to="/phonemes" className={styles.card}>
-            <h2>Phonics</h2>
-            <p>Explore the sounds that make up words.</p>
-          </Link>
+          {/* Phonics page paused, not a dev target for now — route stays live, just unlinked. */}
         </section>
 
         <section className={styles.progress}>
