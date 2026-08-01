@@ -5,6 +5,7 @@ import { WordCard } from '../../components/WordCard';
 import { alphabet } from '../../data/alphabet';
 import { letterAudioPath, phraseAudioPath, wordAudioPath, wordImagePath } from '../../data/paths';
 import { PhonicsCompare } from '../phonics/PhonicsCompare';
+import { hasTracingData } from '../../data/tracingPaths';
 import { useProgressStore } from '../../store/progressStore';
 import { useSettingsStore } from '../../store/settingsStore';
 import page from '../../styles/page.module.css';
@@ -109,6 +110,13 @@ export function AlphabetLetterPage() {
                 />
               ))}
             </div>
+
+            {hasTracingData(entry.letter) ? (
+              <Link to={`/alphabet/${entry.letter}/trace`} className={styles.tracingCta}>
+                Practice writing {entry.letter}
+                {entry.letter.toLowerCase()}
+              </Link>
+            ) : null}
           </section>
         </div>
       </div>

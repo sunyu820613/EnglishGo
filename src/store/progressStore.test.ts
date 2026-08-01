@@ -4,7 +4,7 @@ import { useProgressStore } from './progressStore';
 describe('progressStore', () => {
   beforeEach(() => {
     localStorage.clear();
-    useProgressStore.setState({ learnedLetters: [] });
+    useProgressStore.setState({ learnedLetters: [], tracedLetters: [] });
   });
 
   it('marks a letter as learned and reports it back', () => {
@@ -38,5 +38,17 @@ describe('progressStore', () => {
     const raw = localStorage.getItem('englishgo.progress.v1');
     const parsed = JSON.parse(raw as string);
     expect(parsed.state.learnedLetters).toEqual(['A', 'B']);
+  });
+
+  it('tracks upper and lower case tracing completion separately', () => {
+    useProgressStore.getState().markLetterTraced('A');
+    expect(useProgressStore.getState().isLetterTraced('A')).toBe(true);
+    expect(useProgressStore.getState().isLetterTraced('a')).toBe(false);
+  });
+
+  it('does not duplicate an already-traced letter', () => {
+    useProgressStore.getState().markLetterTraced('a');
+    useProgressStore.getState().markLetterTraced('a');
+    expect(useProgressStore.getState().tracedLetters).toEqual(['a']);
   });
 });

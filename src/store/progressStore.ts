@@ -7,6 +7,12 @@ interface ProgressState {
   learnedLetters: string[];
   markLetterLearned: (letter: string) => void;
   isLetterLearned: (letter: string) => boolean;
+
+  /** Case-sensitive: 'A' and 'a' are tracked separately, since upper and
+   * lower case are separate tracing exercises. */
+  tracedLetters: string[];
+  markLetterTraced: (caseSensitiveLetter: string) => void;
+  isLetterTraced: (caseSensitiveLetter: string) => boolean;
 }
 
 export const useProgressStore = create<ProgressState>()(
@@ -20,6 +26,15 @@ export const useProgressStore = create<ProgressState>()(
             : { learnedLetters: [...state.learnedLetters, letter] },
         ),
       isLetterLearned: (letter) => get().learnedLetters.includes(letter),
+
+      tracedLetters: [],
+      markLetterTraced: (caseSensitiveLetter) =>
+        set((state) =>
+          state.tracedLetters.includes(caseSensitiveLetter)
+            ? state
+            : { tracedLetters: [...state.tracedLetters, caseSensitiveLetter] },
+        ),
+      isLetterTraced: (caseSensitiveLetter) => get().tracedLetters.includes(caseSensitiveLetter),
     }),
     {
       name: 'englishgo.progress.v1',

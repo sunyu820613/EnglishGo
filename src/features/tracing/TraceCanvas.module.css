@@ -1,0 +1,90 @@
+.canvas {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  max-width: clamp(280px, 60vw, 420px);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-rest);
+  touch-action: none;
+  cursor: pointer;
+}
+
+.stroke {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke var(--duration-standard) var(--ease-standard),
+    opacity var(--duration-standard) var(--ease-standard);
+}
+
+.locked {
+  stroke: color-mix(in srgb, var(--color-outline) 15%, transparent);
+  stroke-width: var(--stroke-width);
+}
+
+.active {
+  stroke: color-mix(in srgb, var(--color-primary) 35%, transparent);
+  stroke-width: calc(var(--stroke-width) * 1.6);
+  stroke-dasharray: 6 6;
+}
+
+.done {
+  stroke: var(--color-success);
+  stroke-width: calc(var(--stroke-width) * 1.6);
+}
+
+.startDot {
+  fill: var(--color-primary);
+  stroke: var(--color-surface);
+  stroke-width: var(--stroke-width);
+}
+
+.startArrow {
+  fill: var(--color-primary);
+}
+
+.startHint {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: trace-pulse var(--duration-idle) var(--ease-idle) infinite alternate;
+}
+
+.startHintStill {
+  opacity: 0.8;
+}
+
+@keyframes trace-pulse {
+  from {
+    transform: scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: scale(1.1);
+    opacity: 0.7;
+  }
+}
+
+.guideDot {
+  fill: var(--color-accent);
+  stroke: var(--color-surface);
+  stroke-width: var(--stroke-width);
+}
+
+.guideDotSnapped {
+  transition: cx var(--duration-micro) var(--ease-micro), cy var(--duration-micro) var(--ease-micro);
+}
+
+.complete .done {
+  filter: drop-shadow(0 0 8px color-mix(in srgb, var(--color-success) 55%, transparent))
+    drop-shadow(0 0 20px color-mix(in srgb, var(--color-success) 30%, transparent));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .startHint {
+    animation: none;
+    opacity: 0.8;
+  }
+
+  .guideDotSnapped {
+    transition: none;
+  }
+}
