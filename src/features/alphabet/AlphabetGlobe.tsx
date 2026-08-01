@@ -258,12 +258,17 @@ function AlphabetGlobeGroup({
       const star = starMeshes.current.get(point.letter);
       if (star) {
         star.quaternion.copy(billboardLocalQuat);
-        star.scale.setScalar(0.7 + facing * 0.6);
+        // Per-letter phase offset (from its char code) keeps 26 stars from
+        // twinkling in unison.
+        const twinkle = reducedMotion
+          ? 1
+          : 0.75 + 0.25 * Math.sin(state.clock.elapsedTime * 2.4 + point.letter.charCodeAt(0));
+        star.scale.setScalar((0.7 + facing * 0.6) * twinkle);
         const starMaterial = (star as THREE.Mesh).material as THREE.Material & {
           opacity: number;
         };
         starMaterial.transparent = true;
-        starMaterial.opacity = 0.35 + facing * 0.65;
+        starMaterial.opacity = (0.35 + facing * 0.65) * twinkle;
       }
     }
   });
