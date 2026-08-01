@@ -4,7 +4,7 @@
      own its own sizing so it can't drift out of sync with that centering. */
   width: 100%;
   height: 100%;
-  max-width: 1040px;
+  max-width: 1280px;
   border-radius: var(--radius-lg);
   overflow: hidden;
   background: var(--color-background);

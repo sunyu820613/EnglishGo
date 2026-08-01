@@ -21,22 +21,14 @@
   /* An explicit height (not just min-height) so the .stage child's
      height:100% below has something definite to resolve against. */
   height: calc(100dvh - 96px);
-  padding: var(--space-page-mobile);
+  /* Unlike text pages, this is a single full-bleed 3D element — a small
+     fixed margin (not the wide page gutter) leaves the globe as much
+     room as possible so letters/star halos near the edge have space to
+     breathe instead of crowding the container boundary. */
+  padding: var(--space-sm);
   display: flex;
   align-items: stretch;
   justify-content: center;
-}
-
-@media (min-width: 768px) {
-  .globePage {
-    padding: var(--space-page-tablet);
-  }
-}
-
-@media (min-width: 1200px) {
-  .globePage {
-    padding: var(--space-page-desktop);
-  }
 }
 
 .overlayHeader {
