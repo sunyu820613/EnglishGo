@@ -12,9 +12,13 @@ interface SoundButtonProps {
   size?: SoundButtonSize;
   /** Shown next to a disabled button so the child understands why it can't play. */
   disabledHint?: string;
+  /** Short visible text under the icon, e.g. "Letter name" — every SoundButton
+   * on a page renders the same speaker glyph, so this is what actually tells
+   * the two apart instead of relying on the (invisible) aria-label. */
+  caption?: string;
 }
 
-export function SoundButton({ src, label, size = 'kid', disabledHint }: SoundButtonProps) {
+export function SoundButton({ src, label, size = 'kid', disabledHint, caption }: SoundButtonProps) {
   const [isPlaying, setIsPlaying] = useState(() => audioService.getPlayingVoiceSrc() === src);
 
   useEffect(() => {
@@ -54,6 +58,7 @@ export function SoundButton({ src, label, size = 'kid', disabledHint }: SoundBut
         </svg>
       </button>
       {disabled && disabledHint ? <span className={styles.hint}>{disabledHint}</span> : null}
+      {!disabled && caption ? <span className={styles.caption}>{caption}</span> : null}
     </span>
   );
 }

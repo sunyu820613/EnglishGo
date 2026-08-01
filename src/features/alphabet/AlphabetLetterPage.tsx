@@ -70,6 +70,7 @@ export function AlphabetLetterPage() {
             <SoundButton
               src={letterAudioPath(genderedName)}
               label={`Play the letter ${entry.letter}`}
+              caption="Letter name"
               size="primary"
             />
           </section>
@@ -79,6 +80,7 @@ export function AlphabetLetterPage() {
               <SoundButton
                 src={letterAudioPath(entry.phonicsAudio)}
                 label={`Play the ${entry.letter} sound`}
+                caption="Letter sound"
               />
               <PhonicsCompare letter={entry} />
             </div>
