@@ -37,9 +37,45 @@ function useTokenColors() {
     const cs = getComputedStyle(document.documentElement);
     return {
       letter: cs.getPropertyValue('--color-text').trim() || '#1f2937',
-      learned: cs.getPropertyValue('--color-primary').trim() || '#2563eb',
+      star: cs.getPropertyValue('--color-accent').trim() || '#f6c05c',
     };
   }, []);
+}
+
+/** Flat 5-point star outline, small enough to sit as a badge next to a
+ * learned letter — built once and reused for every star mesh. */
+function useStarGeometry() {
+  return useMemo(() => {
+    const shape = new THREE.Shape();
+    const spikes = 5;
+    const outerR = 0.16;
+    const innerR = 0.065;
+    for (let i = 0; i < spikes * 2; i++) {
+      const r = i % 2 === 0 ? outerR : innerR;
+      const angle = (i / (spikes * 2)) * Math.PI * 2 - Math.PI / 2;
+      const x = Math.cos(angle) * r;
+      const y = Math.sin(angle) * r;
+      if (i === 0) shape.moveTo(x, y);
+      else shape.lineTo(x, y);
+    }
+    shape.closePath();
+    return new THREE.ShapeGeometry(shape);
+  }, []);
+}
+
+/** A small offset, tangent to the sphere at this point, so the star sits
+ * beside the letter rather than on top of it — degenerates harmlessly near
+ * the poles (A/Z), where the exact badge direction matters least. */
+function starOffset(normal: [number, number, number]): THREE.Vector3 {
+  const n = new THREE.Vector3(...normal);
+  const worldUp = new THREE.Vector3(0, 1, 0);
+  const tangent = new THREE.Vector3().crossVectors(n, worldUp);
+  if (tangent.lengthSq() < 1e-6) tangent.set(1, 0, 0);
+  tangent.normalize();
+  return n
+    .clone()
+    .multiplyScalar(GLOBE_RADIUS + 0.15)
+    .addScaledVector(tangent, 0.4);
 }
 
 function AlphabetGlobeGroup({
@@ -50,8 +86,10 @@ function AlphabetGlobeGroup({
   onSelect: (letter: string) => void;
 }) {
   const tokenColors = useTokenColors();
+  const starGeometry = useStarGeometry();
   const groupRef = useRef<THREE.Group>(null);
   const letterMeshes = useRef(new Map<string, THREE.Object3D>());
+  const starMeshes = useRef(new Map<string, THREE.Object3D>());
   const points = useMemo(() => buildAlphabetGlobeLayout(alphabet.map((e) => e.letter)), []);
 
   const drag = useRef<DragState>({
@@ -223,6 +261,17 @@ function AlphabetGlobeGroup({
         material.transparent = true;
         material.opacity = isSelected ? 1 : 0.35 + facing * 0.65;
       }
+
+      const star = starMeshes.current.get(point.letter);
+      if (star) {
+        star.quaternion.copy(billboardLocalQuat);
+        star.scale.setScalar(0.7 + facing * 0.6);
+        const starMaterial = (star as THREE.Mesh).material as THREE.Material & {
+          opacity: number;
+        };
+        starMaterial.transparent = true;
+        starMaterial.opacity = 0.35 + facing * 0.65;
+      }
     }
   });
 
@@ -251,32 +300,47 @@ function AlphabetGlobeGroup({
       {points.map((point) => {
         const learned = learnedLetters.includes(point.letter);
         return (
-          <Text
-            key={point.letter}
-            ref={(obj) => {
-              if (obj) letterMeshes.current.set(point.letter, obj);
-              else letterMeshes.current.delete(point.letter);
-            }}
-            position={point.position}
-            fontSize={0.5}
-            color={learned ? tokenColors.learned : tokenColors.letter}
-            anchorX="center"
-            anchorY="middle"
-            onPointerDown={(e) => {
-              e.stopPropagation();
-              (e.target as Element).setPointerCapture?.(e.pointerId);
-              beginDrag(e.nativeEvent.clientX, e.nativeEvent.clientY, point.letter);
-            }}
-            onPointerOver={(e) => {
-              e.stopPropagation();
-              document.body.style.cursor = 'pointer';
-            }}
-            onPointerOut={() => {
-              document.body.style.cursor = '';
-            }}
-          >
-            {point.letter}
-          </Text>
+          <group key={point.letter}>
+            <Text
+              ref={(obj) => {
+                if (obj) letterMeshes.current.set(point.letter, obj);
+                else letterMeshes.current.delete(point.letter);
+              }}
+              position={point.position}
+              fontSize={0.5}
+              color={tokenColors.letter}
+              anchorX="center"
+              anchorY="middle"
+              onPointerDown={(e) => {
+                e.stopPropagation();
+                (e.target as Element).setPointerCapture?.(e.pointerId);
+                beginDrag(e.nativeEvent.clientX, e.nativeEvent.clientY, point.letter);
+              }}
+              onPointerOver={(e) => {
+                e.stopPropagation();
+                document.body.style.cursor = 'pointer';
+              }}
+              onPointerOut={() => {
+                document.body.style.cursor = '';
+              }}
+            >
+              {point.letter}
+            </Text>
+            {/* Learned badge — a small gold star beside the letter, not a
+                replacement for it, so the letter stays identifiable. */}
+            {learned ? (
+              <mesh
+                ref={(obj) => {
+                  if (obj) starMeshes.current.set(point.letter, obj);
+                  else starMeshes.current.delete(point.letter);
+                }}
+                position={starOffset(point.normal)}
+                geometry={starGeometry}
+              >
+                <meshBasicMaterial color={tokenColors.star} transparent />
+              </mesh>
+            ) : null}
+          </group>
         );
       })}
     </group>

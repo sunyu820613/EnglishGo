@@ -11,3 +11,66 @@
   margin: 0 0 var(--space-lg);
 }
 
+/* Globe layout: the stage is vertically centered in the space below the
+ * app header, so the sphere's own center lands on the viewport's center
+ * instead of just being "however far down the document flow pushed it".
+ * Title/subtitle overlay the top of that centered box rather than sitting
+ * above it in flow, so they don't pull the sphere's center off-screen-center. */
+.globePage {
+  position: relative;
+  /* An explicit height (not just min-height) so the .stage child's
+     height:100% below has something definite to resolve against. */
+  height: calc(100dvh - 96px);
+  padding: var(--space-page-mobile);
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+}
+
+@media (min-width: 768px) {
+  .globePage {
+    padding: var(--space-page-tablet);
+  }
+}
+
+@media (min-width: 1200px) {
+  .globePage {
+    padding: var(--space-page-desktop);
+  }
+}
+
+.overlayHeader {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: var(--space-page-mobile);
+  z-index: var(--z-content, 1);
+  pointer-events: none;
+  /* The sphere sits right behind this text now that it's vertically
+     centered — a soft fade back to the page background keeps the title
+     legible instead of letters visually colliding with it. */
+  background: linear-gradient(
+    to bottom,
+    var(--color-background) 40%,
+    color-mix(in srgb, var(--color-background) 60%, transparent) 75%,
+    transparent 100%
+  );
+}
+
+@media (min-width: 768px) {
+  .overlayHeader {
+    padding: var(--space-page-tablet);
+  }
+}
+
+@media (min-width: 1200px) {
+  .overlayHeader {
+    padding: var(--space-page-desktop);
+  }
+}
+
+.overlayHeader .title,
+.overlayHeader .subtitle {
+  margin: 0 0 var(--space-xs);
+}

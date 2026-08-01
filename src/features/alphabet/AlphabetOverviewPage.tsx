@@ -11,20 +11,35 @@ export function AlphabetOverviewPage() {
   const learnedLetters = useProgressStore((s) => s.learnedLetters);
   const webglAvailable = useMemo(() => isWebGLAvailable(), []);
 
-  return (
-    <div className={page.page}>
-      <div className={page.container}>
-        <h1 className={styles.title}>Learn the Alphabet</h1>
-        <p className={styles.subtitle}>
-          Learned {learnedLetters.length} / {alphabet.length}
-          {webglAvailable ? ' — drag to look around, tap a letter to start' : ''}
-        </p>
-        {webglAvailable ? (
-          <AlphabetGlobe learnedLetters={learnedLetters} />
-        ) : (
+  const heading = <h1 className={styles.title}>Learn the Alphabet</h1>;
+  const subtitle = (
+    <p className={styles.subtitle}>
+      Learned {learnedLetters.length} / {alphabet.length}
+      {webglAvailable ? ' — drag to look around, tap a letter to start' : ''}
+    </p>
+  );
+
+  if (!webglAvailable) {
+    return (
+      <div className={page.page}>
+        <div className={page.container}>
+          {heading}
+          {subtitle}
           <AccessibilityFallback learnedLetters={learnedLetters} />
-        )}
+        </div>
       </div>
+    );
+  }
+
+  return (
+    <div className={styles.globePage}>
+      <div className={styles.overlayHeader}>
+        <div className={page.container}>
+          {heading}
+          {subtitle}
+        </div>
+      </div>
+      <AlphabetGlobe learnedLetters={learnedLetters} />
     </div>
   );
 }
