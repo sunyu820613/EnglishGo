@@ -64,12 +64,6 @@ function useStarGeometry() {
   }, []);
 }
 
-/** Same direction as the letter, just pulled slightly toward the sphere's
- * center — so the star sits directly *behind* the glyph (peeking out
- * around its edges as a halo) instead of beside it. */
-function starOffset(normal: [number, number, number]): THREE.Vector3 {
-  return new THREE.Vector3(...normal).multiplyScalar(GLOBE_RADIUS - 0.12);
-}
 
 function AlphabetGlobeGroup({
   learnedLetters,
@@ -325,17 +319,19 @@ function AlphabetGlobeGroup({
             >
               {point.letter}
             </Text>
-            {/* Learned badge — a gold star halo directly behind the letter
-                (renderOrder keeps the letter drawn on top, since two
-                transparent objects at nearly the same depth don't
-                reliably self-sort by z alone). */}
+            {/* Learned badge — a gold star halo centered exactly on the
+                letter (same position, not just the same direction — a
+                radial offset would drift off-center in screen space for
+                any letter not dead-center on the globe). renderOrder keeps
+                the letter drawn on top, since two transparent objects at
+                the same depth don't reliably self-sort by z alone. */}
             {learned ? (
               <mesh
                 ref={(obj) => {
                   if (obj) starMeshes.current.set(point.letter, obj);
                   else starMeshes.current.delete(point.letter);
                 }}
-                position={starOffset(point.normal)}
+                position={point.position}
                 geometry={starGeometry}
                 renderOrder={0}
               >
