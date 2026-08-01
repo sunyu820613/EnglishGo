@@ -3,7 +3,7 @@ import { Link, Navigate, useParams } from 'react-router-dom';
 import gsap from 'gsap';
 import { WordCard } from '../../components/WordCard';
 import { alphabet } from '../../data/alphabet';
-import { letterAudioPath, wordAudioPath, wordImagePath } from '../../data/paths';
+import { letterAudioPath, phraseAudioPath, wordAudioPath, wordImagePath } from '../../data/paths';
 import { PhonicsCompare } from '../phonics/PhonicsCompare';
 import { useProgressStore } from '../../store/progressStore';
 import { useSettingsStore } from '../../store/settingsStore';
@@ -104,7 +104,8 @@ export function AlphabetLetterPage() {
                   word={word.text}
                   imageSrc={wordImagePath(word.image)}
                   imageAlt={word.text}
-                  audioSrc={wordAudioPath(word.audio)}
+                  wordAudioSrc={wordAudioPath(word.audio)}
+                  phraseAudioSrc={phraseAudioPath(word.phrase)}
                 />
               ))}
             </div>

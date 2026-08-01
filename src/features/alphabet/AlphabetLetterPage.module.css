@@ -64,7 +64,10 @@
 
 .hero {
   font-family: var(--font-display);
-  font-size: var(--text-letter-hero);
+  /* Bigger than the shared --text-letter-hero token (which is also used by
+     the phoneme detail page) — this page's hero is the whole point of the
+     screen, so it can afford to be more dramatic. */
+  font-size: clamp(6rem, 9vw + 2.5rem, 11rem);
   font-weight: 700;
   color: var(--color-primary);
   line-height: 1;
