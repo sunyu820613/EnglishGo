@@ -31,7 +31,9 @@ export interface LetterSoundVariant {
   silent?: boolean;
   /** Short human-readable description, e.g. "Long vowel (open syllable)". */
   label: string;
-  words: [SoundVariantWord, SoundVariantWord];
+  /** Usually two example words, but some patterns (e.g. a rare/low-frequency
+   * reading) only have one good kid-friendly example. */
+  words: SoundVariantWord[];
 }
 
 export interface AlphabetLetter {

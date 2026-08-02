@@ -16,7 +16,10 @@ export function LetterSoundVariants({ letter, variants }: LetterSoundVariantsPro
     <section className={styles.variants}>
       <h2 className={styles.heading}>{letter} says&hellip;</h2>
       {variants.map((variant) => (
-        <div key={variant.ipa || variant.label} className={styles.row}>
+        // Some letters (e.g. T) have multiple rows sharing the same ipa
+        // (core / flap / glottal-stop all render as /t/), so label must be
+        // part of the key too.
+        <div key={`${variant.ipa}-${variant.label}`} className={styles.row}>
           <div className={styles.rowHeader}>
             <span className={styles.ipa}>{variant.silent ? 'Silent' : `/${variant.ipa}/`}</span>
             <span className={styles.label}>{variant.label}</span>

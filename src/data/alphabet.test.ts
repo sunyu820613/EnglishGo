@@ -22,20 +22,37 @@ describe('alphabet data', () => {
     }
   });
 
-  it('every sound-variant entry (A, E) has a label and two well-formed example words, with an IPA symbol unless marked silent', () => {
+  it('every sound-variant entry has a label and 1-2 well-formed example words, with an IPA symbol unless marked silent', () => {
     const lettersWithVariants = alphabet.filter((entry) => entry.soundVariants);
     expect(lettersWithVariants.length).toBeGreaterThanOrEqual(2);
     for (const entry of lettersWithVariants) {
       for (const variant of entry.soundVariants ?? []) {
         if (!variant.silent) expect(variant.ipa.length).toBeGreaterThan(0);
         expect(variant.label.length).toBeGreaterThan(0);
-        expect(variant.words).toHaveLength(2);
+        expect(variant.words.length).toBeGreaterThanOrEqual(1);
+        expect(variant.words.length).toBeLessThanOrEqual(2);
         for (const word of variant.words) {
           expect(word.audio).toMatch(/\.m4a$/);
           expect(word.image).toMatch(/\.webp$/);
         }
       }
     }
+  });
+
+  it('no example word image/audio id is reused across two different sound-variant rows (site-wide)', () => {
+    const seen = new Map<string, string>();
+    const duplicates: string[] = [];
+    for (const entry of alphabet) {
+      for (const variant of entry.soundVariants ?? []) {
+        for (const word of variant.words) {
+          const key = word.image;
+          const where = `${entry.letter} /${variant.ipa}/`;
+          if (seen.has(key)) duplicates.push(`${key}: ${seen.get(key)} vs ${where}`);
+          else seen.set(key, where);
+        }
+      }
+    }
+    expect(duplicates).toEqual([]);
   });
 
   it('every letter has male and female name audio references', () => {

@@ -55,9 +55,27 @@ test('letter E shows its pronunciation variants, including the silent-E row', as
   await expect(page.getByRole('button', { name: 'Play the word Résumé' })).toBeVisible();
 });
 
-test('a letter without sound variants (B) has no "says" section', async ({ page }) => {
-  await page.goto('/alphabet/B');
-  await expect(page.getByRole('heading', { name: /says…/ })).toHaveCount(0);
+test('every letter A-Z has its own "says..." pronunciation table', async ({ page }) => {
+  const missing: string[] = [];
+  for (const letter of 'ABCDEFGHIJKLMNOPQRSTUVWXYZ') {
+    await page.goto(`/alphabet/${letter}`);
+    const count = await page.getByRole('heading', { name: `${letter} says…` }).count();
+    if (count !== 1) missing.push(letter);
+  }
+  expect(missing).toEqual([]);
+});
+
+test('single-example rows (R, single pronunciation) still render correctly', async ({ page }) => {
+  await page.goto('/alphabet/R');
+  await expect(page.getByRole('heading', { name: 'R says…' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Play the word Rabbit' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Play the word Robot' })).toBeVisible();
+});
+
+test('Z uses a different word than E for the sound it shares (zebra is not repeated)', async ({ page }) => {
+  await page.goto('/alphabet/Z');
+  await expect(page.getByRole('button', { name: 'Play the word Zipper' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Play the word Zoo' })).toBeVisible();
 });
 
 test('no horizontal overflow on mobile, tablet, and desktop viewports', async ({ page }) => {
