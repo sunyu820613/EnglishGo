@@ -22,16 +22,18 @@ describe('alphabet data', () => {
     }
   });
 
-  it("A's sound variants each have an IPA symbol, a label, and two well-formed example words", () => {
-    const a = alphabet.find((entry) => entry.letter === 'A');
-    expect(a?.soundVariants?.length).toBeGreaterThan(0);
-    for (const variant of a?.soundVariants ?? []) {
-      expect(variant.ipa.length).toBeGreaterThan(0);
-      expect(variant.label.length).toBeGreaterThan(0);
-      expect(variant.words).toHaveLength(2);
-      for (const word of variant.words) {
-        expect(word.audio).toMatch(/\.m4a$/);
-        expect(word.image).toMatch(/\.webp$/);
+  it('every sound-variant entry (A, E) has a label and two well-formed example words, with an IPA symbol unless marked silent', () => {
+    const lettersWithVariants = alphabet.filter((entry) => entry.soundVariants);
+    expect(lettersWithVariants.length).toBeGreaterThanOrEqual(2);
+    for (const entry of lettersWithVariants) {
+      for (const variant of entry.soundVariants ?? []) {
+        if (!variant.silent) expect(variant.ipa.length).toBeGreaterThan(0);
+        expect(variant.label.length).toBeGreaterThan(0);
+        expect(variant.words).toHaveLength(2);
+        for (const word of variant.words) {
+          expect(word.audio).toMatch(/\.m4a$/);
+          expect(word.image).toMatch(/\.webp$/);
+        }
       }
     }
   });

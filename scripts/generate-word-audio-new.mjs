@@ -29,6 +29,16 @@ const NEW_WORDS = [
   { text: 'Care', file: 'care.m4a' },
   { text: 'Package', file: 'package.m4a' },
   { text: 'Cabbage', file: 'cabbage.m4a' },
+  { text: 'Evening', file: 'evening.m4a' },
+  { text: 'Event', file: 'event.m4a' },
+  { text: 'Effect', file: 'effect.m4a' },
+  { text: 'Camera', file: 'camera.m4a' },
+  { text: 'Garden', file: 'garden.m4a' },
+  { text: 'Fern', file: 'fern.m4a' },
+  { text: 'Term', file: 'term.m4a' },
+  { text: 'Bike', file: 'bike.m4a' },
+  { text: 'Café', file: 'cafe.m4a' },
+  { text: 'Résumé', file: 'resume.m4a' },
 ];
 
 function loadEnv() {

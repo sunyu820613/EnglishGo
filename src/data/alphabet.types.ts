@@ -23,7 +23,12 @@ export interface SoundVariantWord {
  * as in "acorn". Optional per-letter enrichment, not part of the fixed
  * curriculum word list. */
 export interface LetterSoundVariant {
+  /** Empty when `silent` is true (no phoneme to show, e.g. a word-final
+   * silent E) — otherwise rendered wrapped in slashes, e.g. '/eɪ/'. */
   ipa: string;
+  /** True for a spelling pattern with no sound of its own (e.g. silent E
+   * in "cake"). Renders "Silent" instead of "/ipa/". */
+  silent?: boolean;
   /** Short human-readable description, e.g. "Long vowel (open syllable)". */
   label: string;
   words: [SoundVariantWord, SoundVariantWord];

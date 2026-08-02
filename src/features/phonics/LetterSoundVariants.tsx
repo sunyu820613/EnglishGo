@@ -16,9 +16,9 @@ export function LetterSoundVariants({ letter, variants }: LetterSoundVariantsPro
     <section className={styles.variants}>
       <h2 className={styles.heading}>{letter} says&hellip;</h2>
       {variants.map((variant) => (
-        <div key={variant.ipa} className={styles.row}>
+        <div key={variant.ipa || variant.label} className={styles.row}>
           <div className={styles.rowHeader}>
-            <span className={styles.ipa}>/{variant.ipa}/</span>
+            <span className={styles.ipa}>{variant.silent ? 'Silent' : `/${variant.ipa}/`}</span>
             <span className={styles.label}>{variant.label}</span>
           </div>
           <div className={styles.words}>

@@ -41,6 +41,20 @@ test('letter A shows its pronunciation variants with playable example words', as
   await acornButton.click();
 });
 
+test('letter E shows its pronunciation variants, including the silent-E row', async ({ page }) => {
+  await page.goto('/alphabet/E');
+  await expect(page.getByRole('heading', { name: 'E says…' })).toBeVisible();
+
+  const variantIpas = ['/ɛ/', '/iː/', '/ɪ~ə/', '/ə/', '/ɝ/', '/eɪ/'];
+  for (const ipa of variantIpas) {
+    await expect(page.getByText(ipa, { exact: true })).toBeVisible();
+  }
+  await expect(page.getByText('Silent', { exact: true })).toBeVisible();
+
+  await expect(page.getByRole('button', { name: 'Play the word Café' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Play the word Résumé' })).toBeVisible();
+});
+
 test('a letter without sound variants (B) has no "says" section', async ({ page }) => {
   await page.goto('/alphabet/B');
   await expect(page.getByRole('heading', { name: /says…/ })).toHaveCount(0);

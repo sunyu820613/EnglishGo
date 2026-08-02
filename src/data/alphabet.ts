@@ -144,6 +144,65 @@ export const alphabet: AlphabetLetter[] = [
       { id: 'egg', text: 'Egg', audio: 'egg.m4a', image: 'egg.webp', phrase: 'e_is_for_egg.m4a' },
       { id: 'elephant', text: 'Elephant', audio: 'elephant.m4a', image: 'elephant.webp', phrase: 'e_is_for_elephant.m4a' },
     ],
+    soundVariants: [
+      {
+        ipa: 'ɛ',
+        label: 'Core short vowel',
+        words: [
+          { id: 'egg', text: 'Egg', audio: 'egg.m4a', image: 'egg.webp' },
+          { id: 'elephant', text: 'Elephant', audio: 'elephant.m4a', image: 'elephant.webp' },
+        ],
+      },
+      {
+        ipa: 'iː',
+        label: 'Long vowel',
+        words: [
+          { id: 'zebra', text: 'Zebra', audio: 'zebra.m4a', image: 'zebra.webp' },
+          { id: 'evening', text: 'Evening', audio: 'evening.m4a', image: 'evening.webp' },
+        ],
+      },
+      {
+        ipa: 'ɪ~ə',
+        label: 'Unstressed start, often weakened',
+        words: [
+          { id: 'event', text: 'Event', audio: 'event.m4a', image: 'event.webp' },
+          { id: 'effect', text: 'Effect', audio: 'effect.m4a', image: 'effect.webp' },
+        ],
+      },
+      {
+        ipa: 'ə',
+        label: 'Unstressed (schwa)',
+        words: [
+          { id: 'camera', text: 'Camera', audio: 'camera.m4a', image: 'camera.webp' },
+          { id: 'garden', text: 'Garden', audio: 'garden.m4a', image: 'garden.webp' },
+        ],
+      },
+      {
+        ipa: 'ɝ',
+        label: '"er" — R-controlled vowel',
+        words: [
+          { id: 'fern', text: 'Fern', audio: 'fern.m4a', image: 'fern.webp' },
+          { id: 'term', text: 'Term', audio: 'term.m4a', image: 'term.webp' },
+        ],
+      },
+      {
+        ipa: '',
+        silent: true,
+        label: 'Word-final silent E — usually changes the vowel before it',
+        words: [
+          { id: 'cake', text: 'Cake', audio: 'cake.m4a', image: 'cake.webp' },
+          { id: 'bike', text: 'Bike', audio: 'bike.m4a', image: 'bike.webp' },
+        ],
+      },
+      {
+        ipa: 'eɪ',
+        label: 'Word-final E in loanwords (not a beginner-level pattern)',
+        words: [
+          { id: 'cafe', text: 'Café', audio: 'cafe.m4a', image: 'cafe.webp' },
+          { id: 'resume', text: 'Résumé', audio: 'resume.m4a', image: 'resume.webp' },
+        ],
+      },
+    ],
   },
   {
     letter: 'F',

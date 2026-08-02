@@ -78,6 +78,46 @@ const WORDS = [
     id: 'cabbage',
     prompt: `A single round green cabbage with curled leafy layers, centered on a warm cream background. ${STYLE_SUFFIX}`,
   },
+  {
+    id: 'evening',
+    prompt: `A single crescent moon with one small sparkling star beside it, centered on a warm cream background. ${STYLE_SUFFIX}`,
+  },
+  {
+    id: 'event',
+    prompt: `A single bunch of three colorful round party balloons tied together with a curly ribbon, centered on a warm cream background. ${STYLE_SUFFIX}`,
+  },
+  {
+    id: 'effect',
+    prompt: `A single water droplet falling and creating one gentle circular ripple on a still pond surface, viewed from a slight angle, centered on a warm cream background. ${STYLE_SUFFIX}`,
+  },
+  {
+    id: 'camera',
+    prompt: `A single retro cartoon camera with a round lens and a small flash on top, centered on a warm cream background. ${STYLE_SUFFIX}`,
+  },
+  {
+    id: 'garden',
+    prompt: `A single terracotta flower pot with a blooming red flower and green leaves, centered on a warm cream background. ${STYLE_SUFFIX}`,
+  },
+  {
+    id: 'fern',
+    prompt: `A single leafy green fern frond with symmetrical leaflets, centered on a warm cream background. ${STYLE_SUFFIX}`,
+  },
+  {
+    id: 'term',
+    prompt: `A single closed hardcover book with a bookmark ribbon, centered on a warm cream background. ${STYLE_SUFFIX}`,
+  },
+  {
+    id: 'bike',
+    prompt: `A single simple bicycle with round wheels and a basket on front, side view, centered on a warm cream background. ${STYLE_SUFFIX}`,
+  },
+  {
+    id: 'cafe',
+    prompt: `A single cup of coffee in a round cup with saucer and a small wisp of steam, centered on a warm cream background. ${STYLE_SUFFIX}`,
+  },
+  {
+    id: 'resume',
+    prompt: `A single sheet of paper with a few lines of text and a small pencil resting beside it, centered on a warm cream background. ${STYLE_SUFFIX}`,
+  },
 ];
 
 function loadSecrets() {
