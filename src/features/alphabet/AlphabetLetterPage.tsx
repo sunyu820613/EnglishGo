@@ -4,8 +4,9 @@ import gsap from 'gsap';
 import { WordCard } from '../../components/WordCard';
 import { alphabet } from '../../data/alphabet';
 import { letterAudioPath, phraseAudioPath, wordAudioPath, wordImagePath } from '../../data/paths';
+import { LetterSoundVariants } from '../phonics/LetterSoundVariants';
 import { PhonicsCompare } from '../phonics/PhonicsCompare';
-import { hasTracingData } from '../../data/tracingPaths';
+import { hasLowercaseTracingData, hasTracingData } from '../../data/tracingPaths';
 import { useProgressStore } from '../../store/progressStore';
 import { useSettingsStore } from '../../store/settingsStore';
 import page from '../../styles/page.module.css';
@@ -111,10 +112,14 @@ export function AlphabetLetterPage() {
               ))}
             </div>
 
+            {entry.soundVariants ? (
+              <LetterSoundVariants letter={entry.letter} variants={entry.soundVariants} />
+            ) : null}
+
             {hasTracingData(entry.letter) ? (
               <Link to={`/alphabet/${entry.letter}/trace`} className={styles.tracingCta}>
                 Practice writing {entry.letter}
-                {entry.letter.toLowerCase()}
+                {hasLowercaseTracingData(entry.letter) ? entry.letter.toLowerCase() : ''}
               </Link>
             ) : null}
           </section>

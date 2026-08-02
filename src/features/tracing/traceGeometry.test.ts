@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import {
+  LOOKAHEAD_SAMPLES,
   SAMPLE_COUNT,
   TRACE_TOLERANCE_CSS_PX,
-  nearestSample,
+  nearestSampleAhead,
   sampleStroke,
   toleranceInViewBoxUnits,
 } from './traceGeometry';
@@ -23,22 +24,37 @@ describe('sampleStroke', () => {
   });
 });
 
-describe('nearestSample', () => {
-  it('finds the closest point and its distance', () => {
-    const samples: [number, number][] = [
-      [0, 0],
-      [10, 0],
-      [20, 0],
-    ];
-    expect(nearestSample(samples, [11, 3])).toEqual({ index: 1, distance: Math.hypot(1, 3) });
+describe('nearestSampleAhead', () => {
+  const samples: [number, number][] = [
+    [0, 0],
+    [10, 0],
+    [20, 0],
+    [30, 0],
+    [40, 0],
+  ];
+
+  it('finds the closest point within the lookahead window', () => {
+    expect(nearestSampleAhead(samples, 0, [11, 3])).toEqual({ index: 1, distance: Math.hypot(1, 3) });
+  });
+
+  it('never searches behind fromIndex, even if an earlier point is closer', () => {
+    // Point is right on top of sample 0, but we've already progressed to index 2.
+    expect(nearestSampleAhead(samples, 2, [0, 0]).index).toBeGreaterThanOrEqual(2);
+  });
+
+  it('does not search past fromIndex + LOOKAHEAD_SAMPLES', () => {
+    const long = Array.from({ length: 100 }, (_, i) => [i, 0] as [number, number]);
+    // Point sits far beyond the lookahead window from index 0.
+    const result = nearestSampleAhead(long, 0, [90, 0]);
+    expect(result.index).toBeLessThanOrEqual(LOOKAHEAD_SAMPLES);
   });
 
   it('picks the first index on an exact tie', () => {
-    const samples: [number, number][] = [
+    const tied: [number, number][] = [
       [0, 0],
       [10, 0],
     ];
-    expect(nearestSample(samples, [5, 0]).index).toBe(0);
+    expect(nearestSampleAhead(tied, 0, [5, 0]).index).toBe(0);
   });
 });
 

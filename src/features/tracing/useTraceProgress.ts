@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { TraceStroke } from '../../data/tracing.types';
-import { clientToViewBoxPoint, nearestSample, sampleStroke, toleranceInViewBoxUnits, type Point } from './traceGeometry';
-import { coverageRatio, isStrokeComplete, markCovered } from './traceState';
+import { clientToViewBoxPoint, nearestSampleAhead, sampleStroke, toleranceInViewBoxUnits, type Point } from './traceGeometry';
+import { isStrokeComplete } from './traceState';
 
 export type StrokeStatus = 'locked' | 'active' | 'done';
 
@@ -9,7 +9,7 @@ export interface GuideDotState {
   x: number;
   y: number;
   /** true = snapped to the pointer (inside tolerance), false = snapped
-   * back to the nearest point on the path (pointer strayed outside it). */
+   * back to the furthest point reached so far (pointer strayed outside it). */
   following: boolean;
 }
 
@@ -28,7 +28,6 @@ export function useTraceProgress(
 ) {
   const svgRef = useRef<SVGSVGElement>(null);
   const samples = useMemo(() => strokes.map((stroke) => sampleStroke(stroke.d)), [strokes]);
-  const coveredRef = useRef<Set<number>>(new Set());
   const rafRef = useRef<number | null>(null);
   const pendingPointRef = useRef<Point | null>(null);
   const isPointerDownRef = useRef(false);
@@ -37,11 +36,24 @@ export function useTraceProgress(
   const [activeStrokeIndex, setActiveStrokeIndex] = useState(
     initiallyComplete ? Math.max(0, strokes.length - 1) : 0,
   );
+  /** How far along the active stroke's samples progress has reached
+   * (monotonic — never decreases while tracing the same stroke). */
+  const [sampleIndex, setSampleIndex] = useState(
+    initiallyComplete ? Math.max(0, (samples[samples.length - 1]?.length ?? 1) - 1) : 0,
+  );
   const [guideDot, setGuideDot] = useState<GuideDotState | null>(null);
   const [isComplete, setIsComplete] = useState(initiallyComplete);
 
+  const reset = useCallback(() => {
+    setActiveStrokeIndex(0);
+    setSampleIndex(0);
+    setGuideDot(null);
+    setIsComplete(false);
+    completedRef.current = false;
+  }, []);
+
   useEffect(() => {
-    coveredRef.current = new Set();
+    setSampleIndex(0);
     setGuideDot(null);
   }, [activeStrokeIndex]);
 
@@ -52,18 +64,19 @@ export function useTraceProgress(
       if (!svg || !activeSamples) return;
 
       const tolerance = toleranceInViewBoxUnits(svg, VIEW_BOX_WIDTH);
-      const nearest = nearestSample(activeSamples, point);
+      const nearest = nearestSampleAhead(activeSamples, sampleIndex, point);
       const onPath = nearest.distance <= tolerance;
 
       if (onPath) {
-        markCovered(coveredRef.current, nearest.index, activeSamples.length);
+        setSampleIndex(nearest.index);
         setGuideDot({ x: point[0], y: point[1], following: true });
       } else {
-        const nearestPoint = activeSamples[nearest.index];
-        if (nearestPoint) setGuideDot({ x: nearestPoint[0], y: nearestPoint[1], following: false });
+        const held = activeSamples[sampleIndex];
+        if (held) setGuideDot({ x: held[0], y: held[1], following: false });
       }
 
-      if (isStrokeComplete(coveredRef.current, activeSamples.length)) {
+      const reachedIndex = onPath ? nearest.index : sampleIndex;
+      if (isStrokeComplete(reachedIndex, activeSamples.length)) {
         if (activeStrokeIndex < strokes.length - 1) {
           setActiveStrokeIndex((i) => i + 1);
         } else if (!completedRef.current) {
@@ -73,7 +86,7 @@ export function useTraceProgress(
         }
       }
     },
-    [activeStrokeIndex, onComplete, samples, strokes.length],
+    [activeStrokeIndex, onComplete, sampleIndex, samples, strokes.length],
   );
 
   const handlePointerDown = useCallback(() => {
@@ -112,9 +125,10 @@ export function useTraceProgress(
     i < activeStrokeIndex || (i === activeStrokeIndex && isComplete) ? 'done' : i === activeStrokeIndex ? 'active' : 'locked',
   );
 
-  const activeCoverage = samples[activeStrokeIndex]
-    ? coverageRatio(coveredRef.current, samples[activeStrokeIndex].length)
-    : 0;
+  /** Points from the active stroke's start up through the current
+   * progress — draw this as solid "ink" so the child sees what they've
+   * traced so far, not just a binary done/not-done stroke. */
+  const inkPoints = samples[activeStrokeIndex]?.slice(0, sampleIndex + 1) ?? [];
 
   return {
     svgRef,
@@ -122,7 +136,8 @@ export function useTraceProgress(
     strokeStatuses,
     guideDot,
     isComplete,
-    activeCoverage,
+    inkPoints,
+    reset,
     handlePointerDown,
     handlePointerMove,
     handlePointerUp,

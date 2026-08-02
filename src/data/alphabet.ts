@@ -19,6 +19,67 @@ export const alphabet: AlphabetLetter[] = [
       { id: 'apple', text: 'Apple', audio: 'apple.m4a', image: 'apple.webp', phrase: 'a_is_for_apple.m4a' },
       { id: 'ant', text: 'Ant', audio: 'ant.m4a', image: 'ant.webp', phrase: 'a_is_for_ant.m4a' },
     ],
+    // /æ/ (core short vowel) is intentionally not repeated here — it's
+    // already the primary sound shown above via PhonicsCompare + the
+    // Apple/Ant word cards. This list covers A's *other* pronunciations.
+    soundVariants: [
+      {
+        ipa: 'eɪ',
+        label: 'Long vowel (open syllable / a_e)',
+        words: [
+          { id: 'acorn', text: 'Acorn', audio: 'acorn.m4a', image: 'acorn.webp' },
+          { id: 'cake', text: 'Cake', audio: 'cake.m4a', image: 'cake.webp' },
+        ],
+      },
+      {
+        ipa: 'ə',
+        label: 'Unstressed (schwa)',
+        words: [
+          { id: 'sofa', text: 'Sofa', audio: 'sofa.m4a', image: 'sofa.webp' },
+          { id: 'banana', text: 'Banana', audio: 'banana.m4a', image: 'banana.webp' },
+        ],
+      },
+      {
+        ipa: 'ɑ',
+        label: 'Common in American English',
+        words: [
+          { id: 'father', text: 'Father', audio: 'father.m4a', image: 'father.webp' },
+          { id: 'pasta', text: 'Pasta', audio: 'pasta.m4a', image: 'pasta.webp' },
+        ],
+      },
+      {
+        ipa: 'ɔ',
+        label: 'Before ll/lt (accent-dependent)',
+        words: [
+          { id: 'ball', text: 'Ball', audio: 'ball.m4a', image: 'ball.webp' },
+          { id: 'salt', text: 'Salt', audio: 'salt.m4a', image: 'salt.webp' },
+        ],
+      },
+      {
+        ipa: 'ɑr',
+        label: '"ar" combination',
+        words: [
+          { id: 'car', text: 'Car', audio: 'car.m4a', image: 'car.webp' },
+          { id: 'star', text: 'Star', audio: 'star.m4a', image: 'star.webp' },
+        ],
+      },
+      {
+        ipa: 'ɛr',
+        label: 'Special "ar/are" environment',
+        words: [
+          { id: 'parent', text: 'Parent', audio: 'parent.m4a', image: 'parent.webp' },
+          { id: 'care', text: 'Care', audio: 'care.m4a', image: 'care.webp' },
+        ],
+      },
+      {
+        ipa: 'ə~ɪ',
+        label: 'Unstressed, varies by dialect',
+        words: [
+          { id: 'package', text: 'Package', audio: 'package.m4a', image: 'package.webp' },
+          { id: 'cabbage', text: 'Cabbage', audio: 'cabbage.m4a', image: 'cabbage.webp' },
+        ],
+      },
+    ],
   },
   {
     letter: 'B',

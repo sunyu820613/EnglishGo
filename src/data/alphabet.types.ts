@@ -9,6 +9,26 @@ export interface AlphabetWordExample {
   phrase: string;
 }
 
+export interface SoundVariantWord {
+  id: string;
+  text: string;
+  /** Relative to /audio/words/ */
+  audio: string;
+  /** Relative to /images/words/ */
+  image: string;
+}
+
+/** One additional pronunciation this letter can make (beyond the single
+ * primary phonicsIpa/phonicsAudio pair) — e.g. A's /eɪ/ long-vowel reading
+ * as in "acorn". Optional per-letter enrichment, not part of the fixed
+ * curriculum word list. */
+export interface LetterSoundVariant {
+  ipa: string;
+  /** Short human-readable description, e.g. "Long vowel (open syllable)". */
+  label: string;
+  words: [SoundVariantWord, SoundVariantWord];
+}
+
 export interface AlphabetLetter {
   letter: string; // 'A'..'Z'
   /** Relative to /audio/letters/ — default/neutral letter name pronunciation. */
@@ -30,4 +50,7 @@ export interface AlphabetLetter {
   letterNameIpa?: string;
   phonicsNote: string | null;
   words: [AlphabetWordExample, AlphabetWordExample];
+  /** Extra pronunciations beyond the primary phonicsIpa, each with two
+   * example words — currently only populated for A. */
+  soundVariants?: LetterSoundVariant[];
 }

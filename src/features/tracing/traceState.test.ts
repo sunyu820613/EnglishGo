@@ -1,33 +1,16 @@
 import { describe, expect, it } from 'vitest';
-import { coverageRatio, isStrokeComplete, markCovered, STROKE_COMPLETE_THRESHOLD } from './traceState';
+import { isStrokeComplete } from './traceState';
 
-describe('markCovered', () => {
-  it('marks a window of indices around the given index', () => {
-    const covered = new Set<number>();
-    markCovered(covered, 10, 100, 2);
-    expect([...covered].sort((a, b) => a - b)).toEqual([8, 9, 10, 11, 12]);
+describe('isStrokeComplete', () => {
+  it('is not complete before reaching the last sample', () => {
+    expect(isStrokeComplete(98, 100)).toBe(false);
   });
 
-  it('clamps the window at the sample array bounds', () => {
-    const covered = new Set<number>();
-    markCovered(covered, 0, 5, 2);
-    expect([...covered].sort((a, b) => a - b)).toEqual([0, 1, 2]);
-  });
-});
-
-describe('coverageRatio / isStrokeComplete', () => {
-  it('computes the fraction of samples covered', () => {
-    const covered = new Set([0, 1, 2, 3]);
-    expect(coverageRatio(covered, 8)).toBe(0.5);
+  it('is complete once the index reaches the last sample', () => {
+    expect(isStrokeComplete(99, 100)).toBe(true);
   });
 
-  it('is not complete below the threshold', () => {
-    const covered = new Set(Array.from({ length: 79 }, (_, i) => i));
-    expect(isStrokeComplete(covered, 100)).toBe(false);
-  });
-
-  it(`is complete at or above the ${STROKE_COMPLETE_THRESHOLD} threshold`, () => {
-    const covered = new Set(Array.from({ length: 80 }, (_, i) => i));
-    expect(isStrokeComplete(covered, 100)).toBe(true);
+  it('is complete if somehow past the last sample', () => {
+    expect(isStrokeComplete(105, 100)).toBe(true);
   });
 });

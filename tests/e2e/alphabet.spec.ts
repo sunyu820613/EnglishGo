@@ -27,6 +27,26 @@ test('a letter page plays audio, toggles voice gender, and persists progress on 
   await expect(page.getByText('Learned 1 / 26')).toBeVisible();
 });
 
+test('letter A shows its other pronunciation variants with playable example words', async ({ page }) => {
+  await page.goto('/alphabet/A');
+  await expect(page.getByRole('heading', { name: 'A says…' })).toBeVisible();
+
+  // /æ/ is deliberately excluded — it's already shown via PhonicsCompare + Apple/Ant above.
+  const variantIpas = ['/eɪ/', '/ə/', '/ɑ/', '/ɔ/', '/ɑr/', '/ɛr/', '/ə~ɪ/'];
+  for (const ipa of variantIpas) {
+    await expect(page.getByText(ipa, { exact: true })).toBeVisible();
+  }
+
+  const acornButton = page.getByRole('button', { name: 'Play the word Acorn' });
+  await expect(acornButton).toBeVisible();
+  await acornButton.click();
+});
+
+test('a letter without sound variants (B) has no "says" section', async ({ page }) => {
+  await page.goto('/alphabet/B');
+  await expect(page.getByRole('heading', { name: /says…/ })).toHaveCount(0);
+});
+
 test('no horizontal overflow on mobile, tablet, and desktop viewports', async ({ page }) => {
   for (const viewport of [
     { width: 375, height: 812 }, // mobile

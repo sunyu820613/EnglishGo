@@ -8,9 +8,11 @@ test('letter detail page links to tracing practice for a piloted letter', async 
   await expect(page).toHaveURL(/\/alphabet\/A\/trace$/);
 });
 
-test('letter detail page has no tracing entry for a letter without pilot data', async ({ page }) => {
-  await page.goto('/alphabet/D');
-  await expect(page.getByRole('link', { name: /Practice writing/i })).toHaveCount(0);
+test('a letter with only uppercase pilot data has no lowercase toggle', async ({ page }) => {
+  await page.goto('/alphabet/D/trace');
+  const canvas = page.locator('svg[aria-label="Letter tracing practice"]');
+  await expect(canvas).toBeVisible();
+  await expect(page.getByRole('button', { name: 'd', exact: true })).toHaveCount(0);
 });
 
 test('tracing a stroke completes it and unlocks the next one, persisting progress', async ({ page }) => {
@@ -23,14 +25,14 @@ test('tracing a stroke completes it and unlocks the next one, persisting progres
   const scale = box.width / 200;
   const toScreen = (vx: number, vy: number) => ({ x: box.x + vx * scale, y: box.y + vy * scale });
 
-  // Stroke 1 of uppercase A: apex (100,30) -> base-left (30,170).
-  const start = toScreen(100, 30);
+  // Stroke 1 of uppercase A: apex (100,20) -> base-left (20,180).
+  const start = toScreen(100, 20);
   await page.mouse.move(start.x, start.y);
   await page.mouse.down();
   const steps = 30;
   for (let i = 1; i <= steps; i++) {
     const t = i / steps;
-    const p = toScreen(100 + t * (30 - 100), 30 + t * (170 - 30));
+    const p = toScreen(100 + t * (20 - 100), 20 + t * (180 - 20));
     await page.mouse.move(p.x, p.y, { steps: 2 });
   }
   await page.mouse.up();
@@ -52,12 +54,32 @@ test('hovering the path without pressing the mouse button does not advance progr
   const steps = 30;
   for (let i = 0; i <= steps; i++) {
     const t = i / steps;
-    const p = toScreen(100 + t * (30 - 100), 30 + t * (170 - 30));
+    const p = toScreen(100 + t * (20 - 100), 20 + t * (180 - 20));
     await page.mouse.move(p.x, p.y, { steps: 2 });
   }
 
   const strokes = canvas.locator('path');
   await expect(strokes.first()).toHaveClass(/active/);
+  await expect(strokes.first()).not.toHaveClass(/done/);
+});
+
+test('tracing out of order (jumping ahead) does not complete the stroke', async ({ page }) => {
+  await page.goto('/alphabet/A/trace');
+  const canvas = page.locator('svg[aria-label="Letter tracing practice"]');
+  const box = await canvas.boundingBox();
+  if (!box) throw new Error('canvas not laid out');
+  const scale = box.width / 200;
+  const toScreen = (vx: number, vy: number) => ({ x: box.x + vx * scale, y: box.y + vy * scale });
+
+  // Jump straight to the far end of the first stroke instead of tracing it.
+  const start = toScreen(100, 20);
+  await page.mouse.move(start.x, start.y);
+  await page.mouse.down();
+  const end = toScreen(20, 180);
+  await page.mouse.move(end.x, end.y, { steps: 1 });
+  await page.mouse.up();
+
+  const strokes = canvas.locator('path');
   await expect(strokes.first()).not.toHaveClass(/done/);
 });
 
@@ -69,6 +91,18 @@ test('skip button returns to the letter detail page without marking progress', a
   const traced = await page.evaluate(() => localStorage.getItem('englishgo.progress.v1'));
   const parsed = traced ? JSON.parse(traced) : { state: { tracedLetters: [] } };
   expect(parsed.state.tracedLetters ?? []).not.toContain('B');
+});
+
+test('no horizontal overflow across all 26 tracing pages', async ({ page }) => {
+  const failures: string[] = [];
+  for (const letter of 'ABCDEFGHIJKLMNOPQRSTUVWXYZ') {
+    await page.goto(`/alphabet/${letter}/trace`);
+    const hasOverflow = await page.evaluate(
+      () => document.documentElement.scrollWidth > document.documentElement.clientWidth,
+    );
+    if (hasOverflow) failures.push(letter);
+  }
+  expect(failures).toEqual([]);
 });
 
 test('no horizontal overflow on the tracing page at mobile, tablet, and desktop', async ({ page }) => {

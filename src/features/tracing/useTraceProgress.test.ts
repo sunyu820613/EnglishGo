@@ -68,7 +68,24 @@ describe('useTraceProgress', () => {
 
     expect(result.current.activeStrokeIndex).toBe(1);
     expect(result.current.strokeStatuses).toEqual(['done', 'active']);
-    expect(result.current.activeCoverage).toBe(0);
+    // Ink resets to "not started" on the new stroke.
+    expect(result.current.inkPoints.length).toBeLessThanOrEqual(1);
+    expect(onComplete).not.toHaveBeenCalled();
+  });
+
+  it('only matches within the forward lookahead window, so scribbling out of order does not count', async () => {
+    const onComplete = vi.fn();
+    const { result } = renderHook(() => useTraceProgress(strokes, onComplete));
+    act(() => {
+      result.current.svgRef.current = fakeSvg();
+      result.current.handlePointerDown();
+    });
+
+    // Jump straight to the far end of a 100-unit stroke sampled at 100
+    // points — far beyond the lookahead window from index 0.
+    await moveAlong(result, [[100, 0]]);
+
+    expect(result.current.strokeStatuses[0]).toBe('active');
     expect(onComplete).not.toHaveBeenCalled();
   });
 

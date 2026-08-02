@@ -3,8 +3,9 @@ import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 import { audioService } from '../../audio/useAudioService';
 import { alphabet } from '../../data/alphabet';
 import { letterAudioPath } from '../../data/paths';
-import { hasTracingData, tracingPaths } from '../../data/tracingPaths';
+import { hasLowercaseTracingData, hasTracingData, tracingPaths } from '../../data/tracingPaths';
 import { useProgressStore } from '../../store/progressStore';
+import { useSettingsStore } from '../../store/settingsStore';
 import page from '../../styles/page.module.css';
 import { TraceCanvas } from './TraceCanvas';
 import styles from './TraceLetterPage.module.css';
@@ -17,18 +18,30 @@ export function TraceLetterPage() {
   const entry = alphabet.find((e) => e.letter === letter);
   const navigate = useNavigate();
   const markLetterTraced = useProgressStore((s) => s.markLetterTraced);
-  const isLetterTraced = useProgressStore((s) => s.isLetterTraced);
+  const voiceGender = useSettingsStore((s) => s.voiceGender);
 
   const [step, setStep] = useState<Case>('upper');
+
+  const hasLower = letter ? hasLowercaseTracingData(letter) : false;
+
+  const genderedLetterAudio = entry
+    ? voiceGender === 'male'
+      ? (entry.letterAudioMale ?? entry.letterAudio)
+      : (entry.letterAudioFemale ?? entry.letterAudio)
+    : null;
 
   const finishCaseAndAdvance = useCallback(
     (caseSensitiveLetter: string) => {
       markLetterTraced(caseSensitiveLetter);
-      if (entry) void audioService.playVoice(letterAudioPath(entry.phonicsAudio));
-      setStep((s) => (s === 'upper' ? 'lower' : s));
+      if (genderedLetterAudio) {
+        void audioService.playVoice(letterAudioPath(genderedLetterAudio));
+      }
+      setStep((s) => (s === 'upper' && hasLower ? 'lower' : s));
     },
-    [entry, markLetterTraced],
+    [entry, hasLower, markLetterTraced, genderedLetterAudio],
   );
+
+  const [canvasKey, setCanvasKey] = useState(0);
 
   if (!entry || !letter || !hasTracingData(letter)) {
     return <Navigate to={letter ? `/alphabet/${letter}` : '/alphabet'} replace />;
@@ -52,13 +65,15 @@ export function TraceLetterPage() {
             >
               {letter}
             </button>
-            <button
-              type="button"
-              className={step === 'lower' ? styles.caseActive : styles.caseInactive}
-              onClick={() => setStep('lower')}
-            >
-              {letter.toLowerCase()}
-            </button>
+            {hasLower ? (
+              <button
+                type="button"
+                className={step === 'lower' ? styles.caseActive : styles.caseInactive}
+                onClick={() => setStep('lower')}
+              >
+                {letter.toLowerCase()}
+              </button>
+            ) : null}
           </div>
           <button
             type="button"
@@ -73,10 +88,15 @@ export function TraceLetterPage() {
         <div className={styles.canvasWrap}>
           {data ? (
             <TraceCanvas
-              key={caseLetter}
+              key={`${caseLetter}-${canvasKey}`}
               strokes={data.strokes}
               onComplete={() => finishCaseAndAdvance(caseLetter)}
-              initiallyComplete={isLetterTraced(caseLetter)}
+              onRetry={() => {
+                setCanvasKey((k) => k + 1);
+                if (genderedLetterAudio) {
+                  void audioService.playVoice(letterAudioPath(genderedLetterAudio));
+                }
+              }}
             />
           ) : null}
         </div>

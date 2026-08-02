@@ -19,13 +19,28 @@ export function sampleStroke(d: string, count = SAMPLE_COUNT): Point[] {
   });
 }
 
-/** Index + distance of the closest sample to `point`, in viewBox units. */
-export function nearestSample(samples: readonly Point[], point: Point): { index: number; distance: number } {
-  let best = { index: 0, distance: Infinity };
-  samples.forEach(([sx, sy], index) => {
-    const distance = Math.hypot(sx - point[0], sy - point[1]);
-    if (distance < best.distance) best = { index, distance };
-  });
+/** How far ahead of the current progress point (in sample-index units) a
+ * touch is allowed to match — mirrors the original Flutter tracer's
+ * "look ahead a bit, but never search the whole path" window, which is
+ * what makes the interaction reward tracing *in order* rather than
+ * scribbling anywhere on the letter. */
+export const LOOKAHEAD_SAMPLES = 20;
+
+/** Closest sample to `point` within [fromIndex, fromIndex + LOOKAHEAD_SAMPLES],
+ * never searching backward — progress along a stroke is monotonic. */
+export function nearestSampleAhead(
+  samples: readonly Point[],
+  fromIndex: number,
+  point: Point,
+): { index: number; distance: number } {
+  const windowEnd = Math.min(samples.length - 1, fromIndex + LOOKAHEAD_SAMPLES);
+  let best = { index: fromIndex, distance: Infinity };
+  for (let i = fromIndex; i <= windowEnd; i++) {
+    const s = samples[i];
+    if (!s) continue;
+    const distance = Math.hypot(s[0] - point[0], s[1] - point[1]);
+    if (distance < best.distance) best = { index: i, distance };
+  }
   return best;
 }
 

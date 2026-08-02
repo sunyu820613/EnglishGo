@@ -7,23 +7,25 @@ import styles from './TraceCanvas.module.css';
 interface TraceCanvasProps {
   strokes: readonly TraceStroke[];
   onComplete: () => void;
+  onRetry?: () => void;
   /** Render already-done, non-interactively — used when revisiting a case
    * that was completed in an earlier visit. */
   initiallyComplete?: boolean;
 }
 
 /** One case (upper or lower) of one letter: renders the locked/active/done
- * stroke outlines, the active stroke's start hint, and a guide dot that
- * follows the pointer within tolerance and eases back onto the path
- * otherwise. See docs from architect/frontend-designer review for the
- * three-state + guide-dot interaction spec. */
-export function TraceCanvas({ strokes, onComplete, initiallyComplete = false }: TraceCanvasProps) {
+ * stroke outlines, the active stroke's start hint and progressively-drawn
+ * "ink" as it's traced, and a guide dot that follows the pointer within
+ * tolerance and eases back onto the path otherwise. See docs from
+ * architect/frontend-designer review for the interaction spec. */
+export function TraceCanvas({ strokes, onComplete, onRetry, initiallyComplete = false }: TraceCanvasProps) {
   const {
     svgRef,
     activeStrokeIndex,
     strokeStatuses,
     guideDot,
     isComplete,
+    inkPoints,
     handlePointerDown,
     handlePointerMove,
     handlePointerUp,
@@ -51,18 +53,27 @@ export function TraceCanvas({ strokes, onComplete, initiallyComplete = false }: 
   }, [svgRef, handlePointerMove, handlePointerUp]);
 
   const active = strokes[activeStrokeIndex];
+  const notYetStarted = inkPoints.length <= 1;
+  const inkPath = inkPoints.length > 1 ? 'M' + inkPoints.map(([x, y]) => `${x},${y}`).join(' L') : null;
+
+  const handleSvgClick = () => {
+    if (isComplete && onRetry) {
+      onRetry();
+    }
+  };
 
   return (
     <svg
       ref={svgRef}
       viewBox={TRACE_VIEW_BOX}
-      className={[styles.canvas, isComplete ? styles.complete : ''].join(' ')}
+      className={[styles.canvas, isComplete ? styles.complete : '', isComplete && onRetry ? styles.clickableComplete : ''].join(' ')}
       onPointerDown={(e) => {
         (e.target as Element).setPointerCapture?.(e.pointerId);
-        handlePointerDown();
+        if (!isComplete) handlePointerDown();
       }}
+      onClick={handleSvgClick}
       role="img"
-      aria-label="Letter tracing practice"
+      aria-label={isComplete ? 'Tracing complete — tap to retry' : 'Letter tracing practice'}
     >
       {strokes.map((stroke, i) => (
         <path
@@ -73,7 +84,30 @@ export function TraceCanvas({ strokes, onComplete, initiallyComplete = false }: 
         />
       ))}
 
-      {active && !isComplete ? (
+      {/* Stroke order numbers — placed near each stroke's start point */}
+      {strokes.length > 1 ? strokes.map((stroke, i) => (
+        <g key={`order-${i}`} className={styles.orderNumber}>
+          <circle
+            cx={stroke.start.x}
+            cy={stroke.start.y - 18}
+            r={12}
+            className={styles.orderCircle}
+          />
+          <text
+            x={stroke.start.x}
+            y={stroke.start.y - 18}
+            textAnchor="middle"
+            dominantBaseline="central"
+            className={styles.orderText}
+          >
+            {i + 1}
+          </text>
+        </g>
+      )) : null}
+
+      {inkPath && !isComplete ? <path d={inkPath} className={styles.ink} fill="none" /> : null}
+
+      {active && !isComplete && notYetStarted ? (
         <g className={reducedMotion ? styles.startHintStill : styles.startHint}>
           <circle cx={active.start.x} cy={active.start.y} r={8} className={styles.startDot} />
           <polygon
@@ -93,6 +127,17 @@ export function TraceCanvas({ strokes, onComplete, initiallyComplete = false }: 
           r={7}
           className={[styles.guideDot, guideDot.following ? '' : styles.guideDotSnapped].join(' ')}
         />
+      ) : null}
+
+      {isComplete && onRetry ? (
+        <text
+          x={100}
+          y={180}
+          textAnchor="middle"
+          className={styles.retryHint}
+        >
+          Tap to try again
+        </text>
       ) : null}
     </svg>
   );
