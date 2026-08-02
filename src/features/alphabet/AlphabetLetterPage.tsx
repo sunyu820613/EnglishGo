@@ -1,9 +1,9 @@
 import { useEffect, useLayoutEffect, useRef } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import gsap from 'gsap';
-import { WordCard } from '../../components/WordCard';
+import { WordChip } from '../../components/WordChip';
 import { alphabet } from '../../data/alphabet';
-import { letterAudioPath, phraseAudioPath, wordAudioPath, wordImagePath } from '../../data/paths';
+import { letterAudioPath, wordAudioPath, wordImagePath } from '../../data/paths';
 import { LetterSoundVariants } from '../phonics/LetterSoundVariants';
 import { PhonicsCompare } from '../phonics/PhonicsCompare';
 import { hasLowercaseTracingData, hasTracingData } from '../../data/tracingPaths';
@@ -97,24 +97,26 @@ export function AlphabetLetterPage() {
               letter={entry}
               nameAudioSrc={letterAudioPath(genderedName)}
               soundAudioSrc={letterAudioPath(entry.phonicsAudio)}
+              hideSoundRow={Boolean(entry.soundVariants)}
             />
 
-            <div className={styles.words}>
-              {entry.words.map((word) => (
-                <WordCard
-                  key={word.id}
-                  word={word.text}
-                  imageSrc={wordImagePath(word.image)}
-                  imageAlt={word.text}
-                  wordAudioSrc={wordAudioPath(word.audio)}
-                  phraseAudioSrc={phraseAudioPath(word.phrase)}
-                />
-              ))}
-            </div>
-
             {entry.soundVariants ? (
+              // The letter's primary sound is the variants list's first
+              // row (same words as `entry.words`), so this table replaces
+              // the standalone word-chip row instead of sitting below it.
               <LetterSoundVariants letter={entry.letter} variants={entry.soundVariants} />
-            ) : null}
+            ) : (
+              <div className={styles.words}>
+                {entry.words.map((word) => (
+                  <WordChip
+                    key={word.id}
+                    text={word.text}
+                    imageSrc={wordImagePath(word.image)}
+                    audioSrc={wordAudioPath(word.audio)}
+                  />
+                ))}
+              </div>
+            )}
 
             {hasTracingData(entry.letter) ? (
               <Link to={`/alphabet/${entry.letter}/trace`} className={styles.tracingCta}>

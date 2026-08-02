@@ -1,4 +1,4 @@
-import { audioService } from '../../audio/useAudioService';
+import { WordChip } from '../../components/WordChip';
 import type { LetterSoundVariant } from '../../data/alphabet.types';
 import { wordAudioPath, wordImagePath } from '../../data/paths';
 import styles from './LetterSoundVariants.module.css';
@@ -23,16 +23,12 @@ export function LetterSoundVariants({ letter, variants }: LetterSoundVariantsPro
           </div>
           <div className={styles.words}>
             {variant.words.map((word) => (
-              <button
+              <WordChip
                 key={word.id}
-                type="button"
-                className={styles.chip}
-                onClick={() => void audioService.playVoice(wordAudioPath(word.audio))}
-                aria-label={`Play the word ${word.text}`}
-              >
-                <img src={wordImagePath(word.image)} alt={word.text} className={styles.chipImage} loading="lazy" />
-                <span className={styles.chipText}>{word.text}</span>
-              </button>
+                text={word.text}
+                imageSrc={wordImagePath(word.image)}
+                audioSrc={wordAudioPath(word.audio)}
+              />
             ))}
           </div>
         </div>

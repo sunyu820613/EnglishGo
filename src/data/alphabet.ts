@@ -19,10 +19,18 @@ export const alphabet: AlphabetLetter[] = [
       { id: 'apple', text: 'Apple', audio: 'apple.m4a', image: 'apple.webp', phrase: 'a_is_for_apple.m4a' },
       { id: 'ant', text: 'Ant', audio: 'ant.m4a', image: 'ant.webp', phrase: 'a_is_for_ant.m4a' },
     ],
-    // /æ/ (core short vowel) is intentionally not repeated here — it's
-    // already the primary sound shown above via PhonicsCompare + the
-    // Apple/Ant word cards. This list covers A's *other* pronunciations.
+    // /æ/ (core short vowel, same words as the `words` field above) is
+    // listed first here so the letter page can render one unified "A
+    // says..." table instead of a separate word-card row plus this list.
     soundVariants: [
+      {
+        ipa: 'æ',
+        label: 'Core short vowel',
+        words: [
+          { id: 'apple', text: 'Apple', audio: 'apple.m4a', image: 'apple.webp' },
+          { id: 'ant', text: 'Ant', audio: 'ant.m4a', image: 'ant.webp' },
+        ],
+      },
       {
         ipa: 'eɪ',
         label: 'Long vowel (open syllable / a_e)',

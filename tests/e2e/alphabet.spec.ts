@@ -27,12 +27,11 @@ test('a letter page plays audio, toggles voice gender, and persists progress on 
   await expect(page.getByText('Learned 1 / 26')).toBeVisible();
 });
 
-test('letter A shows its other pronunciation variants with playable example words', async ({ page }) => {
+test('letter A shows its pronunciation variants with playable example words', async ({ page }) => {
   await page.goto('/alphabet/A');
   await expect(page.getByRole('heading', { name: 'A says…' })).toBeVisible();
 
-  // /æ/ is deliberately excluded — it's already shown via PhonicsCompare + Apple/Ant above.
-  const variantIpas = ['/eɪ/', '/ə/', '/ɑ/', '/ɔ/', '/ɑr/', '/ɛr/', '/ə~ɪ/'];
+  const variantIpas = ['/æ/', '/eɪ/', '/ə/', '/ɑ/', '/ɔ/', '/ɑr/', '/ɛr/', '/ə~ɪ/'];
   for (const ipa of variantIpas) {
     await expect(page.getByText(ipa, { exact: true })).toBeVisible();
   }
