@@ -1,0 +1,58 @@
+.stage {
+  position: relative;
+  width: 100%;
+  max-width: clamp(280px, 60vw, 420px);
+  aspect-ratio: 240 / 300;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--color-surface);
+  box-shadow: var(--shadow-rest);
+  touch-action: none;
+  transition: box-shadow var(--duration-celebrate) var(--ease-celebrate);
+}
+
+.complete {
+  box-shadow: var(--shadow-rest), 0 0 0 4px color-mix(in srgb, var(--color-success) 55%, transparent),
+    0 0 24px color-mix(in srgb, var(--color-success) 35%, transparent);
+}
+
+.canvasLayer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.drawLayer {
+  cursor: pointer;
+  touch-action: none;
+}
+
+.retryOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: var(--space-lg);
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.retryHint {
+  padding: var(--space-xs) var(--space-md);
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, var(--color-surface) 85%, transparent);
+  color: var(--color-text-soft);
+  font-family: var(--font-body);
+  font-size: var(--text-caption);
+  box-shadow: var(--shadow-rest);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stage {
+    transition: none;
+  }
+}

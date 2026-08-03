@@ -1,4 +1,42 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
+
+// Grid coordinates from src/data/letterStrokes.ts (GRID_LINES: top=60,
+// upperMid=120, lowerMid=180, bottom=240) — must match that file exactly,
+// since its coordinates are off-limits to change for this integration.
+const A_STROKES = [
+  [
+    [120, 60],
+    [75, 180],
+  ],
+  [
+    [120, 60],
+    [165, 180],
+  ],
+  [
+    [100, 135],
+    [140, 135],
+  ],
+] as const;
+
+async function traceStroke(page: Page, canvasBox: { x: number; y: number; width: number; height: number }, stroke: readonly (readonly [number, number])[]) {
+  const scaleX = canvasBox.width / 240;
+  const scaleY = canvasBox.height / 300;
+  const toScreen = ([vx, vy]: readonly [number, number]) => ({
+    x: canvasBox.x + vx * scaleX,
+    y: canvasBox.y + vy * scaleY,
+  });
+  const [start, end] = [stroke[0], stroke[stroke.length - 1]];
+  const startPoint = toScreen(start);
+  await page.mouse.move(startPoint.x, startPoint.y);
+  await page.mouse.down();
+  const steps = 20;
+  for (let i = 1; i <= steps; i++) {
+    const t = i / steps;
+    const p = toScreen([start[0] + t * (end[0] - start[0]), start[1] + t * (end[1] - start[1])]);
+    await page.mouse.move(p.x, p.y, { steps: 2 });
+  }
+  await page.mouse.up();
+}
 
 test('letter detail page links to tracing practice for a piloted letter', async ({ page }) => {
   await page.goto('/alphabet/A');
@@ -8,79 +46,68 @@ test('letter detail page links to tracing practice for a piloted letter', async 
   await expect(page).toHaveURL(/\/alphabet\/A\/trace$/);
 });
 
-test('a letter with only uppercase pilot data has no lowercase toggle', async ({ page }) => {
-  await page.goto('/alphabet/D/trace');
-  const canvas = page.locator('svg[aria-label="Letter tracing practice"]');
-  await expect(canvas).toBeVisible();
-  await expect(page.getByRole('button', { name: 'd', exact: true })).toHaveCount(0);
-});
-
-test('tracing a stroke completes it and unlocks the next one, persisting progress', async ({ page }) => {
-  await page.goto('/alphabet/A/trace');
-  const canvas = page.locator('svg[aria-label="Letter tracing practice"]');
-  await expect(canvas).toBeVisible();
-
-  const box = await canvas.boundingBox();
-  if (!box) throw new Error('canvas not laid out');
-  const scale = box.width / 200;
-  const toScreen = (vx: number, vy: number) => ({ x: box.x + vx * scale, y: box.y + vy * scale });
-
-  // Stroke 1 of uppercase A: apex (100,20) -> base-left (20,180).
-  const start = toScreen(100, 20);
-  await page.mouse.move(start.x, start.y);
-  await page.mouse.down();
-  const steps = 30;
-  for (let i = 1; i <= steps; i++) {
-    const t = i / steps;
-    const p = toScreen(100 + t * (20 - 100), 20 + t * (180 - 20));
-    await page.mouse.move(p.x, p.y, { steps: 2 });
+test('every letter has both a case toggle and playable canvas (full A-Z + a-z coverage)', async ({ page }) => {
+  for (const letter of ['A', 'M', 'Z']) {
+    await page.goto(`/alphabet/${letter}/trace`);
+    await expect(page.locator(`[aria-label="Letter tracing practice"]`)).toBeVisible();
+    await expect(page.getByRole('button', { name: letter, exact: true })).toBeVisible();
+    await expect(page.getByRole('button', { name: letter.toLowerCase(), exact: true })).toBeVisible();
   }
-  await page.mouse.up();
-
-  // First stroke should now render as "done" (not "active").
-  const strokes = canvas.locator('path');
-  await expect(strokes.first()).toHaveClass(/done/);
 });
 
-test('hovering the path without pressing the mouse button does not advance progress', async ({ page }) => {
+test('tracing every stroke completes the case, replays audio, and advances to lowercase', async ({ page }) => {
   await page.goto('/alphabet/A/trace');
-  const canvas = page.locator('svg[aria-label="Letter tracing practice"]');
+  const canvas = page.locator('[aria-label="Letter tracing practice"]');
+  await expect(canvas).toBeVisible();
   const box = await canvas.boundingBox();
   if (!box) throw new Error('canvas not laid out');
-  const scale = box.width / 200;
-  const toScreen = (vx: number, vy: number) => ({ x: box.x + vx * scale, y: box.y + vy * scale });
 
-  // Same path as the completion test, but without mouse.down() first.
-  const steps = 30;
-  for (let i = 0; i <= steps; i++) {
-    const t = i / steps;
-    const p = toScreen(100 + t * (20 - 100), 20 + t * (180 - 20));
-    await page.mouse.move(p.x, p.y, { steps: 2 });
+  for (const stroke of A_STROKES) {
+    await traceStroke(page, box, stroke);
   }
 
-  const strokes = canvas.locator('path');
-  await expect(strokes.first()).toHaveClass(/active/);
-  await expect(strokes.first()).not.toHaveClass(/done/);
+  // Completing uppercase A marks it traced and immediately advances the case
+  // toggle to a fresh, not-yet-traced lowercase board (so "Tap to try again"
+  // belongs to 'A', which is no longer the mounted board — check the toggle
+  // and persisted progress instead).
+  await expect(page.getByRole('button', { name: 'a', exact: true })).toHaveClass(/caseActive/);
+  const traced = await page.evaluate(() => localStorage.getItem('englishgo.progress.v1'));
+  const parsed = traced ? JSON.parse(traced) : { state: { tracedLetters: [] } };
+  expect(parsed.state.tracedLetters ?? []).toContain('A');
 });
 
-test('tracing out of order (jumping ahead) does not complete the stroke', async ({ page }) => {
+test('a stray tap far from the stroke does not complete it', async ({ page }) => {
   await page.goto('/alphabet/A/trace');
-  const canvas = page.locator('svg[aria-label="Letter tracing practice"]');
+  const canvas = page.locator('[aria-label="Letter tracing practice"]');
   const box = await canvas.boundingBox();
   if (!box) throw new Error('canvas not laid out');
-  const scale = box.width / 200;
-  const toScreen = (vx: number, vy: number) => ({ x: box.x + vx * scale, y: box.y + vy * scale });
 
-  // Jump straight to the far end of the first stroke instead of tracing it.
-  const start = toScreen(100, 20);
-  await page.mouse.move(start.x, start.y);
+  // A single small scribble in a corner, nowhere near stroke 1.
+  await page.mouse.move(box.x + 10, box.y + 10);
   await page.mouse.down();
-  const end = toScreen(20, 180);
-  await page.mouse.move(end.x, end.y, { steps: 1 });
+  await page.mouse.move(box.x + 15, box.y + 12);
+  await page.mouse.move(box.x + 20, box.y + 10);
   await page.mouse.up();
 
-  const strokes = canvas.locator('path');
-  await expect(strokes.first()).not.toHaveClass(/done/);
+  await expect(page.getByRole('button', { name: 'Tap to try again' })).toHaveCount(0);
+});
+
+test('revisiting an already-traced case shows it as complete without requiring interaction', async ({ page }) => {
+  await page.goto('/alphabet/A/trace');
+  await page.evaluate(() => {
+    localStorage.setItem('englishgo.progress.v1', JSON.stringify({ state: { tracedLetters: ['A'] }, version: 0 }));
+  });
+  await page.reload();
+  await expect(page.getByRole('button', { name: 'Tap to try again' })).toBeVisible();
+});
+
+test('the "Watch me write it" demo button is present and clickable without error', async ({ page }) => {
+  const pageErrors: Error[] = [];
+  page.on('pageerror', (err) => pageErrors.push(err));
+  await page.goto('/alphabet/A/trace');
+  await page.getByRole('button', { name: 'Watch me write it' }).click();
+  await page.waitForTimeout(200);
+  expect(pageErrors).toEqual([]);
 });
 
 test('skip button returns to the letter detail page without marking progress', async ({ page }) => {

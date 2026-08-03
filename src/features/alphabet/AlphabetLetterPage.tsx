@@ -6,7 +6,7 @@ import { alphabet } from '../../data/alphabet';
 import { letterAudioPath, wordAudioPath, wordImagePath } from '../../data/paths';
 import { LetterSoundVariants } from '../phonics/LetterSoundVariants';
 import { PhonicsCompare } from '../phonics/PhonicsCompare';
-import { hasLowercaseTracingData, hasTracingData } from '../../data/tracingPaths';
+import { hasLowercaseTracingData, hasTracingData } from '../../data/letterStrokes';
 import { useProgressStore } from '../../store/progressStore';
 import { useSettingsStore } from '../../store/settingsStore';
 import page from '../../styles/page.module.css';

@@ -68,3 +68,35 @@
   display: flex;
   justify-content: center;
 }
+
+.watchMeWrap {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--space-lg);
+}
+
+.watchMeButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--touch-min);
+  padding: 0 var(--space-lg);
+  border: none;
+  border-radius: var(--radius-full);
+  background: var(--color-surface-alt);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  cursor: pointer;
+}
+
+.watchMeButton:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-focus);
+  outline-offset: var(--focus-ring-offset);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .watchMeButton:hover {
+    background: var(--color-surface);
+    box-shadow: var(--shadow-rest);
+  }
+}
