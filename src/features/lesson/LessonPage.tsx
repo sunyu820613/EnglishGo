@@ -10,7 +10,7 @@ import { getLetterStars } from '../../store/letterStars';
 import page from '../../styles/page.module.css';
 import { LessonProgressDots } from './LessonProgressDots';
 import { StepLetterQuiz } from './steps/StepLetterQuiz';
-import { StepMatch } from './steps/StepMatch';
+import { StepQuiz } from './steps/StepQuiz';
 import { StepTrace } from './steps/StepTrace';
 import { StepReward } from './steps/StepReward';
 import styles from './LessonPage.module.css';
@@ -75,9 +75,9 @@ export function LessonPage() {
         <LessonProgressDots totalSteps={TOTAL_STEPS} currentStep={step} />
 
         {step === 0 ? (
-          <StepLetterQuiz
-            letter={letter}
-            audioSrc={quizAudioSrc}
+          <StepQuiz
+            letterEntry={entry}
+            allLetters={alphabet}
             reducedMotion={reducedMotion}
             onCompleted={() => {
               markQuizPassed(letter);
@@ -87,8 +87,9 @@ export function LessonPage() {
         ) : null}
 
         {step === 1 ? (
-          <StepMatch
+          <StepLetterQuiz
             letter={letter}
+            audioSrc={quizAudioSrc}
             reducedMotion={reducedMotion}
             onCompleted={() => {
               markMatchPassed(letter);
