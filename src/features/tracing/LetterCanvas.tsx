@@ -1,10 +1,9 @@
 // Ported from D:\AI\LetterBoard (src/components/LetterBoard.tsx) per user request to
 // replace the previous SVG-based tracing engine. Kept the original canvas drawing /
 // tolerance-matching / demo-animation logic; swapped hardcoded hex colors for this
-// project's design tokens, and added initiallyComplete (for revisiting an
-// already-traced case) and prefers-reduced-motion handling to match this app's
-// existing conventions.
-import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
+// project's design tokens, and added prefers-reduced-motion handling to match this
+// app's existing conventions.
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import type { PointerEvent as ReactPointerEvent } from 'react';
 import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
 import { isPointNearStroke, type Point } from './canvasGeometry';
@@ -31,9 +30,9 @@ export interface LetterCanvasHandle {
 export interface LetterCanvasProps {
   letter: string;
   onComplete: () => void;
-  /** Render already-done, non-interactively — used when revisiting a case
-   * that was completed in an earlier visit. */
-  initiallyComplete?: boolean;
+  /** Override the theme's default pen / guide-letter color; null uses the theme default. */
+  penColor?: string | null;
+  guideColor?: string | null;
 }
 
 /** Canvas 2D needs concrete color strings, not live CSS var()/color-mix(). */
@@ -47,6 +46,25 @@ function readTokenColors() {
     animation: get('--color-accent', '#f28c28'),
     userInk: get('--color-primary', '#3483eb'),
   };
+}
+
+/** Hue in degrees for a #rrggbb color, or null if unparsable. */
+function hexHue(hex: string): number | null {
+  const m = /^#([0-9a-f]{6})$/i.exec(hex.trim());
+  if (!m) return null;
+  const r = parseInt(m[1]!.slice(0, 2), 16) / 255;
+  const g = parseInt(m[1]!.slice(2, 4), 16) / 255;
+  const b = parseInt(m[1]!.slice(4, 6), 16) / 255;
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  if (max === min) return 0;
+  const d = max - min;
+  let h: number;
+  if (max === r) h = ((g - b) / d) % 6;
+  else if (max === g) h = (b - r) / d + 2;
+  else h = (r - g) / d + 4;
+  h *= 60;
+  return h < 0 ? h + 360 : h;
 }
 
 /** ThemeProvider applies `data-theme` in its own effect, which — because
@@ -109,12 +127,27 @@ function getCanvasPoint(canvas: HTMLCanvasElement, event: ReactPointerEvent<HTML
 }
 
 export const LetterCanvas = forwardRef<LetterCanvasHandle, LetterCanvasProps>(function LetterCanvas(
-  { letter, onComplete, initiallyComplete = false },
+  { letter, onComplete, penColor, guideColor },
   ref,
 ) {
   const guideCanvasRef = useRef<HTMLCanvasElement>(null);
   const drawCanvasRef = useRef<HTMLCanvasElement>(null);
-  const colors = useTokenColors();
+  const tokenColors = useTokenColors();
+  const colors = useMemo(() => {
+    const guide = guideColor ?? tokenColors.guide;
+    const guideHue = hexHue(guide);
+    // The demo animation stroke is drawn over the (possibly user-picked)
+    // guide color — if that guide is itself warm (yellow/orange, the same
+    // family as the default accent), fall back to the theme's cool primary
+    // so the animated stroke stays visible against it.
+    const isWarmGuide = guideHue !== null && guideHue >= 20 && guideHue <= 70;
+    return {
+      ...tokenColors,
+      guide,
+      animation: isWarmGuide ? tokenColors.userInk : tokenColors.animation,
+      ...(penColor ? { userInk: penColor } : {}),
+    };
+  }, [tokenColors, guideColor, penColor]);
   const reducedMotion = usePrefersReducedMotion();
 
   const currentStrokeIndexRef = useRef(0);
@@ -124,8 +157,8 @@ export const LetterCanvas = forwardRef<LetterCanvasHandle, LetterCanvasProps>(fu
   const isAnimatingRef = useRef(false);
   const cancelAnimationFrameRef = useRef<(() => void) | null>(null);
   const animationTimeoutRef = useRef<number | null>(null);
-  const completedRef = useRef(initiallyComplete);
-  const [isComplete, setIsComplete] = useState(initiallyComplete);
+  const completedRef = useRef(false);
+  const [isComplete, setIsComplete] = useState(false);
 
   const letterData = LETTER_DATA[letter];
 
@@ -179,8 +212,9 @@ export const LetterCanvas = forwardRef<LetterCanvasHandle, LetterCanvasProps>(fu
   }, [clearAnimationTimers, redrawGuideCanvas]);
 
   const playAnimation = useCallback(() => {
-    if (!letterData || isAnimatingRef.current || completedRef.current) return;
+    if (!letterData || isAnimatingRef.current) return;
     if (reducedMotion) return; // motion is the entire point of this feature
+    if (completedRef.current) resetBoard(); // otherwise the retry overlay hides the demo
     isAnimatingRef.current = true;
 
     const playStrokeAt = (index: number): void => {
@@ -206,7 +240,7 @@ export const LetterCanvas = forwardRef<LetterCanvasHandle, LetterCanvasProps>(fu
       });
     };
     playStrokeAt(0);
-  }, [letterData, redrawGuideCanvas, colors, reducedMotion]);
+  }, [letterData, redrawGuideCanvas, colors, reducedMotion, resetBoard]);
 
   useImperativeHandle(ref, () => ({ playAnimation, stopAnimation, resetBoard }), [
     playAnimation,
@@ -215,11 +249,6 @@ export const LetterCanvas = forwardRef<LetterCanvasHandle, LetterCanvasProps>(fu
   ]);
 
   useEffect(() => {
-    if (initiallyComplete && letterData) {
-      currentStrokeIndexRef.current = letterData.strokes.length;
-      completedRef.current = true;
-    }
-    setIsComplete(initiallyComplete);
     redrawGuideCanvas();
     redrawUserCanvas();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -233,9 +262,10 @@ export const LetterCanvas = forwardRef<LetterCanvasHandle, LetterCanvasProps>(fu
     redrawUserCanvas();
   }, [redrawGuideCanvas, redrawUserCanvas]);
 
-  const finishAttempt = useCallback(() => {
-    if (!letterData) return;
-    const attempt = currentAttemptRef.current;
+ const finishAttempt = useCallback(() => {
+   if (!letterData) return;
+    console.log('[TRACE-DEBUG] finishAttempt', currentStrokeIndexRef.current, letterData.strokes.length, completedRef.current);
+   const attempt = currentAttemptRef.current;
     currentAttemptRef.current = [];
 
     if (attempt.length < MIN_POINTS_TO_EVALUATE) {
@@ -252,10 +282,11 @@ export const LetterCanvas = forwardRef<LetterCanvasHandle, LetterCanvasProps>(fu
       currentStrokeIndexRef.current += 1;
       redrawGuideCanvas();
       redrawUserCanvas();
-      if (currentStrokeIndexRef.current >= letterData.strokes.length && !completedRef.current) {
-        completedRef.current = true;
-        setIsComplete(true);
-        onComplete();
+     if (currentStrokeIndexRef.current >= letterData.strokes.length && !completedRef.current) {
+       completedRef.current = true;
+        console.log('[TRACE-DEBUG] finishAttempt calling onComplete');
+       setIsComplete(true);
+       onComplete();
       }
     } else {
       redrawUserCanvas();

@@ -9,6 +9,8 @@ import { PhonicsCompare } from '../phonics/PhonicsCompare';
 import { hasLowercaseTracingData, hasTracingData } from '../../data/letterStrokes';
 import { useProgressStore } from '../../store/progressStore';
 import { useSettingsStore } from '../../store/settingsStore';
+import { getLetterStars } from '../../store/letterStars';
+import { StarMeter } from '../../components/StarMeter';
 import page from '../../styles/page.module.css';
 import styles from './AlphabetLetterPage.module.css';
 
@@ -20,6 +22,10 @@ export function AlphabetLetterPage() {
 
   const markLetterLearned = useProgressStore((s) => s.markLetterLearned);
   const voiceGender = useSettingsStore((s) => s.voiceGender);
+  const wordsHeard = useProgressStore((s) => s.wordsHeard);
+  const quizPassedLetters = useProgressStore((s) => s.quizPassedLetters);
+  const matchPassedLetters = useProgressStore((s) => s.matchPassedLetters);
+  const tracedLetters = useProgressStore((s) => s.tracedLetters);
   const layoutRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -38,6 +44,11 @@ export function AlphabetLetterPage() {
         duration: 0.28,
         stagger: 0.06,
         ease: 'power1.out',
+        // Otherwise GSAP leaves an inline `transform: matrix(1,0,0,1,0,0)`
+        // behind — a no-op visually, but it still creates a new CSS
+        // stacking context that can trap a descendant's z-index (e.g. the
+        // word-image pop-to-zoom) below later, unrelated siblings.
+        clearProps: 'transform',
       });
     }, el);
     return () => ctx.revert();
@@ -54,6 +65,7 @@ export function AlphabetLetterPage() {
 
   const prev = index > 0 ? alphabet[index - 1] : undefined;
   const next = index < alphabet.length - 1 ? alphabet[index + 1] : undefined;
+  const stars = getLetterStars(entry.letter, { wordsHeard, quizPassedLetters, matchPassedLetters, tracedLetters });
 
   return (
     <div className={`${page.page} ${styles.page}`}>
@@ -69,9 +81,6 @@ export function AlphabetLetterPage() {
           ) : (
             <span className={styles.navSlotStart} />
           )}
-          <Link to="/alphabet" className={styles.navLink}>
-            All letters
-          </Link>
           {next ? (
             <Link
               to={`/alphabet/${next.letter}`}
@@ -90,6 +99,7 @@ export function AlphabetLetterPage() {
               {entry.letter}
               <span className={styles.heroLower}>{entry.letter.toLowerCase()}</span>
             </span>
+            <StarMeter filled={stars} />
           </section>
 
           <section className={styles.content}>
@@ -113,17 +123,46 @@ export function AlphabetLetterPage() {
                     text={word.text}
                     imageSrc={wordImagePath(word.image)}
                     audioSrc={wordAudioPath(word.audio)}
+                    baseAudio={word.audio}
                   />
                 ))}
               </div>
             )}
 
-            {hasTracingData(entry.letter) ? (
-              <Link to={`/alphabet/${entry.letter}/trace`} className={styles.tracingCta}>
-                Practice writing {entry.letter}
-                {hasLowercaseTracingData(entry.letter) ? entry.letter.toLowerCase() : ''}
+            <div className={styles.actionsRow}>
+              <Link to={`/alphabet/${entry.letter}/lesson`} className={`${styles.actionCta} ${styles.quizCta}`}>
+                <svg viewBox="0 0 24 24" className={styles.actionIcon} aria-hidden="true">
+                  <rect x="5" y="4" width="14" height="17" rx="2" fill="none" stroke="currentColor" strokeWidth="2" />
+                  <path d="M9 3h6v3H9z" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
+                  <path
+                    d="M8.5 13l2.3 2.3L16 10"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                Start Quiz
               </Link>
-            ) : null}
+
+              {hasTracingData(entry.letter) ? (
+                <Link to={`/alphabet/${entry.letter}/trace`} className={`${styles.actionCta} ${styles.practiceCta}`}>
+                  <svg viewBox="0 0 24 24" className={styles.actionIcon} aria-hidden="true">
+                    <path
+                      d="M4 20l1-4L15.5 5.5l3.5 3.5L8.5 19.5 4 20z"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinejoin="round"
+                    />
+                    <path d="M13 7.5l3.5 3.5" stroke="currentColor" strokeWidth="2" />
+                  </svg>
+                  Practice writing {entry.letter}
+                  {hasLowercaseTracingData(entry.letter) ? entry.letter.toLowerCase() : ''}
+                </Link>
+              ) : null}
+            </div>
           </section>
         </div>
       </div>

@@ -33,16 +33,6 @@
   height: var(--touch-min);
   border-radius: var(--radius-full);
   object-fit: cover;
-  position: relative;
-  transition: transform var(--duration-celebrate) var(--ease-celebrate);
-}
-
-/* Tap feedback: the picture pops up larger for a clearer look, then
-   settles back — z-index keeps it visible over neighboring chips while
-   enlarged. */
-.popped {
-  transform: scale(4.5);
-  z-index: var(--z-content, 2);
 }
 
 .text {
@@ -58,7 +48,35 @@
   .chip:active {
     transform: none;
   }
-  .image {
-    transition: none;
+}
+
+@keyframes wordZoomIn {
+  from {
+    transform: scale(0.3);
+    opacity: 0;
   }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.zoomOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-overlay);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--color-shadow) 35%, transparent);
+  pointer-events: none;
+}
+
+.zoomImage {
+  width: min(60vw, 60vh, 320px);
+  height: min(60vw, 60vh, 320px);
+  border-radius: var(--radius-full);
+  object-fit: cover;
+  box-shadow: var(--shadow-raised);
+  animation: wordZoomIn var(--duration-micro) var(--ease-micro);
 }

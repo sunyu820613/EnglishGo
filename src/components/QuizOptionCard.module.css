@@ -1,0 +1,38 @@
+.card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+  height: 100px;
+  min-width: var(--touch-min);
+  min-height: var(--touch-min);
+  padding: 0;
+  border: 3px solid transparent;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-rest);
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.card:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-focus);
+  outline-offset: var(--focus-ring-offset);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .card:hover {
+    box-shadow: var(--shadow-raised);
+  }
+}
+
+.success {
+  border-color: var(--color-success);
+  box-shadow: var(--shadow-raised);
+}
+
+/* A wrong tap: gentle highlight, never red/error-coded — the shake alone
+ * (driven from QuizOptionCard.tsx) communicates "try again". */
+.hint {
+  border-color: var(--color-outline);
+}

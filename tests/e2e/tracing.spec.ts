@@ -55,7 +55,7 @@ test('every letter has both a case toggle and playable canvas (full A-Z + a-z co
   }
 });
 
-test('tracing every stroke completes the case, replays audio, and advances to lowercase', async ({ page }) => {
+test('tracing every stroke completes the case, replays audio, and stays on the same case', async ({ page }) => {
   await page.goto('/alphabet/A/trace');
   const canvas = page.locator('[aria-label="Letter tracing practice"]');
   await expect(canvas).toBeVisible();
@@ -66,11 +66,10 @@ test('tracing every stroke completes the case, replays audio, and advances to lo
     await traceStroke(page, box, stroke);
   }
 
-  // Completing uppercase A marks it traced and immediately advances the case
-  // toggle to a fresh, not-yet-traced lowercase board (so "Tap to try again"
-  // belongs to 'A', which is no longer the mounted board — check the toggle
-  // and persisted progress instead).
-  await expect(page.getByRole('button', { name: 'a', exact: true })).toHaveClass(/caseActive/);
+  // Completing uppercase A marks it traced and shows the retry overlay on the
+  // same board — no auto-advance to lowercase.
+  await expect(page.getByRole('button', { name: 'Tap to try again' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'A', exact: true })).toHaveClass(/caseActive/);
   const traced = await page.evaluate(() => localStorage.getItem('englishgo.progress.v1'));
   const parsed = traced ? JSON.parse(traced) : { state: { tracedLetters: [] } };
   expect(parsed.state.tracedLetters ?? []).toContain('A');
@@ -92,13 +91,13 @@ test('a stray tap far from the stroke does not complete it', async ({ page }) =>
   await expect(page.getByRole('button', { name: 'Tap to try again' })).toHaveCount(0);
 });
 
-test('revisiting an already-traced case shows it as complete without requiring interaction', async ({ page }) => {
+test('opening a trace page is always blank, even if that case was already traced before', async ({ page }) => {
   await page.goto('/alphabet/A/trace');
   await page.evaluate(() => {
     localStorage.setItem('englishgo.progress.v1', JSON.stringify({ state: { tracedLetters: ['A'] }, version: 0 }));
   });
   await page.reload();
-  await expect(page.getByRole('button', { name: 'Tap to try again' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Tap to try again' })).toHaveCount(0);
 });
 
 test('the "Watch me write it" demo button is present and clickable without error', async ({ page }) => {

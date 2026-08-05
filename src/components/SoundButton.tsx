@@ -5,6 +5,8 @@ import styles from './SoundButton.module.css';
 export type SoundButtonSize = 'kid' | 'primary';
 
 interface SoundButtonProps {
+  /** Fallback audio src if primary src fails (e.g. gendered file not found). */
+  fallbackSrc?: string;
   /** Absolute URL to the audio file, e.g. /audio/letters/a_name.m4a. Undefined/null disables the button. */
   src: string | null | undefined;
   /** Accessible label, e.g. "Play the letter A". */
@@ -18,7 +20,7 @@ interface SoundButtonProps {
   caption?: string;
 }
 
-export function SoundButton({ src, label, size = 'kid', disabledHint, caption }: SoundButtonProps) {
+export function SoundButton({ src, label, size = 'kid', disabledHint, caption, fallbackSrc }: SoundButtonProps) {
   const [isPlaying, setIsPlaying] = useState(() => audioService.getPlayingVoiceSrc() === src);
 
   useEffect(() => {
@@ -37,7 +39,7 @@ export function SoundButton({ src, label, size = 'kid', disabledHint, caption }:
         aria-label={label}
         disabled={disabled}
         onClick={() => {
-          if (src) void audioService.playVoice(src);
+          if (src) void audioService.playVoice(src, fallbackSrc);
         }}
       >
         <svg viewBox="0 0 24 24" className={styles.icon} aria-hidden="true">

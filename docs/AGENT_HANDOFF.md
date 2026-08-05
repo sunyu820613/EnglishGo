@@ -4,6 +4,119 @@
 
 ---
 
+# 2026-08-05 | Codex | Bug fixes: 男声单词发音、导航改进、故事入口
+
+**修复的 Bug：**
+
+1. **SoundButton 未解构 fallbackSrc 导致男声不生效** — `SoundButton` 组件参数解构缺少 `fallbackSrc`，导致 `playVoice(src, fallbackSrc)` 中 `fallbackSrc` 始终为 `undefined`，男声音频无法作为回退播放。修正：将 `fallbackSrc` 加入解构参数列表。
+
+2. **AppShell 导航缺少 All letters / Stories 入口** — 用户无法从导航栏直接访问字母总览页和故事列表。修正：在 AppShell header 添加 "All Letters"（→`/alphabet`）和 "Stories"（→`/rewards`）链接。
+
+3. **课程完成后无故事入口引导** — StepReward 页面只有 "Back to {letter}" 按钮，用户不知道完成 A/B/C 后可以去 Rewards 看故事。修正：StepReward 添加 "Stories & Rewards" 链接按钮。
+
+**视频播放时背景音乐静音：** StoryViewerPage 的 VideoPlayer 组件已有 `play`/`pause`/`ended` 事件监听自动暂停/恢复 BGM（`setBgmEnabled`），此功能已实现。
+
+**修改文件：**
+- `src/components/SoundButton.tsx` — 解构 fallbackSrc 参数
+- `src/components/AppShell.tsx` — 添加 All Letters / Stories 导航链接
+- `src/features/lesson/steps/StepReward.tsx` — 添加故事入口链接
+- `src/features/lesson/steps/StepReward.module.css` — 故事链接样式
+
+**验证结果：**
+- `npx tsc --noEmit`：零错误
+- `npx vitest run`：96/96 通过（18 个测试文件）
+- 环境警告（jsdom 未实现 HTMLMediaElement.prototype.pause/play）系已有问题，非本次引入
+
+**未做（非本次范围）：**
+- 其他 8 组故事的视频生成（当前仅 story_abc 有视频）
+- Playwright e2e 测试
+
+---
+
+# 2026-08-04 | Codex | Mini Stories 功能实现（数据层/UI/测试）
+
+根据 `docs/agent_tasks/05-mini-stories-port.md` 和 `docs/agent_tasks/05-mini-stories-content.md` 实现完整 Mini Stories 功能。
+
+**已完成：**
+- `src/data/stories.types.ts` — MiniStory / StoryPage 类型定义
+- `src/data/stories.ts` — 9 组故事完整数据（含 story_abc 的 video 字段）
+- `src/data/paths.ts` — 新增 storyImagePath() / storyVideoPath() 路径 helper
+- `src/store/storyUnlock.ts` — isStoryUnlocked() 纯函数（依赖 starsByLetter）
+- `src/features/rewards/RewardsPage.tsx` — 收藏册页面新增"Mini Stories"分区，根据解锁状态显示可点击链接或锁定行（锁图标 + "Complete X, Y, Z to unlock"）
+- `src/features/rewards/StoryViewerPage.tsx` — 阅读器组件：视频模式（story_abc 渲染 `<video controls playsInline>`）+ 图片翻页模式（8 组故事，逐页图片+文字+Next/The End 按钮），含图片加载失败兜底、storyId 不存在兜底
+- `src/features/rewards/StoryViewerPage.module.css` — 阅读器样式
+- `src/app/router.tsx` — 添加 `rewards/story/:storyId` 路由
+
+**测试文件（全部新增）：**
+- `src/store/storyUnlock.test.ts` — 7 个用例：全解锁 / 超额星星 / 部分解锁 / 无星星 / 全零 / 空 requiredLetters / YZ 双字母特例
+- `src/data/stories.test.ts` — 6 个用例：9 组验证 / 字段非空 / 5 页 / 图片扩展名 / 字母去重 / 仅 story_abc 有 video
+- `src/features/rewards/StoryViewerPage.test.tsx` — 9 个用例：图片模式首页渲染 / 翻页 / 末页 The End 并导航返回 / 视频模式渲染 video 元素 / 视频模式不显示翻页器 / 未知 storyId 不崩溃
+
+**修改文件（不含新增）：**
+- `src/data/paths.ts` — 追加 2 个导出函数
+- `src/features/rewards/RewardsPage.tsx` — 追加 import 和故事列表 JSX 段
+- `src/features/rewards/RewardsPage.module.css` — 新增故事列表样式
+- `src/app/router.tsx` — 追加 import 和路由项
+
+**验证结果：**
+- `npx tsc --noEmit`：零错误
+- `npx vitest run`：96/96 通过（18 个测试文件）
+- 环境警告（jsdom 未实现 HTMLMediaElement.prototype.pause/play）在 PhonemeDetailPage 测试中，系已有问题非本次引入
+
+**未做（非本任务范围）：**
+- 为 D/E/F～Y/Z 生成视频（见 05-mini-stories-port.md §7 的 non-goals）
+- Playwright e2e 测试（可选，时间允许时补充）
+- RewardsPage 的 story 部分 E2E 测试
+
+---
+
+## 2026-08-04 ｜ Claude ｜ story_abc 接入叙事视频（另一条独立管线产出）
+
+用户提供了一个在本会话之外（`D:\AI\EnglishGo\seedance_story\`）已经跑完的独立管线：把 story_abc 的 5 张插画通过字节跳动 Seedance 2.0（Volcengine Ark API，跟插画用的 DashScope 是不同厂商/不同 API）动画成一段 15 秒视频，配了 TTS 旁白 + 烧录字幕（文字跟 5 页故事文本完全一致）。已核实：`ffprobe` 确认格式正常（1280x720, h264+aac, 15s），抽帧人工看过，画风跟插画一致，角色也是用已修复过一致性的那版插画做的源图。
+
+**已完成：**
+- 视频复制到 `public/videos/stories/story_abc.mp4`
+- `05-mini-stories-port.md`/`05-mini-stories-content.md` 已更新：`MiniStory` 类型加了可选 `video?: string` 字段，只有 story_abc 会设置；`StoryViewerPage` 的实现步骤（§5 step 6）已经写清楚要按 `story.video` 是否存在分支——有视频就渲染 `<video controls>`（不自动带声播放），没有就走原来那套逐页图片+文字翻页阅读器；测试要求（§6）也同步加了视频分支的用例
+- 明确标注：其余 8 组故事**没有**视频，也不在本任务范围内批量补——`seedance_story/` 管线是能用的，但要不要给其他 8 组也生成视频是单独的后续决定，不要顺手在实现这个 PR 的时候就跑了
+
+**未做（因为功能本身还没开始写代码）：** `StoryViewerPage.tsx` 等组件尚未创建，本次只是把视频资产和实现规格补进了交接文档，跟之前"先写文档等实现"的模式一致。
+
+详见 [`docs/agent_tasks/05-mini-stories-port.md`](agent_tasks/05-mini-stories-port.md) 和 [`docs/agent_tasks/05-mini-stories-content.md`](agent_tasks/05-mini-stories-content.md)。
+
+---
+
+## 2026-08-04 ｜ Claude ｜ 迷你故事插画：修复角色一致性问题
+
+用户发现 story_abc 第 4/5 页（多角色合影）里猫/熊/蚂蚁的长相跟第 1/2/3 页（单角色特写）对不上——根因是最初的出图脚本对每一页独立调用一次 API，模型每次都重新"凭空"设计角色，没有任何上下文保持一致。
+
+**修复：** `wan2.7-image-pro` 支持 `enable_sequential: true` 的批量出图模式，把一组故事的 5 页写成一个连贯叙事 prompt（"First image... Second image..."，对重复出现的角色显式加"the same X"）一次性生成，模型在同一次生成里保持角色设计一致。新脚本 `tool/imggen/generate_story_sequential.cjs`（支持传 story id 参数只重跑指定几组），已用它重新生成全部 9 组 45 张插画，覆盖了之前的版本。人工过了两次 contact sheet（`tool/imggen/preview/contact_sheet_stories_v2.png` 和 `contact_sheet_stories_consistent_batch1.png`），确认每组内角色贯穿 5 页一致。
+
+过程中遇到过一次 `AccessDenied.Unpurchased`（DashScope 账号额度问题，跟代码无关），用户自行处理账号后重跑剩余几组全部成功。
+
+旧脚本 `generate_story_v2.js`/`story_prompts_v2.json` 保留在 `tool/imggen/` 作为"反面参考"（不要模仿其每页独立调用的做法），未删除但不再是当前图片的来源。
+
+详见 [`docs/agent_tasks/05-mini-stories-content.md`](agent_tasks/05-mini-stories-content.md) 的"Illustrations: all 45 generated, character-consistent"一节。
+
+---
+
+## 2026-08-04 ｜ Claude ｜ 交接：迷你故事（Mini Stories）功能移植
+
+因当前会话上下文接近上限，本次未开始实现，仅完成任务拆解与详细交接文档，供下一个 agent/模型直接实施，无需重新翻查 `main` 分支历史。
+
+**背景：** `main`（Flutter 版）已有"迷你故事"奖励功能（每 3 字母解锁一段故事，见 `docs/REWARD_SYSTEM.md`），`react-rewrite` 分支完全未移植（`src/` 下无任何 story 相关代码）。
+
+**已完成的前置工作：**
+- 已读取并在任务文档中完整摘录 `main` 分支的数据模型（`lib/data/stories/models.dart`）、解锁/列表 UI（`rewards_page.dart`）、阅读器 UI（`story_viewer_page.dart`）
+- **9 组故事全部写完**（`main` 只写了 A/B/C 这 1 组，D/E/F～Y/Z 共 8 组新写）：每组沿用该组字母在 `alphabet.ts` 里的主词汇（如 D/E/F = dog/duck, egg/elephant, fish/frog），5 页、语气/篇幅与 `story_abc` 一致，符合 REWARD_SYSTEM.md 的"禁止清单"（无失败/无恐惧/温和收尾）。全文 + 可直接粘贴的 `stories.ts` 数组见 [`docs/agent_tasks/05-mini-stories-content.md`](agent_tasks/05-mini-stories-content.md)
+- **全部 45 张插画已生成完毕**：`story_abc_1~5`（从 `main` 复制，字节已核实一致）+ 新生成的 `story_def_1~5` 到 `story_yz_1~5` 共 40 张，走的是与单词插画完全相同的管线（DashScope `wan2.7-image-pro`，付费 API，商用不受限但平台不保证可版权性，详见本文件 2026-07-25 Phase 4 条目）。生成脚本 `tool/imggen/generate_story_v2.js` + prompt 文件 `tool/imggen/story_prompts_v2.json`（复制自 main 的 `generate_story.js`，仅改了输出目录指向 `public/images/stories/`）。已生成 contact sheet（`tool/imggen/preview/contact_sheet_stories_v2.png`）人工过了一遍，风格与 story_abc 一致，无恐怖/诡异元素，无文字水印残留。全部 45 张已就位于 `public/images/stories/`，**无遗留出图工作**
+- 已梳理 react-rewrite 现有代码模式（数据层写法、路径 helper、star 计算、页面容器、按钮组件、CSS token、路由写法），全部记录在任务文档中，避免下一个 agent 重新探索
+
+**任务文档：** [`docs/agent_tasks/05-mini-stories-port.md`](agent_tasks/05-mini-stories-port.md) — 包含完整代码模板、实现步骤（7 步）、测试要求、明确的 non-goals（不加 schema 校验/异步 loader、不加独立 store）。
+
+**下一步：** 按该文档从 §5 实现计划开始执行（stories.ts 内容直接从 05-mini-stories-content.md 粘贴，图片已就位无需处理）；完成后按本文件既有格式追加交接记录。
+
+---
+
 ## 2026-07-25 ｜ Claude ｜ Phase 3 收尾（200% 大字体全流程扫查）+ Phase 4（52 张正式插画入库、A–Z 全解锁）
 
 **插画资产管线（独立 subagent 后台生成，未接入主 agent 上下文）：**
@@ -252,3 +365,24 @@ Codex 沙箱本次工作目录正确（未重犯 Task 03 的目录写错问题�
 **下一步：**
 - 在有 Flutter SDK 可用且不超时的环境中运行验证命令
 - Phase 3 视觉审查前替换占位资产为正式美术
+---
+
+## 2026-08-02 — 字母追踪功能改进
+
+**完成项：**
+- 修复小写 'a' 追踪路径：原单笔连续路径改为2笔（椭圆 + 竖线），更符合标准手写体
+- 添加笔划顺序数字：对于多笔划字母，在每笔起始点上方显示 ① ② ③ 数字
+- 添加重写功能：完成追踪后点击画布可重新书写（Tap to try again）
+- 完成时播放字母名称发音：从 phonicsAudio 改为 letterAudio（如 "ay" 而非 "æ"）
+- 完成时音频支持性别选择（male/female voice）
+
+**修改文件：**
+- src/data/tracingPaths.ts — 小写 'a' 改为2笔
+- src/features/tracing/TraceCanvas.tsx — 笔划序号、retry、完成提示
+- src/features/tracing/TraceCanvas.module.css — 序号/retry 样式
+- src/features/tracing/useTraceProgress.ts — 新增 reset()
+- src/features/tracing/TraceLetterPage.tsx — letterAudio + 性别支持、retry
+
+**验证：** tsc --noEmit 零错误，vitest run 82个用例全部通过
+
+**未完成：** 无

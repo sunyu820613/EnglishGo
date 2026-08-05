@@ -1,7 +1,10 @@
 .stage {
   position: relative;
   width: 100%;
-  max-width: clamp(280px, 60vw, 420px);
+  /* Capped at 420px (~1.75x the canvas's native 240px bitmap width) so a
+   * lone board filling available space doesn't upscale past a soft
+   * resolution/blur threshold. */
+  max-width: min(420px, 100%, calc(var(--stage-max-h, 9999px) * 240 / 300));
   aspect-ratio: 240 / 300;
   border-radius: var(--radius-lg);
   overflow: hidden;
@@ -12,8 +15,9 @@
 }
 
 .complete {
-  box-shadow: var(--shadow-rest), 0 0 0 4px color-mix(in srgb, var(--color-success) 55%, transparent),
-    0 0 24px color-mix(in srgb, var(--color-success) 35%, transparent);
+  box-shadow: var(--shadow-rest), 0 0 24px color-mix(in srgb, var(--color-success) 35%, transparent);
+  outline: 4px solid color-mix(in srgb, var(--color-success) 55%, transparent);
+  outline-offset: 2px;
 }
 
 .canvasLayer {

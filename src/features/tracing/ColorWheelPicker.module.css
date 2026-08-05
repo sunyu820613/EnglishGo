@@ -1,0 +1,134 @@
+@keyframes backdropIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes wheelSpring {
+  from {
+    transform: scale(0.3) rotate(-120deg);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+@keyframes dotPop {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes centerIn {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.wrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--touch-min);
+  height: var(--touch-min);
+  border-radius: var(--radius-full);
+  border: 3px solid var(--color-surface);
+  box-shadow: var(--shadow-rest);
+  cursor: pointer;
+  padding: 0;
+}
+
+.trigger:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-focus);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.triggerLabel {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-overlay);
+  background: color-mix(in srgb, var(--color-shadow) 25%, transparent);
+  backdrop-filter: blur(3px);
+  animation: backdropIn var(--duration-standard) var(--ease-standard);
+}
+
+.wheel {
+  position: fixed;
+  z-index: var(--z-dialog);
+  animation: wheelSpring var(--duration-page) var(--ease-micro);
+}
+
+.noMotion {
+  animation: none;
+}
+
+.centerSwatch {
+  position: absolute;
+  left: calc(50% - 22px);
+  top: calc(50% - 22px);
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
+  border: 3px solid var(--color-surface);
+  box-shadow: var(--shadow-raised);
+  pointer-events: none;
+  animation: centerIn var(--duration-micro) var(--ease-micro) 0.15s backwards;
+}
+
+.noMotion .centerSwatch {
+  animation: none;
+}
+
+.dot {
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
+  border: 2px solid var(--color-surface);
+  box-shadow: var(--shadow-rest);
+  cursor: pointer;
+  padding: 0;
+  animation: dotPop var(--duration-micro) var(--ease-micro) backwards;
+}
+
+.noMotion .dot {
+  animation: none;
+}
+
+.dotSelected {
+  border: 3px solid var(--color-text);
+  box-shadow: var(--shadow-raised);
+}
+
+.dot:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-focus);
+  outline-offset: var(--focus-ring-offset);
+}

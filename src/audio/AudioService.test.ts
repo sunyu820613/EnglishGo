@@ -44,25 +44,29 @@ describe('AudioService', () => {
     expect(voiceEl.src).toBe('/audio/letters/b_name.m4a');
   });
 
-  it('ducks bgm volume to 20% while a voice plays, and restores it on end', async () => {
+  it('pauses bgm while a voice plays, and resumes it on end', async () => {
     await service.setBgm('/audio/bgm/theme.m4a');
-    expect(bgmEl.volume).toBe(1);
+    (bgmEl.pause as ReturnType<typeof vi.fn>).mockClear();
 
     await service.playVoice('/audio/letters/a_name.m4a');
-    expect(bgmEl.volume).toBeCloseTo(0.2);
+    expect(bgmEl.pause).toHaveBeenCalled();
 
     // Simulate the voice finishing.
+    (bgmEl.play as ReturnType<typeof vi.fn>).mockClear();
     voiceEl.onended?.(new Event('ended'));
+    expect(bgmEl.play).toHaveBeenCalled();
     expect(bgmEl.volume).toBe(1);
   });
 
-  it('does not duck bgm when bgm is disabled', async () => {
+  it('does not resume bgm on voice end when bgm is disabled', async () => {
     await service.setBgm('/audio/bgm/theme.m4a');
     service.setBgmEnabled(false);
-    expect(bgmEl.volume).toBe(0);
+    expect(bgmEl.pause).toHaveBeenCalled();
 
+    (bgmEl.play as ReturnType<typeof vi.fn>).mockClear();
     await service.playVoice('/audio/letters/a_name.m4a');
-    expect(bgmEl.volume).toBe(0);
+    voiceEl.onended?.(new Event('ended'));
+    expect(bgmEl.play).not.toHaveBeenCalled();
   });
 
   it('degrades silently when playback fails (missing file)', async () => {
@@ -103,6 +107,21 @@ describe('AudioService', () => {
 
     // Newer voice (b) should still be reported as playing.
     expect(service.getPlayingVoiceSrc()).toBe('/audio/letters/b_name.m4a');
+  });
+
+  it('plays a random track from a bgm playlist and advances to a different one on end', async () => {
+    const srcs = ['/audio/music/a.ogg', '/audio/music/b.ogg', '/audio/music/c.ogg'];
+    await service.playBgmPlaylist(srcs);
+    expect(srcs).toContain(bgmEl.src);
+    expect(bgmEl.loop).toBe(false);
+    const first = bgmEl.src;
+
+    bgmEl.onended?.(new Event('ended'));
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(srcs).toContain(bgmEl.src);
+    expect(bgmEl.src).not.toBe(first);
   });
 
   it('stopAll pauses every channel', async () => {

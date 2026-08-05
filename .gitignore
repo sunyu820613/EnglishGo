@@ -46,3 +46,12 @@ test-results/
 # Local scratch previews (not project assets)
 tool/imggen/preview_*.png
 tool/imggen/preview_*.webp
+
+# Development tooling (not project runtime assets)
+tool/
+seedance_story/
+assets/
+out/
+gen-html.cjs
+normalize_audio.ps1
+scripts-extract-strokes.mjs

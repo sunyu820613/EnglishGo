@@ -26,3 +26,17 @@ export function phonemeAudioPath(relative: string): string {
 export function exampleWordAudioPath(slug: string): string {
   return `/audio/example_words/${slug}.m4a`;
 }
+export function storyImagePath(relative: string): string {
+  return `/images/stories/${relative}`;
+}
+
+export function storyVideoPath(relative: string): string {
+ return `/videos/stories/${relative}`;
+}
+
+/** Gendered word audio path. Falls back to non-gendered path when the
+ * gender-specific sub-directory doesn't have the file (the browser will
+ * 404 silently and AudioService will console.warn). */
+export function wordAudioPathGendered(relative: string, gender: 'male' | 'female'): string {
+  return `/audio/words/${gender}/${relative}`;
+}

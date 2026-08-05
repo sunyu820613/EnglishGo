@@ -1,6 +1,7 @@
 .variants {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: var(--space-md);
   width: 100%;
 }
@@ -9,7 +10,7 @@
   font-family: var(--font-display);
   font-size: var(--text-title);
   color: var(--color-text);
-  margin: 0;
+  margin: 0 0 var(--space-md);
 }
 
 .row {
@@ -19,6 +20,23 @@
   padding: var(--space-md);
   border-radius: var(--radius-md);
   background: var(--color-surface-alt);
+  flex: 0 1 calc(50% - var(--space-md) / 2);
+  /* Wide enough that most short/medium word pairs (e.g. "Lamb"/"Thumb")
+     reliably sit side by side instead of wrapping inconsistently at the
+     exact boundary where one pair barely fits and another barely doesn't. */
+  min-width: 320px;
+}
+
+/* A handful of variant rows pair two genuinely long words (e.g.
+   "Wednesday"/"Handkerchief") that can't fit two-across at the normal card
+   width. Size to content instead of the usual 50%/min-320px split — wide
+   enough for both words side by side, but no wider, so `.variants`'s
+   justify-content: center still centers it like any other standalone card
+   instead of stretching it flush across the whole line. */
+.rowWide {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .rowHeader {
@@ -43,4 +61,10 @@
   display: flex;
   gap: var(--space-sm);
   flex-wrap: wrap;
+}
+
+/* Fixed chip width so the 2nd word always starts at the same x position
+   across every card, regardless of how long the 1st word's text is. */
+.words > * {
+  flex: 0 0 132px;
 }

@@ -3,12 +3,10 @@
  *
  * Rules (ported from lib/core/audio/audio_service.dart):
  * - One voice at a time; playing a new voice stops the previous one.
- * - BGM ducks to 20% volume while a voice is playing.
+ * - BGM pauses while a voice is playing, and resumes where it left off.
  * - Missing/corrupted files degrade silently (console.warn, never throws).
  */
 export type AudioChannel = 'voice' | 'sfx' | 'bgm';
-
-const BGM_DUCKED_VOLUME = 0.2;
 
 export class AudioService {
   private readonly voiceEl: HTMLAudioElement;
@@ -17,6 +15,8 @@ export class AudioService {
 
   private bgmEnabled = true;
   private bgmBaseVolume = 1.0;
+  private bgmPlaylist: string[] = [];
+  private lastBgmTrack: string | null = null;
   private isPlayingVoice = false;
   private playingVoiceSrc: string | null = null;
   private readonly voiceListeners = new Set<(src: string | null) => void>();
@@ -45,7 +45,7 @@ export class AudioService {
   }
 
   /** Play a voice audio file. Stops any currently playing voice; ducks BGM. */
-  async playVoice(src: string): Promise<void> {
+  async playVoice(src: string, fallbackSrc?: string): Promise<void> {
     this.stopVoice();
     const token = ++this.playToken;
     this.isPlayingVoice = true;
@@ -64,6 +64,16 @@ export class AudioService {
       await this.voiceEl.play();
     } catch (e) {
       if (token !== this.playToken) return; // stale rejection, a newer call already took over
+      if (fallbackSrc && fallbackSrc !== src) {
+        console.warn(`[AudioService] Failed to play voice: ${src}, trying fallback`);
+        this.voiceEl.src = fallbackSrc;
+        try {
+          await this.voiceEl.play();
+          return;
+        } catch (e2) {
+          console.warn(`[AudioService] Fallback also failed: ${fallbackSrc}`, e2);
+        }
+      }
       console.warn(`[AudioService] Failed to play voice: ${src}`, e);
       this.isPlayingVoice = false;
       this.restoreBgm();
@@ -146,21 +156,56 @@ export class AudioService {
     }
   }
 
-  /** Enable or disable BGM. When disabled, BGM volume is set to 0. */
-  setBgmEnabled(enabled: boolean): void {
-    this.bgmEnabled = enabled;
-    this.bgmEl.volume = enabled && !this.isPlayingVoice ? this.bgmBaseVolume : 0;
+  /**
+   * Play an endlessly-repeating shuffled playlist of BGM tracks (e.g. a
+   * set of interchangeable loopable tracks) instead of one single looping
+   * file. Picks a random track now, then a new random track (never the
+   * same one twice in a row, when there's a choice) each time a track
+   * finishes.
+   */
+  async playBgmPlaylist(srcs: string[]): Promise<void> {
+    this.bgmPlaylist = srcs;
+    this.bgmEl.loop = false;
+    this.bgmEl.onended = () => {
+      void this.playNextBgmTrack();
+    };
+    await this.playNextBgmTrack();
   }
 
-  private applyDucking(): void {
-    if (this.bgmEnabled) {
-      this.bgmEl.volume = this.bgmBaseVolume * BGM_DUCKED_VOLUME;
+  private async playNextBgmTrack(): Promise<void> {
+    if (this.bgmPlaylist.length === 0) return;
+    const pool =
+      this.bgmPlaylist.length > 1
+        ? this.bgmPlaylist.filter((src) => src !== this.lastBgmTrack)
+        : this.bgmPlaylist;
+    const next = pool[Math.floor(Math.random() * pool.length)];
+    if (next) {
+      this.lastBgmTrack = next;
+      await this.setBgm(next);
     }
   }
 
+  /** Enable or disable BGM. When disabled, BGM is paused. */
+  setBgmEnabled(enabled: boolean): void {
+    this.bgmEnabled = enabled;
+    if (this.isPlayingVoice) return; // ducking already has it paused; restoreBgm() re-checks bgmEnabled
+    if (enabled) {
+      this.restoreBgm();
+    } else {
+      this.bgmEl.pause();
+    }
+  }
+
+  private applyDucking(): void {
+    this.bgmEl.pause();
+  }
+
   private restoreBgm(): void {
-    if (this.bgmEnabled) {
+    if (this.bgmEnabled && this.bgmEl.src) {
       this.bgmEl.volume = this.bgmBaseVolume;
+      void this.bgmEl.play().catch((e) => {
+        console.warn('[AudioService] Failed to resume BGM', e);
+      });
     }
   }
 }
