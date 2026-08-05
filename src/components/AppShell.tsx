@@ -4,10 +4,11 @@ import { useAudioService } from '../audio/useAudioService';
 import { useSettingsStore } from '../store/settingsStore';
 import styles from './AppShell.module.css';
 
+const base = import.meta.env.BASE_URL;
 const BGM_PLAYLIST = [
-  '/audio/music/happy_skip.ogg',
-  '/audio/music/playful_pop.ogg',
-  '/audio/music/sunny_parade.ogg',
+  `${base}audio/music/happy_skip.ogg`,
+  `${base}audio/music/playful_pop.ogg`,
+  `${base}audio/music/sunny_parade.ogg`,
 ];
 
 export function AppShell() {
