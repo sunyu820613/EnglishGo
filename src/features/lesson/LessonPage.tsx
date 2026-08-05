@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
-import { letterAudioPath } from '../../data/paths';
+import { letterAudioPath, phraseAudioPath } from '../../data/paths';
 import { alphabet } from '../../data/alphabet';
 import { stories } from '../../data/stories';
 import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
@@ -56,6 +56,9 @@ export function LessonPage() {
     ? (entry.letterAudioMale ?? entry.letterAudio)
     : (entry.letterAudioFemale ?? entry.letterAudio);
   const quizAudioSrc = letterAudioPath(genderedAudio);
+  const findTheLetterPhrase = voiceGender === 'male'
+    ? phraseAudioPath('find_the_letter_male.m4a')
+    : phraseAudioPath('find_the_letter_female.m4a');
 
   const stars = getLetterStars(letter, { wordsHeard, quizPassedLetters, matchPassedLetters, tracedLetters });
 
@@ -90,6 +93,7 @@ export function LessonPage() {
           <StepLetterQuiz
             letter={letter}
             audioSrc={quizAudioSrc}
+            phraseAudioSrc={findTheLetterPhrase}
             reducedMotion={reducedMotion}
             onCompleted={() => {
               markMatchPassed(letter);
