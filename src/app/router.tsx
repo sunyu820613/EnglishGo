@@ -10,7 +10,7 @@ import { LessonPage } from '../features/lesson/LessonPage';
 import { RewardsPage } from '../features/rewards/RewardsPage';
 import { StoryViewerPage } from '../features/rewards/StoryViewerPage';
 
-export const router = createBrowserRouter([
+const routes = [
   {
     path: '/',
     element: <AppShell />,
@@ -27,4 +27,6 @@ export const router = createBrowserRouter([
       { path: 'phonemes/:slug', element: <PhonemeDetailPage /> },
     ],
   },
-]);
+];
+
+export const router = createBrowserRouter(routes, { basename: '/EnglishGo/' });
