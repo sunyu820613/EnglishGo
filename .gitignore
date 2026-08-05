@@ -55,3 +55,9 @@ out/
 gen-html.cjs
 normalize_audio.ps1
 scripts-extract-strokes.mjs
+ # Legacy Flutter assets (Vite uses public/ instead)
+ /audio/
+ /fonts/
+ /images/
+ /videos/
+ /favicon.svg
