@@ -22,12 +22,16 @@ export function StepLetterQuiz({ letter, audioSrc, reducedMotion, onCompleted }:
   const { wrongIndex, reduced, registerWrongAttempt } = useGentleRetry();
   const playedRef = useRef<string | false>(false);
 
-  // Play the letter's pronunciation on mount.
+  // Play "Find the letter X!" phrase, then the letter audio.
   useEffect(() => {
-    if (playedRef.current && audioSrc === playedRef.current) return;
-    playedRef.current = audioSrc;
-    void audioService.playVoice(audioSrc);
-  }, [audioSrc]);
+    if (playedRef.current) return;
+    playedRef.current = 'played';
+    const phraseFile = 'find_the_letter_' + letter.toLowerCase() + '.m4a';
+    void audioService.playVoice(phraseAudioPath(phraseFile));
+    setTimeout(() => {
+      void audioService.playVoice(audioSrc);
+    }, 1500);
+  }, [audioSrc, letter]);
 
   const hiddenIndex = reduced ? options.findIndex((o) => o !== letter) : -1;
 
@@ -50,9 +54,9 @@ export function StepLetterQuiz({ letter, audioSrc, reducedMotion, onCompleted }:
 
   return (
     <div className={styles.step}>
-      <h2 className={styles.heading}>Which letter is this?</h2>
+      <h2 className={styles.heading}>Find the letter {letter}!</h2>
 
-      <button type="button" className={styles.replayButton} onClick={() => void audioService.playVoice(audioSrc)} aria-label="Listen again">
+      <button type="button" className={styles.replayButton} onClick={() => { const pf = 'find_the_letter_' + letter.toLowerCase() + '.m4a'; void audioService.playVoice(phraseAudioPath(pf)); setTimeout(() => { void audioService.playVoice(audioSrc); }, 1500); }} aria-label="Listen to the question again">
         <svg viewBox="0 0 24 24" className={styles.replayIcon} aria-hidden="true">
           <path d="M4 9v6h4l5 5V4L8 9H4z" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinejoin="round"/>
           <path d="M16 8.5c1.2 1 1.2 6 0 7" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"/>
