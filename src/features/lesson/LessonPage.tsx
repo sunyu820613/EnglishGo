@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
+import { letterAudioPath } from '../../data/paths';
 import { alphabet } from '../../data/alphabet';
 import { stories } from '../../data/stories';
 import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
+import { useSettingsStore } from '../../store/settingsStore';
 import { useProgressStore } from '../../store/progressStore';
 import { getLetterStars } from '../../store/letterStars';
 import page from '../../styles/page.module.css';
 import { LessonProgressDots } from './LessonProgressDots';
-import { StepQuiz } from './steps/StepQuiz';
+import { StepLetterQuiz } from './steps/StepLetterQuiz';
 import { StepMatch } from './steps/StepMatch';
 import { StepTrace } from './steps/StepTrace';
 import { StepReward } from './steps/StepReward';
@@ -21,6 +23,8 @@ export function LessonPage() {
   const entry = alphabet.find((e) => e.letter === letter);
   const navigate = useNavigate();
   const reducedMotion = usePrefersReducedMotion();
+
+  const voiceGender = useSettingsStore((s) => s.voiceGender);
 
   const markWordHeard = useProgressStore((s) => s.markWordHeard);
   const markQuizPassed = useProgressStore((s) => s.markQuizPassed);
@@ -48,6 +52,11 @@ export function LessonPage() {
     return <Navigate to={letter ? `/alphabet/${letter}` : '/alphabet'} replace />;
   }
 
+  const genderedAudio = voiceGender === 'male'
+    ? (entry.letterAudioMale ?? entry.letterAudio)
+    : (entry.letterAudioFemale ?? entry.letterAudio);
+  const quizAudioSrc = letterAudioPath(genderedAudio);
+
   const stars = getLetterStars(letter, { wordsHeard, quizPassedLetters, matchPassedLetters, tracedLetters });
 
   return (
@@ -66,9 +75,9 @@ export function LessonPage() {
         <LessonProgressDots totalSteps={TOTAL_STEPS} currentStep={step} />
 
         {step === 0 ? (
-          <StepQuiz
-            letterEntry={entry}
-            allLetters={alphabet}
+          <StepLetterQuiz
+            letter={letter}
+            audioSrc={quizAudioSrc}
             reducedMotion={reducedMotion}
             onCompleted={() => {
               markQuizPassed(letter);
